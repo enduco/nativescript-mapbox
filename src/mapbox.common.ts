@@ -13,6 +13,18 @@ export enum MapStyle {
   TRAFFIC_NIGHT = <any>"traffic_night"
 }
 
+export interface Point {
+  x: number;
+  y: number;
+}
+
+export interface CoordinateRegion {
+  minLat: number;
+  maxLat: number;
+  minLng: number;
+  maxLng: number;
+}
+
 export interface LatLng {
   lat: number;
   lng: number;
@@ -495,6 +507,18 @@ export interface MapboxApi {
 
   // addExtrusion(options: AddExtrusionOptions): Promise<any>;
 
+  // new methods
+
+  setScrollingEnabled(enabled: boolean, nativeMap?: any): Promise<any>;
+
+  isScrollingEnabled(nativeMap?: any): Promise<boolean>;
+
+  convertToMapCoordinate(point: Point, nativeMap?: any): Promise<LatLng>;
+
+  convertToOnScreenCoordinate(coordinate: LatLng, nativeMap?: any): Promise<Point>;
+
+  getDistanceBetween(from: LatLng, to: LatLng, nativeMap?: any): Promise<number>;
+
 }
 
 export abstract class MapboxCommon implements MapboxCommonApi {
@@ -643,6 +667,17 @@ export interface MapboxViewApi {
 
   // onSaveInstanceState( Bundle outState)
 
+  // new methods
+
+  convertToMapCoordinate(point: Point): Promise<LatLng>;
+
+  convertToOnScreenCoordinate(coordinate: LatLng): Promise<Point>;
+
+  getDistanceBetween(from: LatLng, to: LatLng): Promise<number>;
+
+  getPixelDistanceBetween(from: LatLng, to: LatLng): Promise<number>;
+
+  getCoordinateRegionAroundPoint(around: Point, pixelDistance: number): Promise<CoordinateRegion>;
 
 }
 
@@ -852,10 +887,76 @@ export abstract class MapboxViewCommonBase extends ContentView implements Mapbox
 
   // onSaveInstanceState( Bundle outState)
 
+  // new methods
 
+  convertToMapCoordinate(point: Point): Promise<LatLng> {
+    return this.mapbox.convertToMapCoordinate(point, this.getNativeMapView());
+  }
 
+  isScrollingEnabled(): Promise<boolean> {
+    return this.mapbox.isScrollingEnabled(this.getNativeMapView());
+  }
 
+  setScrollingEnabled(enabled: boolean): Promise<any> {
+    return this.mapbox.setScrollingEnabled(enabled, this.getNativeMapView());
+  }
 
+  convertToOnScreenCoordinate(coordinate: LatLng): Promise<Point> {
+    return this.mapbox.convertToOnScreenCoordinate(coordinate, this.getNativeMapView());
+  }
+
+  getDistanceBetween(from: LatLng, to: LatLng): Promise<number> {
+    return this.mapbox.getDistanceBetween(from, to, this.getNativeMapView());
+  }
+
+  getPixelDistanceBetween(from: LatLng, to: LatLng): Promise<number> {
+    return new Promise((resolve, reject) => {
+      try {
+        this.convertToOnScreenCoordinate(from)
+            .then((a) => {
+              this.convertToOnScreenCoordinate(to)
+                  .then((b) => {
+                    let dx = a.x - b.x;
+                    let dy = a.y - b.y;
+                    resolve(Math.sqrt(dx * dx + dy * dy));
+                  });
+            });
+      } catch (ex) {
+        console.log("Error in mapbox.getPixelDistanceBetween: " + ex);
+        reject(ex);
+      }
+    });
+  }
+
+  getCoordinateRegionAroundPoint(around: Point, pixelDistance: number): Promise<CoordinateRegion> {
+    return new Promise((resolve, reject) => {
+
+      try {
+        let min: Point = {
+          x: around.x - pixelDistance,
+          y: around.y - pixelDistance
+        };
+        let max: Point = {
+          x: around.x + pixelDistance,
+          y: around.y + pixelDistance
+        };
+
+        this.convertToMapCoordinate(min).then((minCoord) => {
+          this.convertToMapCoordinate(max).then((maxCoord) => {
+            resolve({
+              minLat: Math.min(minCoord.lat, maxCoord.lat),
+              maxLat: Math.max(minCoord.lat, maxCoord.lat),
+              minLng: Math.min(minCoord.lng, maxCoord.lng),
+              maxLng: Math.max(minCoord.lng, maxCoord.lng),
+            });
+          });
+        });
+      } catch (ex) {
+        console.log("Error in mapbox.getCoordinateRegionAroundPoint: " + ex);
+        reject(ex);
+      }
+    });
+  }
 }
 
 export const zoomLevelProperty = new Property<MapboxViewCommonBase, number>({name: "zoomLevel"});

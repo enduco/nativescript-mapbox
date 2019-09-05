@@ -1,6 +1,6 @@
 {
-  "name": "nativescript-mapbox",
-  "version": "4.4.1",
+  "name": "nativescript-mapbox-enduco",
+  "version": "1.2.0",
   "description": "Native Maps, by Mapbox.",
   "main": "mapbox",
   "typings": "index.d.ts",
@@ -42,7 +42,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/eddyverbruggen/nativescript-mapbox.git"
+    "url": "https://github.com/enduco/nativescript-mapbox.git"
   },
   "keywords": [
     "ecosystem:nativescript",
@@ -53,14 +53,14 @@
     "Mapbox"
   ],
   "author": {
-    "name": "Eddy Verbruggen",
-    "email": "eddyverbruggen@gmail.com"
+    "name": "enduco",
+    "email": "hello@enduco.app"
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/eddyverbruggen/nativescript-mapbox/issues"
+    "url": "https://github.com/enduco/nativescript-mapbox/issues"
   },
-  "homepage": "https://github.com/eddyverbruggen/nativescript-mapbox",
+  "homepage": "https://github.com/enduco/nativescript-mapbox",
   "readmeFilename": "README.md",
   "devDependencies": {
     "tns-core-modules": "^5.2.2",

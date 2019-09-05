@@ -29,7 +29,8 @@ import {
   TrackUserOptions,
   UserLocation,
   UserLocationCameraMode,
-  Viewport
+  Viewport,
+  Point
 } from "./mapbox.common";
 
 import { Color } from "tns-core-modules/color";
@@ -2449,6 +2450,116 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
         resolve();
       } catch (ex) {
         console.log("Error in mapbox.trackUser: " + ex);
+        reject(ex);
+      }
+    });
+  }
+
+  /* ---------------------------- new methods ---------------------------- */
+
+  isScrollingEnabled(nativeMap?): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      try {
+        let theMap: MGLMapView = nativeMap || _mapbox.mapView;
+
+        if (!theMap) {
+          reject("No map has been loaded");
+          return;
+        }
+
+        resolve(theMap.allowsScrolling);
+      } catch (ex) {
+        console.log("Error in mapbox.isScrollingEnabled: " + ex);
+        reject(ex);
+      }
+    });
+  }
+
+  setScrollingEnabled(enabled: boolean, nativeMap?): Promise<any> {
+    return new Promise((resolve, reject) => {
+      try {
+        let theMap: MGLMapView = nativeMap || _mapbox.mapView;
+
+        if (!theMap) {
+          reject("No map has been loaded");
+          return;
+        }
+
+        theMap.allowsScrolling = enabled;
+
+        resolve();
+      } catch (ex) {
+        console.log("Error in mapbox.setScrollingEnabled: " + ex);
+        reject(ex);
+      }
+    });
+  }
+
+  convertToMapCoordinate(point: Point, nativeMap?: any): Promise<LatLng> {
+    return new Promise((resolve, reject) => {
+      try {
+        let theMap: MGLMapView = nativeMap || _mapbox.mapView;
+
+        if (!theMap) {
+          reject("No map has been loaded");
+          return;
+        }
+
+        let coordinate = theMap.convertPointToCoordinateFromView(point, theMap);
+
+        resolve({
+          lat: coordinate.latitude,
+          lng: coordinate.longitude
+        });
+      } catch (ex) {
+        console.log("Error in mapbox.convertToMapCoordinate: " + ex);
+        reject(ex);
+      }
+    });
+  }
+
+  convertToOnScreenCoordinate(coordinate: LatLng, nativeMap?: any): Promise<Point> {
+    return new Promise((resolve, reject) => {
+      try {
+        let theMap: MGLMapView = nativeMap || _mapbox.mapView;
+
+        if (!theMap) {
+          reject("No map has been loaded");
+          return;
+        }
+
+        let point = theMap.convertCoordinateToPointToView({
+          latitude: coordinate.lat,
+          longitude: coordinate.lng
+        }, theMap);
+
+        resolve({
+          x: point.x,
+          y: point.y
+        });
+      } catch (ex) {
+        console.log("Error in mapbox.convertToOnScreenCoordinate: " + ex);
+        reject(ex);
+      }
+    });
+  }
+
+  getDistanceBetween(from: LatLng, to: LatLng, nativeMap?: any): Promise<number> {
+    return new Promise((resolve, reject) => {
+      try {
+        let theMap: MGLMapView = nativeMap || _mapbox.mapView;
+
+        if (!theMap) {
+          reject("No map has been loaded");
+          return;
+        }
+
+        let fromConv = new CLLocation({latitude: from.lat, longitude: from.lng});
+        let toConv = new CLLocation({latitude: to.lat, longitude: to.lng});
+
+        resolve(toConv.distanceFromLocation(fromConv));
+      } catch (ex) {
+        console.log("Error in mapbox.getDistanceBetween: " + ex);
         reject(ex);
       }
     });

@@ -35,7 +35,8 @@ import {
   TrackUserOptions,
   UserLocation,
   UserLocationCameraMode,
-  Viewport
+  Viewport,
+  Point
 } from "./mapbox.common";
 
 import { GeoUtils } from './geo.utils';
@@ -3841,6 +3842,114 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
     }
     return Promise.all(iterations).then((output) => {
       return result;
+    });
+  }
+
+  /* ---------------------------- new methods ---------------------------- */
+
+  isScrollingEnabled(nativeMap?): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      try {
+        const theMap = nativeMap || _mapbox;
+
+        if (!theMap) {
+          reject("No map has been loaded");
+          return;
+        }
+
+        resolve(theMap.mapboxMap.getUiSettings().isScrollGesturesEnabled());
+      } catch (ex) {
+        console.log("Error in mapbox.isScrollingEnabled: " + ex);
+        reject(ex);
+      }
+    });
+  }
+
+  setScrollingEnabled(enabled: boolean, nativeMap?): Promise<any> {
+    return new Promise((resolve, reject) => {
+      try {
+        const theMap = nativeMap || _mapbox;
+
+        if (!theMap) {
+          reject("No map has been loaded");
+          return;
+        }
+
+        theMap.mapboxMap.getUiSettings().setScrollGesturesEnabled(enabled);
+
+        resolve();
+      } catch (ex) {
+        console.log("Error in mapbox.setScrollingEnabled: " + ex);
+        reject(ex);
+      }
+    });
+  }
+
+  convertToMapCoordinate(point: Point, nativeMap?: any): Promise<LatLng> {
+    return new Promise((resolve, reject) => {
+      try {
+        const theMap = nativeMap || _mapbox;
+
+        if (!theMap) {
+          reject("No map has been loaded");
+          return;
+        }
+
+        let coordinate = theMap.mapboxMap.getProjection().fromScreenLocation(point);
+
+        resolve({
+          lat: coordinate.lat,
+          lng: coordinate.lng
+        });
+      } catch (ex) {
+        console.log("Error in mapbox.convertToMapCoordinate: " + ex);
+        reject(ex);
+      }
+    });
+  }
+
+  convertToOnScreenCoordinate(coordinate: LatLng, nativeMap?: any): Promise<Point> {
+    return new Promise((resolve, reject) => {
+      try {
+        const theMap = nativeMap || _mapbox;
+
+        if (!theMap) {
+          reject("No map has been loaded");
+          return;
+        }
+
+        let point = theMap.mapboxMap.getProjection().toScreenLocation(coordinate);
+
+        resolve({
+          x: point.x,
+          y: point.y
+        });
+      } catch (ex) {
+        console.log("Error in mapbox.convertToOnScreenCoordinate: " + ex);
+        reject(ex);
+      }
+    });
+  }
+
+  getDistanceBetween(from: LatLng, to: LatLng, nativeMap?: any): Promise<number> {
+    return new Promise((resolve, reject) => {
+      try {
+        const theMap = nativeMap || _mapbox;
+
+        if (!theMap) {
+          reject("No map has been loaded");
+          return;
+        }
+
+        // convert coordinates
+        let fromConv = new com.mapbox.mapboxsdk.geometry.LatLng(from.lat, from.lng);
+        let toConv = new com.mapbox.mapboxsdk.geometry.LatLng(to.lat, to.lng);
+
+        resolve(fromConv.distanceTo(toConv));
+      } catch (ex) {
+        console.log("Error in mapbox.getDistanceBetween: " + ex);
+        reject(ex);
+      }
     });
   }
 
