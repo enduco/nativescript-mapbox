@@ -1,5 +1,5 @@
 /**
-* Android Implementation 
+* Android Implementation
 */
 
 import * as utils from "tns-core-modules/utils/utils";
@@ -64,7 +64,7 @@ export namespace BundleKludge {
 * Angular components need to register the Mapbox tag as follows:
 *
 * import { registerElement } from "nativescript-angular/element-registry";
-* registerElement( "Mapbox", () => require("nativescript-mapbox").MapboxView); 
+* registerElement( "Mapbox", () => require("nativescript-mapbox").MapboxView);
 *
 * The registerElement call is what binds the XML tag to the class that creates it.
 *
@@ -101,7 +101,7 @@ export class MapboxView extends MapboxViewBase {
 
   public getMapboxApi() : any {
     return this.mapbox;
-  } 
+  }
 
   // -------------------------------------------------------
 
@@ -130,7 +130,7 @@ export class MapboxView extends MapboxViewBase {
   * initialize the map
   *
   * This is called when the map is initialized from XML. It creates the native mapView instance
-  * and also a new mapbox API class instance. 
+  * and also a new mapbox API class instance.
   *
   * @see show()
   *
@@ -145,7 +145,7 @@ export class MapboxView extends MapboxViewBase {
 
       this.mapbox = new Mapbox();
 
-      // the notify method come from the NativeScript contentview class and is the glue 
+      // the notify method come from the NativeScript contentview class and is the glue
       // that joins this code with whatever callback is set in the XML describing the map.
 
       let options = {
@@ -228,7 +228,7 @@ export class MapboxView extends MapboxViewBase {
 // ----------------------------------------------------------------------------------------------------------------
 
 /**
-* A NativeScript shim for the Mapbox API. 
+* A NativeScript shim for the Mapbox API.
 *
 * This implements a Typescript shim over the Native Mapbox GL Android API.
 *
@@ -270,7 +270,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
   private circles: any = [];
 
   // list of polylines
- 
+
   private lines: any = [];
 
   // registered callbacks.
@@ -475,7 +475,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
 
                 console.log( "Mapbox::show(): onMapReady() with instance:", this._mapboxMapInstance );
 
-                // Android SDK 7.0.0 and on requires that the style be set separately after the map 
+                // Android SDK 7.0.0 and on requires that the style be set separately after the map
                 // is initialized. We do not consider the map ready until the style has successfully
                 // loaded.
 
@@ -496,7 +496,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
                       if ( settings.onLocationPermissionGranted ) {
                         settings.onLocationPermissionGranted( this._mapboxMapInstance );
                       }
-                    }).catch(err => { 
+                    }).catch(err => {
                       if ( settings.onLocationPermissionDenied ) {
                         settings.onLocationPermissionDenied( this._mapboxMapInstance );
                       }
@@ -669,7 +669,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
   /**
   * on Resume
   */
-  
+
   onResume( nativeMapViewInstance?: any ): Promise<any> {
     return new Promise( (resolve, reject) => {
 
@@ -767,7 +767,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
 
   // ---------------------------------------------
 
-  // onSaveInstanceState( Bundle outState)  
+  // onSaveInstanceState( Bundle outState)
 
   // --------------------------------------------------------------------
 
@@ -806,14 +806,14 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
   * register on click handlers.
   *
   * The native mapbox API does not, apparently, support click handlers
-  * on circles, but it does for markers and polylines. WTF? 
+  * on circles, but it does for markers and polylines. WTF?
   *
   * Here we attempt to replicate the mapbox-gl-js behaviour of being
-  * able to assign an onClick handler to a layer by it's layer id. 
+  * able to assign an onClick handler to a layer by it's layer id.
   *
-  * @param {string} event - the event to subscribe to. i.e. 'click'. 
-  * @param {string} id - the id of the layer 
-  * @param {function} callback - the callback to invoke when the layer is clicked on. 
+  * @param {string} event - the event to subscribe to. i.e. 'click'.
+  * @param {string} id - the id of the layer
+  * @param {function} callback - the callback to invoke when the layer is clicked on.
   * @param {object] nativeMapView - reference to the native Map view.
   *
   * @link https://github.com/mapbox/mapbox-android-demo/issues/540
@@ -825,7 +825,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
       this.eventCallbacks[ eventName ] = [];
     }
 
-    // is this event being added to a line? 
+    // is this event being added to a line?
 
     let lineEntry = this.lines.find( ( entry ) => { return entry.id == id; });
 
@@ -892,11 +892,11 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
 
   private handleLineClickEvent( clickOverlay ) {
 
-    let lineEntry = this.lines.find( ( entry ) => { 
+    let lineEntry = this.lines.find( ( entry ) => {
 
       console.log( "Mapbox:handleLineClickEvent(): checking lineEntry clickOverlay id '" + entry.clickOverlay + "' against clickOverlay '" + clickOverlay + "'" );
 
-      return entry.clickOverlay == clickOverlay; 
+      return entry.clickOverlay == clickOverlay;
 
     });
 
@@ -931,12 +931,12 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
   *
   * For the moment we have to handle map click events long hand ourselves for circles.
   *
-  * When we catch an event we'll check the eventHandlers map to see if the 
+  * When we catch an event we'll check the eventHandlers map to see if the
   * given layer is listed. If it is we invoke it's callback.
   *
   * If there are multiple overlapping circles only the first one in the list will be called.
   *
-  * We also check the location of the click to see if it's inside any 
+  * We also check the location of the click to see if it's inside any
   * circles and raise the event accordingly.
   *
   * @todo detect the top circle in the overlapping circles case.
@@ -952,7 +952,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
 
       console.log( "Mapbox:checkForCircleClickEvent(): checking circle with radius:", this.circles[i].radius );
 
-      if ( GeoUtils.isLocationInCircle( 
+      if ( GeoUtils.isLocationInCircle(
         point.lng,
         point.lat,
         this.circles[i].center[0],
@@ -991,19 +991,19 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
   * they do offer a nice array of styling options.
   *
   * Annotation plugin lines do support click handlers but have limited styling
-  * options. 
+  * options.
   *
   * To wedge click handler support onto Mapbox layer lines we overlay the line
-  * with an invisible Annotation line and catch click events from that. 
+  * with an invisible Annotation line and catch click events from that.
   *
-  * @param {string} lineId id of lineLayer we are to draw the clickable annotation over.. 
+  * @param {string} lineId id of lineLayer we are to draw the clickable annotation over..
   * @param {object} nativeMapView
   *
-  * @return {Promise<any>} clickLine layer 
+  * @return {Promise<any>} clickLine layer
   *
   * @link https://stackoverflow.com/questions/54795079/how-to-get-a-geometry-from-a-mapbox-gl-native-geojsonsource
   *
-  * @todo we assume a geojson source for lines. 
+  * @todo we assume a geojson source for lines.
   * @todo ideally I'd like to pull the geometry out of the line instead of keeping a separate copy of the coordinates around.
   */
 
@@ -1027,7 +1027,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
 
         console.log( "Mapbox:addClickableLineOverlay(): we have a source line of width '" + width + "'" );
 
-        // FIXME: for the moment we are carrying around the feature used to create the original line layer. 
+        // FIXME: for the moment we are carrying around the feature used to create the original line layer.
         //
         // Line Layer features do not have any properties as the properties are separately set in the layer.
 
@@ -1043,7 +1043,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
         // the create() method of the line manager requires a feature collection.
 
         let featureCollection = new com.mapbox.geojson.FeatureCollection.fromFeature( feature );
-      
+
         let clickOverlay = this.lineManager.create( featureCollection ).get(0);
 
         console.log( "Mapbox:addClickableLineOverlay(): after creating overlay:", clickOverlay );
@@ -1053,7 +1053,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
         // let source = nativeMapView.mapboxMap.getStyle().getSource( sourceId );
         //
         // console.log( "Mapbox:addClickableLineOverlay(): got source:", source );
-        // 
+        //
         // let features = source.querySourceFeatures( null );
         //
         // console.log( "Mapbox:addClickableLineOverlay(): features are:", features.get(0).getGeometry() );
@@ -1122,7 +1122,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
   /**
   * set the map style
   *
-  * The 7.X version of the SDK uses a builder class for forming 
+  * The 7.X version of the SDK uses a builder class for forming
   * URLs.
   *
   * NOTE: The style must be explicitly set using this method in the onMapReady() handler.
@@ -1154,11 +1154,11 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
 
               // FIXME: now that the map is initialized and the style is loaded we can
               // create the annotation managers that allow us to (hopefully) reliably
-              // receive events on lines 
+              // receive events on lines
 
               this.lineManager = new com.mapbox.mapboxsdk.plugins.annotation.LineManager( this._mapboxViewInstance, this._mapboxMapInstance, this._mapboxMapInstance.getStyle() );
 
-              this.lineManager.addClickListener( 
+              this.lineManager.addClickListener(
                 new com.mapbox.mapboxsdk.plugins.annotation.OnAnnotationClickListener({
                   onAnnotationClick: line => {
                     console.log( "Mapbox:setMapStyle(): click on line:", line );
@@ -1191,7 +1191,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
 
         let builder = new com.mapbox.mapboxsdk.maps.Style.Builder();
 
-        this._mapboxMapInstance.setStyle( 
+        this._mapboxMapInstance.setStyle(
           builder.fromUrl( mapStyle )
         );
 
@@ -1552,7 +1552,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
   *
   * @link https://www.mapbox.com/android-docs/api/mapbox-java/libjava-geojson/3.4.1/com/mapbox/geojson/Feature.html
   */
- 
+
   queryRenderedFeatures(options: QueryRenderedFeaturesOptions, nativeMap?): Promise<Array<Feature>> {
     return new Promise((resolve, reject) => {
       try {
@@ -1753,7 +1753,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
   // ----------------------------------------------------------------------------------
 
   /**
-  * set an on map click listener. 
+  * set an on map click listener.
   *
   * The new Mapbox Native SDK allows for multiple listeners on an event and follows the standard
   * pattern of returning 'true' when a handler has handled the event and others shouldn't.
@@ -2306,14 +2306,14 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
   * a rough analogue to the mapbox-gl-js addLayer() method
   *
   * It would be nice if this {N} API matched the mapbox-gl-js API which
-  * would make it much easier to share mapping applications between the web 
+  * would make it much easier to share mapping applications between the web
   * and {N} apps.
   *
-  * This method accepts a Mapbox-GL-JS style specification JSON object with some 
+  * This method accepts a Mapbox-GL-JS style specification JSON object with some
   * limitations:
   *
-  * - the source: must be a GeoJSON object. 
-  * - only a subset of paint properties are available. 
+  * - the source: must be a GeoJSON object.
+  * - only a subset of paint properties are available.
   *
   * @param {object} style - a style following the Mapbox style specification.
   * @param {any} nativeMapView - native map view (com.mapbox.mapboxsdk.maps.MapView)
@@ -2380,12 +2380,12 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
   /**
   * add a line layer
   *
-  * Draws a line layer based on a mapbox-gl-js Mapbox Style. 
+  * Draws a line layer based on a mapbox-gl-js Mapbox Style.
   *
-  * What sucks about this is that there is apparently no facility to add an event listener to a layer. 
+  * What sucks about this is that there is apparently no facility to add an event listener to a layer.
   *
   * The idea for this method is to make sharing code between mapbox-gl-js Typescript web applications
-  * and {N} native applications easier. 
+  * and {N} native applications easier.
   *
   * For the moment this method only supports a source type of 'geojson'.
   *
@@ -2408,7 +2408,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
   * 'layout': {
   *   'line-cap': 'round',
   *   'line-join': 'round'
-  * },    
+  * },
   * 'paint': {
   *   'line-color': '#ed6498',
   *   'line-width': 5,
@@ -2419,11 +2419,11 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
   * Do not call this method directly. Use addLayer().
   *
   * To enable catching of click events on a line, when a click handler is added
-  * to a line (using the onMapEvent() method above), the Annotations plugin is used to 
+  * to a line (using the onMapEvent() method above), the Annotations plugin is used to
   * draw an invisible clickable line over the line layer. Sadly, the Annotations
-  * plugin does not support all the nice styling options of the line Layer so we're 
+  * plugin does not support all the nice styling options of the line Layer so we're
   * pushed into this compromise of drawing two lines, one for it's styling and the
-  * other for it's click handling. 
+  * other for it's click handling.
   *
   * @param {object} style - a style following the Mapbox style specification.
   * @param {any} nativeMapView - native map view (com.mapbox.mapboxsdk.maps.MapView)
@@ -2476,7 +2476,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
 
         let lineProperties = [];
 
-        // some defaults if there's no paint property to the style 
+        // some defaults if there's no paint property to the style
         //
         // NOTE polyline styles have separate paint and layout sections.
 
@@ -2495,28 +2495,28 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
           // color
 
           if ( style.paint[ 'line-color' ] ) {
-            lineProperties.push( com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineColor( style.paint[ 'line-color' ] ) ); 
+            lineProperties.push( com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineColor( style.paint[ 'line-color' ] ) );
           }
 
           // opacity
 
           if ( style.paint[ 'line-opacity' ] ) {
-            lineProperties.push( com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineOpacity( new java.lang.Float( style.paint[ 'line-opacity' ] ) ) ); 
+            lineProperties.push( com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineOpacity( new java.lang.Float( style.paint[ 'line-opacity' ] ) ) );
           }
 
           console.log( "Mapbox:addLineLayer(): after opacity" );
 
           // line width
- 
+
           if ( style.paint[ 'line-width' ] ) {
-            lineProperties.push( com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineWidth( new java.lang.Float( style.paint[ 'line-width' ] ) ) ); 
+            lineProperties.push( com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineWidth( new java.lang.Float( style.paint[ 'line-width' ] ) ) );
           }
 
           // line dash array
- 
+
           if ( style.paint[ 'line-dash-array' ] ) {
 
-            // the line-dash-array requires some handstands to marhall it into a java Float[] type. 
+            // the line-dash-array requires some handstands to marhall it into a java Float[] type.
 
             let dashArray = Array.create( "java.lang.Float", style.paint[ 'line-dash-array' ].length );
 
@@ -2524,7 +2524,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
               dashArray[i] = new java.lang.Float( style.paint[ 'line-dash-array' ][i] );
             }
 
-            lineProperties.push( com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineDasharray( dashArray ) ); 
+            lineProperties.push( com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineDasharray( dashArray ) );
           }
 
         } // end of paint section.
@@ -2540,7 +2540,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
 
         } else {
 
-          // line cap 
+          // line cap
           //
           // FIXME: Add other styles.
 
@@ -2564,7 +2564,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
 
             }
 
-            lineProperties.push( com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineCap( property )); 
+            lineProperties.push( com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineCap( property ));
 
           }
 
@@ -2590,7 +2590,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
 
             }
 
-            lineProperties.push( com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineJoin( property )); 
+            lineProperties.push( com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineJoin( property ));
 
           }
 
@@ -2649,11 +2649,11 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
         // and then add a point to it. Unfortunately, it seems that the points in the source
         // are modified and do not match the original set of points that make up the map. I kept
         // adding a LineString and after querying it it would be returned as a MultiLineString
-        // with more points. 
+        // with more points.
         //
         // As a result of this, we keep the original feature in the lines list and use that
-        // as the data source for the line. As each point is added, we append it to the 
-        // feature and reset the json source for the displayed line. 
+        // as the data source for the line. As each point is added, we append it to the
+        // feature and reset the json source for the displayed line.
 
         let lineEntry = this.lines.find( ( entry ) => { return entry.id == id; });
 
@@ -2677,7 +2677,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
 
         geometry.coordinates().add( newPoint );
 
-        // sadly it appears we have to recreate the feature. The old feature should get 
+        // sadly it appears we have to recreate the feature. The old feature should get
         // culled by garbage collection.
 
         lineEntry.feature = com.mapbox.geojson.Feature.fromGeometry( geometry );
@@ -2704,7 +2704,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
   /**
   * add a line annotation
   *
-  * Draws a line using the new Annotations plugin. 
+  * Draws a line using the new Annotations plugin.
   *
   * NOTE: This is here just for reference.
   *
@@ -2714,7 +2714,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
   * However, what sucks is that:
   *
   * - Annotations do not provide the range of styling options that a line layer does
-  * - Annotations use a GeoJSON format, where styling is done via a properties child, instead of the Mapbox Style format. 
+  * - Annotations use a GeoJSON format, where styling is done via a properties child, instead of the Mapbox Style format.
   *
   * {
   *   "type": "FeatureCollection",
@@ -2733,7 +2733,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
   *       "is-draggable": false
   *     }
   *   }]
-  * } 
+  * }
   *
   * @param {object} geojson - a GeoJSON feature collection.
   * @param {any} nativeMapView - native map view (com.mapbox.mapboxsdk.maps.MapView)
@@ -2784,10 +2784,10 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
         "properties": {
           "line-color": "white",
           "line-width": "8",
-          "line-dash-array": [ 2, 4, 2, 1 ] 
+          "line-dash-array": [ 2, 4, 2, 1 ]
         }
       }]
-    }; 
+    };
 
 
     let dashArray = Array.create( "java.lang.Float", geojson.features[0].properties[ 'line-dash-array' ].length );
@@ -3013,10 +3013,10 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
   * Draw a circle based on a Mapbox style.
   *
   * Mapbox Native Android layers do not support click handlers. Unfortunately, we cannot use
-  * the same Annotations approach that we do for lines to get a click handler because 
+  * the same Annotations approach that we do for lines to get a click handler because
   * circles drawn by the Annotations plugin do not support stops so there's no making them
   * smaller as we zoom out. Instead, we have our own click handler (see handleClickEvent() above)
-  * to determine when a click has occured inside a circle. 
+  * to determine when a click has occured inside a circle.
   *
   * In order to support the click handler an additional circle-radius property, in meters, must
   * be included.
@@ -3024,7 +3024,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
   * {
   *  "id": someid,
   *  "type": 'circle',
-  *  "radius-meters": 500,   // FIXME: radius in meters used for in-circle click detection. 
+  *  "radius-meters": 500,   // FIXME: radius in meters used for in-circle click detection.
   *  "source": {
   *    "type": 'geojson',
   *    "data": {
@@ -3034,7 +3034,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
   *        "coordinates": [ lng, lat ]
   *      }
   *    }
-  *  }, 
+  *  },
   *  "paint": {
   *    "circle-radius": {
   *      "stops": [
@@ -3047,9 +3047,9 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
   *    'circle-color': '#ed6498',
   *    'circle-stroke-width': 2,
   *    'circle-stroke-color': '#ed6498'
-  *  } 
+  *  }
   *
-  * @param {object} style a Mapbox style describing the circle draw. 
+  * @param {object} style a Mapbox style describing the circle draw.
   * @param {object} nativeMap view.
   */
 
@@ -3087,9 +3087,9 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
 
         // This took ages to figure out.
         //
-        // Interpolate takes as arguments a function the calculates the interpolation, 
+        // Interpolate takes as arguments a function the calculates the interpolation,
         // a function that returns a set of values,
-        // and a variable number of stop arguments (or possibly others). 
+        // and a variable number of stop arguments (or possibly others).
         //
         // It was not clear how to specify the variable number of arguments. Listing them out in a comma
         // separated fashion would result in:
@@ -3103,7 +3103,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
 
         let circleProperties = [];
 
-        // some defaults if there's no paint property to the style 
+        // some defaults if there's no paint property to the style
 
         if ( typeof style.paint == 'undefined' ) {
 
@@ -3113,7 +3113,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
             com.mapbox.mapboxsdk.style.layers.PropertyFactory.circleColor( 'red' ),
             com.mapbox.mapboxsdk.style.layers.PropertyFactory.circleRadius(
               com.mapbox.mapboxsdk.style.expressions.Expression.interpolate(
-                com.mapbox.mapboxsdk.style.expressions.Expression.exponential( 
+                com.mapbox.mapboxsdk.style.expressions.Expression.exponential(
                   new java.lang.Float( 2.0 ) ),
                   com.mapbox.mapboxsdk.style.expressions.Expression.zoom(),
                   [
@@ -3131,48 +3131,48 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
           // color
 
           if ( style.paint[ 'circle-color' ] ) {
-            circleProperties.push( com.mapbox.mapboxsdk.style.layers.PropertyFactory.circleColor( style.paint[ 'circle-color' ] ) ); 
+            circleProperties.push( com.mapbox.mapboxsdk.style.layers.PropertyFactory.circleColor( style.paint[ 'circle-color' ] ) );
           }
 
           // opacity
 
           if ( style.paint[ 'circle-opacity' ] ) {
-            circleProperties.push( com.mapbox.mapboxsdk.style.layers.PropertyFactory.circleOpacity( new java.lang.Float( style.paint[ 'circle-opacity' ] ) ) ); 
+            circleProperties.push( com.mapbox.mapboxsdk.style.layers.PropertyFactory.circleOpacity( new java.lang.Float( style.paint[ 'circle-opacity' ] ) ) );
           }
 
           console.log( "Mapbox:addCircle(): after opactiy" );
 
           // stroke width
- 
+
           if ( style.paint[ 'circle-stroke-width' ] ) {
-            circleProperties.push( com.mapbox.mapboxsdk.style.layers.PropertyFactory.circleStrokeWidth( new java.lang.Float( style.paint[ 'circle-stroke-width' ] ) ) ); 
+            circleProperties.push( com.mapbox.mapboxsdk.style.layers.PropertyFactory.circleStrokeWidth( new java.lang.Float( style.paint[ 'circle-stroke-width' ] ) ) );
           }
 
           // stroke color
 
           if ( style.paint[ 'circle-stroke-color' ] ) {
-            circleProperties.push( com.mapbox.mapboxsdk.style.layers.PropertyFactory.circleStrokeColor( style.paint[ 'circle-stroke-color' ] ) ); 
+            circleProperties.push( com.mapbox.mapboxsdk.style.layers.PropertyFactory.circleStrokeColor( style.paint[ 'circle-stroke-color' ] ) );
           }
 
           if ( ! style.paint[ 'circle-radius' ] ) {
 
-            // some default so something will show up on the map. 
+            // some default so something will show up on the map.
 
-            circleProperties.push( com.mapbox.mapboxsdk.style.layers.PropertyFactory.circleRadius( new java.lang.Float( 30 ) )); 
+            circleProperties.push( com.mapbox.mapboxsdk.style.layers.PropertyFactory.circleRadius( new java.lang.Float( 30 ) ));
 
           } else {
 
-            // we have two options for a radius. We might have a fixed float or an expression 
+            // we have two options for a radius. We might have a fixed float or an expression
 
             if ( typeof style.paint[ 'circle-radius' ] == 'number' ) {
-              circleProperties.push( com.mapbox.mapboxsdk.style.layers.PropertyFactory.circleRadius( new java.lang.Float( style.paint.radius ) )); 
+              circleProperties.push( com.mapbox.mapboxsdk.style.layers.PropertyFactory.circleRadius( new java.lang.Float( style.paint.radius ) ));
             } else {
 
               if ( ! style.paint[ 'circle-radius' ].stops ) {
                 reject( "No radius or stops provided to addCircleLayer." );
               }
 
-              // for the moment we assume we have a set of stops and a base. 
+              // for the moment we assume we have a set of stops and a base.
 
               let stopArgs = [];
 
@@ -3191,10 +3191,10 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
 
               console.log( "Mapbox:addCircleLayer(): pushing circleRadius with base:", base );
 
-              circleProperties.push( 
+              circleProperties.push(
                 com.mapbox.mapboxsdk.style.layers.PropertyFactory.circleRadius(
                   com.mapbox.mapboxsdk.style.expressions.Expression.interpolate(
-                    com.mapbox.mapboxsdk.style.expressions.Expression.exponential( 
+                    com.mapbox.mapboxsdk.style.expressions.Expression.exponential(
                       new java.lang.Float( base )
                     ),
                     com.mapbox.mapboxsdk.style.expressions.Expression.zoom(),
@@ -3239,9 +3239,9 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
   * Draw a circle Annotation based on a GeoJSON feature..
   *
   * This method is not used but is left here for reference. At the present moment
-  * these circles cannot be scaled according to zoom level (or other property). 
+  * these circles cannot be scaled according to zoom level (or other property).
   *
-  * @param {object} geojson . 
+  * @param {object} geojson .
   * @param {object} nativeMap view.
   */
 
@@ -3394,7 +3394,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
 
   // --------------------------------------------------------------------------------
 
-  _getMapStyle( input: any ): any { 
+  _getMapStyle( input: any ): any {
 
     console.log( "_getMapStyle(): top with input:", input );
 
@@ -3485,7 +3485,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
   _stringToCameraMode( mode: UserLocationCameraMode ): any {
 
     const modeRef = com.mapbox.mapboxsdk.location.modes.CameraMode;
- 
+
     switch( mode ) {
 
       case "NONE":
@@ -3580,9 +3580,9 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
   * - clickListener
   * - cameraTrackingChangeListener
   *
-  * @param {object} options 
+  * @param {object} options
   *
-  * @link https://github.com/mapbox/mapbox-android-demo/blob/master/MapboxAndroidDemo/src/main/java/com/mapbox/mapboxandroiddemo/examples/location/LocationComponentOptionsActivity.java 
+  * @link https://github.com/mapbox/mapbox-android-demo/blob/master/MapboxAndroidDemo/src/main/java/com/mapbox/mapboxandroiddemo/examples/location/LocationComponentOptionsActivity.java
   * @link https://developer.android.com/reference/android/graphics/Color
   *
   * @todo at least with simulated data, the location is only updated once hence adding support for forceLocation method.
@@ -3606,7 +3606,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
 
           reject( "Location permissions not granted." );
           return;
-        } 
+        }
 
         let componentOptionsBuilder = com.mapbox.mapboxsdk.location.LocationComponentOptions.builder( application.android.context );
 
@@ -3617,7 +3617,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
         if ( typeof options.accuracyColor != 'undefined' ) {
           componentOptionsBuilder.accuracyColor( android.graphics.Color.parseColor( options.accuracyColor ))
         }
-         
+
         if ( typeof options.accuracyAlpha != 'undefined' ) {
           componentOptionsBuilder.accuracyAlpha( new java.lang.Float( options.accuracyAlpha ));
         }
@@ -3648,7 +3648,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
 
         console.log( "Mapbox::showUserLocationMarker(): after useDefaultEngine" );
 
-        let locationComponentActivationOptions = activationOptionsBuilder.build(); 
+        let locationComponentActivationOptions = activationOptionsBuilder.build();
 
         console.log( "Mapbox::showUserLocationMarker(): after ActivationOptions" );
 
@@ -3675,9 +3675,9 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
 
         if ( typeof options.clickListener != 'undefined' ) {
 
-          this._locationComponent.addOnLocationClickListener( 
+          this._locationComponent.addOnLocationClickListener(
             new com.mapbox.mapboxsdk.location.OnLocationClickListener({
-              onLocationComponentClick: ( component ) => { 
+              onLocationComponentClick: ( component ) => {
                 options.clickListener( component );
               }
             })
@@ -3704,7 +3704,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
   * Change the mode of the user location marker
   *
   * Used to change the camera tracking and render modes of an existing
-  * marker. 
+  * marker.
   *
   * The marker must be configured using showUserLocationMarker before this method
   * can called.
@@ -3780,7 +3780,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
     })
 
   };
-    
+
   // ---------------------------------------------------------------
 
   _getClickedMarkerDetails( clicked ) {
@@ -3850,7 +3850,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
   isScrollingEnabled(nativeMap?): Promise<boolean> {
     return new Promise((resolve, reject) => {
       try {
-        const theMap = nativeMap || _mapbox;
+        const theMap = this._mapboxMapInstance;
 
         if (!theMap) {
           reject("No map has been loaded");
@@ -3868,7 +3868,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
   setScrollingEnabled(enabled: boolean, nativeMap?): Promise<any> {
     return new Promise((resolve, reject) => {
       try {
-        const theMap = nativeMap || _mapbox;
+        const theMap = this._mapboxMapInstance;
 
         if (!theMap) {
           reject("No map has been loaded");
@@ -3888,7 +3888,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
   convertToMapCoordinate(point: Point, nativeMap?: any): Promise<LatLng> {
     return new Promise((resolve, reject) => {
       try {
-        const theMap = nativeMap || _mapbox;
+        const theMap = this._mapboxMapInstance;
 
         if (!theMap) {
           reject("No map has been loaded");
@@ -3911,7 +3911,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
   convertToOnScreenCoordinate(coordinate: LatLng, nativeMap?: any): Promise<Point> {
     return new Promise((resolve, reject) => {
       try {
-        const theMap = nativeMap || _mapbox;
+        const theMap = this._mapboxMapInstance;
 
         if (!theMap) {
           reject("No map has been loaded");
@@ -3934,7 +3934,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
   getDistanceBetween(from: LatLng, to: LatLng, nativeMap?: any): Promise<number> {
     return new Promise((resolve, reject) => {
       try {
-        const theMap = nativeMap || _mapbox;
+        const theMap = this._mapboxMapInstance;
 
         if (!theMap) {
           reject("No map has been loaded");
