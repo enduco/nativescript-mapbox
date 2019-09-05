@@ -669,6 +669,10 @@ export interface MapboxViewApi {
 
   // new methods
 
+  setScrollingEnabled(enabled: boolean): Promise<any>;
+
+  isScrollingEnabled(): Promise<boolean>;
+
   convertToMapCoordinate(point: Point): Promise<LatLng>;
 
   convertToOnScreenCoordinate(coordinate: LatLng): Promise<Point>;
