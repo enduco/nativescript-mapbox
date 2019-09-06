@@ -3857,7 +3857,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
           return;
         }
 
-        resolve(theMap.mapboxMap.getUiSettings().isScrollGesturesEnabled());
+        resolve(theMap.getUiSettings().isScrollGesturesEnabled());
       } catch (ex) {
         console.log("Error in mapbox.isScrollingEnabled: " + ex);
         reject(ex);
@@ -3875,7 +3875,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
           return;
         }
 
-        theMap.mapboxMap.getUiSettings().setScrollGesturesEnabled(enabled);
+        theMap.getUiSettings().setScrollGesturesEnabled(enabled);
 
         resolve();
       } catch (ex) {
@@ -3895,7 +3895,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
           return;
         }
 
-        let coordinate = theMap.mapboxMap.getProjection().fromScreenLocation(point);
+        let coordinate = theMap.getProjection().fromScreenLocation(point);
 
         resolve({
           lat: coordinate.lat,
@@ -3918,7 +3918,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
           return;
         }
 
-        let point = theMap.mapboxMap.getProjection().toScreenLocation(coordinate);
+        let point = theMap.getProjection().toScreenLocation(coordinate);
 
         resolve({
           x: point.x,
