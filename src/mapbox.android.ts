@@ -3895,7 +3895,9 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
           return;
         }
 
-        let coordinate = theMap.getProjection().fromScreenLocation(point);
+        // convert to point first
+        let pointf = new android.graphics.PointF(point.x, point.y);
+        let coordinate = theMap.getProjection().fromScreenLocation(pointf);
 
         resolve({
           lat: coordinate.lat,
@@ -3918,7 +3920,9 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
           return;
         }
 
-        let point = theMap.getProjection().toScreenLocation(coordinate);
+        // convert coordinate first
+        let latLng = new com.mapbox.mapboxsdk.geometry.LatLng(coordinate.lat, coordinate.lng);
+        let point = theMap.getProjection().toScreenLocation(latLng);
 
         resolve({
           x: point.x,
