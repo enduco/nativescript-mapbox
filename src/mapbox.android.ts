@@ -1636,10 +1636,10 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
   * @deprecated
   */
 
-  addPolyline(options: AddPolylineOptions, nativeMap?) {
+  addPolyline(options: AddPolylineOptions, nativeMap?): string {
     const points = options.points;
     if (points === undefined) {
-      return;
+      return null;
     }
 
     const polylineOptions = new com.mapbox.mapboxsdk.annotations.PolylineOptions();
@@ -1650,10 +1650,13 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
       let point = points[p];
       polylineOptions.add(new com.mapbox.mapboxsdk.geometry.LatLng(point.lat, point.lng));
     }
+    let id = options.id || new Date().getTime();
     this._polylines.push({
-      id: options.id || new Date().getTime(),
+      id: id,
       android: this._mapboxMapInstance.addPolyline(polylineOptions)
     });
+
+    return id;
   }
 
   // ----------------------------------------------------------------------------------

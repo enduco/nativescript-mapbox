@@ -1308,22 +1308,23 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
 
   // --------------------------------------------------------------------
 
-  addPolyline(options: AddPolylineOptions, nativeMap?) {
+  addPolyline(options: AddPolylineOptions, nativeMap?): string {
       const theMap: MGLMapView = nativeMap || _mapbox.mapView;
       const points = options.points;
 
       if (points === undefined) {
-        return;
+        return null;
       }
 
       const coordinateArray = [];
       points.forEach(point => coordinateArray.push([point.lng, point.lat]));
 
-      const polylineID = "polyline_" + (options.id || new Date().getTime());
+      let id = options.id || new Date().getTime();
+      const polylineID = "polyline_" + id;
 
       // this would otherwise crash the app
       if (theMap.style.sourceWithIdentifier(polylineID)) {
-        return;
+        return null;
       }
 
       const geoJSON = `{"type": "FeatureCollection", "features": [{"type": "Feature","properties": {},"geometry": {"type": "LineString", "coordinates": ${JSON.stringify(coordinateArray)}}}]}`;
@@ -1342,6 +1343,8 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
       layer.lineOpacity = NSExpression.expressionForConstantValue(options.opacity === undefined ? 1 : options.opacity);
 
       theMap.style.addLayer(layer);
+
+      return id;
   }
 
   // --------------------------------------------------------------------
