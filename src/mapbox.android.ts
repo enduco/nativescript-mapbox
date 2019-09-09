@@ -1686,6 +1686,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
       let polyline = this._polylines[p];
       if (!ids || (polyline.id && ids.indexOf(polyline.id) > -1)) {
         this._mapboxMapInstance.removePolyline(polyline.android);
+        this._polylines.splice(p, 1);
       }
     }
   }
@@ -1693,23 +1694,21 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
   // ----------------------------------------------------------------------------------
 
   updatePolyline(id: string, newPoints: Array<LatLng>, nativeMap?: any) {
-    const theMap = this._mapboxMapInstance;
-
-    if (!theMap) {
-      return;
-    }
-
-    let polyline = this._polylines.find((p) => {
-      return p.id === id;
-    });
-
-    if (polyline) {
-      polyline.setPoints(newPoints.map((point) => {
-        return new com.mapbox.mapboxsdk.geometry.LatLng(point.lat, point.lng);
-      }));
-
-      theMap.updatePolyline(polyline);
-    }
+      var theMap = this._mapboxMapInstance;
+      if (!theMap) {
+          return;
+      }
+      var polyline = this._polylines.find(function (p) {
+          return p.id === id;
+      });
+      if (polyline) {
+          let jsList = newPoints.map(function (point) {
+              return new com.mapbox.mapboxsdk.geometry.LatLng(point.lat, point.lng);
+          });
+          let javaList = new java.util.ArrayList(java.util.Arrays.asList(jsList));
+          polyline.android.setPoints(javaList);
+          theMap.updatePolyline(polyline.android);
+      }
   }
 
   // ----------------------------------------------------------------------------------
