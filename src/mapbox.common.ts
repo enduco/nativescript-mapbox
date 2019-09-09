@@ -467,9 +467,9 @@ export interface MapboxApi {
 
   removePolygons(ids?: Array<any>, nativeMap?: any): Promise<any>;
 
-  addPolyline(options: AddPolylineOptions, nativeMap?: any): Promise<any>;
+  addPolyline(options: AddPolylineOptions, nativeMap?: any);
 
-  removePolylines(ids?: Array<any>, nativeMap?: any): Promise<any>;
+  removePolylines(ids?: Array<any>, nativeMap?: any);
 
   animateCamera(options: AnimateCameraOptions, nativeMap?: any): Promise<any>;
 
@@ -645,9 +645,9 @@ export interface MapboxViewApi {
 
   removePolygons(ids?: Array<any>): Promise<any>;
 
-  addPolyline(options: AddPolylineOptions): Promise<any>;
+  addPolyline(options: AddPolylineOptions);
 
-  removePolylines(ids?: Array<any>): Promise<any>;
+  removePolylines(ids?: Array<any>);
 
   animateCamera(options: AnimateCameraOptions): Promise<any>;
 
@@ -843,12 +843,12 @@ export abstract class MapboxViewCommonBase extends ContentView implements Mapbox
     return this.mapbox.removePolygons(ids, this.getNativeMapView());
   }
 
-  addPolyline(options: AddPolylineOptions): Promise<any> {
-    return this.mapbox.addPolyline(options, this.getNativeMapView());
+  addPolyline(options: AddPolylineOptions) {
+    this.mapbox.addPolyline(options, this.getNativeMapView());
   }
 
-  removePolylines(ids?: Array<any>): Promise<any> {
-    return this.mapbox.removePolylines(ids, this.getNativeMapView());
+  removePolylines(ids?: Array<any>) {
+    this.mapbox.removePolylines(ids, this.getNativeMapView());
   }
 
   animateCamera(options: AnimateCameraOptions): Promise<any> {

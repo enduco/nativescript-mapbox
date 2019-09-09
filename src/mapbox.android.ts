@@ -1636,33 +1636,23 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
   * @deprecated
   */
 
-  addPolyline(options: AddPolylineOptions, nativeMap?): Promise<any> {
-    return new Promise((resolve, reject) => {
-      try {
+  addPolyline(options: AddPolylineOptions, nativeMap?) {
+    const points = options.points;
+    if (points === undefined) {
+      return;
+    }
 
-        const points = options.points;
-        if (points === undefined) {
-          reject("Please set the 'points' parameter");
-          return;
-        }
-
-        const polylineOptions = new com.mapbox.mapboxsdk.annotations.PolylineOptions();
-        polylineOptions.width(options.width || 5); // default 5
-        polylineOptions.color(Mapbox.getAndroidColor(options.color));
-        polylineOptions.alpha(options.opacity === undefined ? 1 : options.opacity);
-        for (let p in points) {
-          let point = points[p];
-          polylineOptions.add(new com.mapbox.mapboxsdk.geometry.LatLng(point.lat, point.lng));
-        }
-        this._polylines.push({
-          id: options.id || new Date().getTime(),
-          android: this._mapboxMapInstance.addPolyline( polylineOptions )
-        });
-        resolve();
-      } catch (ex) {
-        console.log("Error in mapbox.addPolyline: " + ex);
-        reject(ex);
-      }
+    const polylineOptions = new com.mapbox.mapboxsdk.annotations.PolylineOptions();
+    polylineOptions.width(options.width || 5); // default 5
+    polylineOptions.color(Mapbox.getAndroidColor(options.color));
+    polylineOptions.alpha(options.opacity === undefined ? 1 : options.opacity);
+    for (let p in points) {
+      let point = points[p];
+      polylineOptions.add(new com.mapbox.mapboxsdk.geometry.LatLng(point.lat, point.lng));
+    }
+    this._polylines.push({
+      id: options.id || new Date().getTime(),
+      android: this._mapboxMapInstance.addPolyline(polylineOptions)
     });
   }
 
@@ -1688,22 +1678,13 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
 
   // ----------------------------------------------------------------------------------
 
-  removePolylines(ids?: Array<any>, nativeMap?): Promise<any> {
-    return new Promise((resolve, reject) => {
-      try {
-
-        for (let p in this._polylines) {
-          let polyline = this._polylines[p];
-          if (!ids || (polyline.id && ids.indexOf(polyline.id) > -1)) {
-            this._mapboxMapInstance.removePolyline(polyline.android);
-          }
-        }
-        resolve();
-      } catch (ex) {
-        console.log("Error in mapbox.removePolylines: " + ex);
-        reject(ex);
+  removePolylines(ids?: Array<any>, nativeMap?) {
+    for (let p in this._polylines) {
+      let polyline = this._polylines[p];
+      if (!ids || (polyline.id && ids.indexOf(polyline.id) > -1)) {
+        this._mapboxMapInstance.removePolyline(polyline.android);
       }
-    });
+    }
   }
 
   // ----------------------------------------------------------------------------------

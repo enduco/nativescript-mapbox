@@ -1308,12 +1308,11 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
 
   // --------------------------------------------------------------------
 
-  addPolyline(options: AddPolylineOptions, nativeMap?): Promise<any> {
-    return new Promise((resolve, reject) => {
+  addPolyline(options: AddPolylineOptions, nativeMap?) {
       const theMap: MGLMapView = nativeMap || _mapbox.mapView;
       const points = options.points;
+
       if (points === undefined) {
-        reject("Please set the 'points' parameter");
         return;
       }
 
@@ -1324,7 +1323,6 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
 
       // this would otherwise crash the app
       if (theMap.style.sourceWithIdentifier(polylineID)) {
-        reject("Remove the polyline with this id first with 'removePolylines': " + polylineID);
         return;
       }
 
@@ -1344,8 +1342,6 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
       layer.lineOpacity = NSExpression.expressionForConstantValue(options.opacity === undefined ? 1 : options.opacity);
 
       theMap.style.addLayer(layer);
-      resolve();
-    });
   }
 
   // --------------------------------------------------------------------
@@ -1374,12 +1370,9 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
     });
   }
 
-  removePolylines(ids?: Array<any>, nativeMap?): Promise<any> {
-    return new Promise((resolve, reject) => {
-      let theMap: MGLMapView = nativeMap || _mapbox.mapView;
-      ids.map(id => this.removePolyById(theMap, "polyline_" + id));
-      resolve();
-    });
+  removePolylines(ids?: Array<any>, nativeMap?) {
+    let theMap: MGLMapView = nativeMap || _mapbox.mapView;
+    ids.map(id => this.removePolyById(theMap, "polyline_" + id));
   }
 
   animateCamera(options: AnimateCameraOptions, nativeMap?): Promise<any> {
