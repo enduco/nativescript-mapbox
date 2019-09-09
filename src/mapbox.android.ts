@@ -1689,6 +1689,28 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
 
   // ----------------------------------------------------------------------------------
 
+  updatePolyline(id: string, newPoints: Array<LatLng>, nativeMap?: any) {
+    const theMap = this._mapboxMapInstance;
+
+    if (!theMap) {
+      return;
+    }
+
+    let polyline = this._polylines.find((p) => {
+      return p.id === id;
+    });
+
+    if (polyline) {
+      polyline.setPoints(newPoints.map((point) => {
+        return new com.mapbox.mapboxsdk.geometry.LatLng(point.lat, point.lng);
+      }));
+
+      theMap.updatePolyline(polyline);
+    }
+  }
+
+  // ----------------------------------------------------------------------------------
+
   animateCamera(options: AnimateCameraOptions, nativeMap?): Promise<any> {
     return new Promise((resolve, reject) => {
       try {
@@ -3881,8 +3903,8 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
         let coordinate = theMap.getProjection().fromScreenLocation(pointf);
 
         resolve({
-          lat: coordinate.lat,
-          lng: coordinate.lng
+          lat: coordinate.getLatitude(),
+          lng: coordinate.getLongitude()
         });
       } catch (ex) {
         console.log("Error in mapbox.convertToMapCoordinate: " + ex);

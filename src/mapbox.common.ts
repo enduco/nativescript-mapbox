@@ -471,6 +471,8 @@ export interface MapboxApi {
 
   removePolylines(ids?: Array<any>, nativeMap?: any);
 
+  updatePolyline(id: string, newPoints: Array<LatLng>, nativeMap?: any);
+
   animateCamera(options: AnimateCameraOptions, nativeMap?: any): Promise<any>;
 
   setOnMapClickListener(listener: (data: LatLng) => void, nativeMap?): Promise<any>;
@@ -648,6 +650,8 @@ export interface MapboxViewApi {
   addPolyline(options: AddPolylineOptions);
 
   removePolylines(ids?: Array<any>);
+
+  updatePolyline(id: string, newPoints: Array<LatLng>);
 
   animateCamera(options: AnimateCameraOptions): Promise<any>;
 
@@ -849,6 +853,10 @@ export abstract class MapboxViewCommonBase extends ContentView implements Mapbox
 
   removePolylines(ids?: Array<any>) {
     this.mapbox.removePolylines(ids, this.getNativeMapView());
+  }
+
+  updatePolyline(id: string, newPoints: Array<LatLng>) {
+    this.mapbox.updatePolyline(id, newPoints, this.getNativeMapView());
   }
 
   animateCamera(options: AnimateCameraOptions): Promise<any> {

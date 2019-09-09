@@ -1375,6 +1375,10 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
     ids.map(id => this.removePolyById(theMap, "polyline_" + id));
   }
 
+  updatePolyline(id: string, newPoints: Array<LatLng>, nativeMap?: any) {
+    // nothing to do here
+  }
+
   animateCamera(options: AnimateCameraOptions, nativeMap?): Promise<any> {
     return new Promise((resolve, reject) => {
       try {
