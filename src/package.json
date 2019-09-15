@@ -1,13 +1,13 @@
 {
   "name": "nativescript-mapbox-enduco",
-  "version": "1.2.14",
+  "version": "1.2.19",
   "description": "Native Maps, by Mapbox.",
   "main": "mapbox",
   "typings": "index.d.ts",
   "nativescript": {
     "platforms": {
-      "android": "3.0.0",
-      "ios": "3.0.0"
+      "android": "6.0.0",
+      "ios": "6.0.1"
     },
     "plugin": {
       "nan": true,
@@ -63,9 +63,13 @@
   "homepage": "https://github.com/enduco/nativescript-mapbox",
   "readmeFilename": "README.md",
   "devDependencies": {
-    "tns-core-modules": "^5.2.2",
-    "tns-platform-declarations": "^5.2.2",
-    "tslint": "^5.1.0",
-    "typescript": "~2.7.0"
-  }
+    "tns-core-modules": "^6.0.0",
+    "tns-platform-declarations": "^6.0.0",
+    "typescript": "~3.4.5",
+    "prompt": "^1.0.0",
+    "rimraf": "^2.6.3",
+    "tslint": "^5.12.1",
+    "semver": "^5.6.0"
+  },
+  "bootstrapper": "nativescript-mapbox-enduco"
 }

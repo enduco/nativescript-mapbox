@@ -541,7 +541,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
                         console.log("Mapbox::show(): adding map to topmost frame.");
 
                         const topMostFrame = frame.topmost();
-                        const context = application.android.currentContext;
+                        const context = application.android.context;
                         const mapViewLayout = new android.widget.FrameLayout(context);
 
                         const density = utils.layout.getDisplayDensity();
@@ -926,7 +926,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
             application.android.on(application.AndroidApplication.activityRequestPermissionsEvent, permissionCallback);
 
             // invoke the permission dialog
-            android.support.v4.app.ActivityCompat.requestPermissions(
+            androidx.core.app.ActivityCompat.requestPermissions(
                 application.android.foregroundActivity,
                 [android.Manifest.permission.ACCESS_FINE_LOCATION],
                 ACCESS_FINE_LOCATION_PERMISSION_REQUEST_CODE);
@@ -1344,7 +1344,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
     getUserLocation(): Promise<UserLocation> {
         return new Promise((resolve, reject) => {
             try {
-                const loc = this._locationComponent ? this._locationComponent.getLocationEngine().getLastLocation() : null;
+                let loc = this._locationComponent ? this._locationComponent.getLastKnownLocation() : null;
                 if (loc === null) {
                     reject("Location not available");
                 } else {
@@ -2584,7 +2584,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
                     return;
                 }
 
-                this._locationComponent.setRenderMode(this._stringToRenderMode((options.mode));
+                this._locationComponent.setRenderMode(this._stringToRenderMode(options.mode));
                 this._locationComponent.setCameraMode(this._stringToCameraMode(options.mode));
 
                 resolve();
@@ -2751,7 +2751,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
         let hasPermission = android.os.Build.VERSION.SDK_INT < 23; // Android M. (6.0)
         if (!hasPermission) {
             hasPermission = android.content.pm.PackageManager.PERMISSION_GRANTED ===
-                android.support.v4.content.ContextCompat.checkSelfPermission(application.android.foregroundActivity, android.Manifest.permission.ACCESS_FINE_LOCATION);
+                androidx.core.content.ContextCompat.checkSelfPermission(application.android.foregroundActivity, android.Manifest.permission.ACCESS_FINE_LOCATION);
         }
         return hasPermission;
     }

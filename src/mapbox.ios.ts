@@ -628,8 +628,8 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
                     _mapView.removeFromSuperview();
                 }
 
-                const view = utils.ios.getter(UIApplication, UIApplication.sharedApplication).keyWindow.rootViewController.view,
-                    frameRect = view.frame,
+                const view = UIApplication.sharedApplication.keyWindow.rootViewController.view;
+                const frameRect = view.frame,
                     mapFrame = CGRectMake(
                         settings.margins.left,
                         settings.margins.top,
@@ -686,7 +686,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
         return new Promise((resolve, reject) => {
             try {
                 if (_mapbox.mapView) {
-                    let view = utils.ios.getter(UIApplication, UIApplication.sharedApplication).keyWindow.rootViewController.view;
+                    let view = UIApplication.sharedApplication.keyWindow.rootViewController.view;
                     view.addSubview(_mapbox.mapView);
                     resolve();
                 } else {
@@ -2572,8 +2572,8 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
 }
 
 const _addObserver = (eventName, callback) => {
-    return utils.ios.getter(NSNotificationCenter, NSNotificationCenter.defaultCenter).addObserverForNameObjectQueueUsingBlock(
-        eventName, null, utils.ios.getter(NSOperationQueue, NSOperationQueue.mainQueue), callback);
+    return NSNotificationCenter.defaultCenter.addObserverForNameObjectQueueUsingBlock(
+        eventName, null, NSOperationQueue.mainQueue, callback);
 };
 
 const _downloadImage = marker => {
