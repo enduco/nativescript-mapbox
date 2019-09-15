@@ -10,33 +10,33 @@ import {Color} from "tns-core-modules/color";
 import * as http from "tns-core-modules/http";
 
 import {
-  AddExtrusionOptions,
-  AddGeoJsonClusteredOptions,
-  AddPolygonOptions,
-  AddPolylineOptions,
-  AnimateCameraOptions,
-  DeleteOfflineRegionOptions,
-  DownloadOfflineRegionOptions,
-  Feature,
-  LatLng,
-  ListOfflineRegionsOptions,
-  MapboxApi,
-  MapboxCommon,
-  MapboxMarker,
-  MapboxViewBase,
-  MapStyle,
-  OfflineRegion,
-  Point,
-  QueryRenderedFeaturesOptions,
-  SetCenterOptions,
-  SetTiltOptions,
-  SetViewportOptions,
-  SetZoomLevelOptions,
-  ShowOptions,
-  TrackUserOptions,
-  UserLocation,
-  UserLocationCameraMode,
-  Viewport
+    AddExtrusionOptions,
+    AddGeoJsonClusteredOptions,
+    AddPolygonOptions,
+    AddPolylineOptions,
+    AnimateCameraOptions,
+    DeleteOfflineRegionOptions,
+    DownloadOfflineRegionOptions,
+    Feature,
+    LatLng,
+    ListOfflineRegionsOptions,
+    MapboxApi,
+    MapboxCommon,
+    MapboxMarker,
+    MapboxViewBase,
+    MapStyle,
+    OfflineRegion,
+    Point,
+    QueryRenderedFeaturesOptions,
+    SetCenterOptions,
+    SetTiltOptions,
+    SetViewportOptions,
+    SetZoomLevelOptions,
+    ShowOptions,
+    TrackUserOptions,
+    UserLocation,
+    UserLocationCameraMode,
+    Viewport
 } from "./mapbox.common";
 
 import {GeoUtils} from './geo.utils';
@@ -50,7 +50,7 @@ declare const android, com, java, org: any;
 const ACCESS_FINE_LOCATION_PERMISSION_REQUEST_CODE = 111;
 
 export namespace BundleKludge {
-    export var bundle = {test: 'test'};
+    export let bundle = {test: 'test'};
 }
 
 // ------------------------------------------------------------
@@ -1344,7 +1344,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
     getUserLocation(): Promise<UserLocation> {
         return new Promise((resolve, reject) => {
             try {
-                const loc = null;
+                const loc = this._locationComponent ? this._locationComponent.getLocationEngine().getLastLocation() : null;
                 if (loc === null) {
                     reject("Location not available");
                 } else {
@@ -1515,11 +1515,11 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
     // ----------------------------------------------------------------------------------
 
     updatePolyline(id: string, newPoints: Array<LatLng>, nativeMap?: any) {
-        var theMap = this._mapboxMapInstance;
+        let theMap = this._mapboxMapInstance;
         if (!theMap) {
             return;
         }
-        var polyline = this._polylines.find(function (p) {
+        let polyline = this._polylines.find(function (p) {
             return p.id === id;
         });
         if (polyline) {
@@ -2095,7 +2095,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
         }
 
         return this._offlineManager;
-    };
+    }
 
     // ---------------------------------------------------------------------------------
 
@@ -2574,13 +2574,18 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
     trackUser(options: TrackUserOptions, nativeMap?): Promise<void> {
         return new Promise((resolve, reject) => {
             try {
-
                 if (!this._mapboxMapInstance) {
                     reject("No map has been loaded");
                     return;
                 }
 
-                console.log("Mapbox::trackUser(): deprecated");
+                if (!this._locationComponent) {
+                    reject("The map is not currently showing the user location");
+                    return;
+                }
+
+                this._locationComponent.setRenderMode(this._stringToRenderMode((options.mode));
+                this._locationComponent.setCameraMode(this._stringToCameraMode(options.mode));
 
                 resolve();
             } catch (ex) {
@@ -2977,7 +2982,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
             }
         });
 
-    };
+    }
 
     // --------------------------------------------------------------------------------
 
