@@ -1624,20 +1624,16 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
     setOnMapLongClickListener(listener: (data: LatLng) => void, nativeMap?): Promise<any> {
         return new Promise((resolve, reject) => {
             try {
+                const theMap = nativeMap || this._mapboxMapInstance;
 
-                if (!this._mapboxMapInstance) {
+                if (!theMap) {
                     reject("No map has been loaded");
                     return;
                 }
 
                 this._mapboxMapInstance.addOnMapLongClickListener(
                     new com.mapbox.mapboxsdk.maps.MapboxMap.OnMapLongClickListener({
-                        onMapLongClick: point => {
-                            return listener({
-                                lat: point.getLatitude(),
-                                lng: point.getLongitude()
-                            });
-                        }
+                        onMapLongClick: this.createPointFunc(listener),
                     })
                 );
 
@@ -3166,6 +3162,17 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
                 reject(ex);
             }
         });
+    }
+
+    // ---------------------------------------------------------------
+
+    private createPointFunc(listener: (data: LatLng) => void) {
+        return (point: { getLatitude: () => number; getLongitude: () => number; }) => {
+            return listener({
+                lat: point.getLatitude(),
+                lng: point.getLongitude()
+            });
+        };
     }
 
     // ---------------------------------------------------------------
