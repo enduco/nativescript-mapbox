@@ -1,6 +1,6 @@
 {
   "name": "nativescript-mapbox-enduco",
-  "version": "1.2.21",
+  "version": "1.2.29",
   "description": "Native Maps, by Mapbox.",
   "main": "mapbox",
   "typings": "index.d.ts",

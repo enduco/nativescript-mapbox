@@ -234,6 +234,11 @@ export class MapboxView extends MapboxViewBase {
         }
     }
 
+    protected onDisableScrollChanged(oldValue: boolean, newValue: boolean) {
+        if (this.mapbox) {
+            this.getMapboxApi().setScrollingEnabled(!newValue);
+        }
+    }
 }
 
 /*************** XML definition END ****************/
