@@ -2191,7 +2191,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
             try {
 
                 this._mapboxMapInstance.getStyle().removeLayer(id);
-
+                this._mapboxMapInstance.getStyle().removeSource(id + '_source');
                 console.log("Mapbox:removeLayer(): after removing layer");
 
                 resolve();
