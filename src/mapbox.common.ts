@@ -455,6 +455,8 @@ export interface MapboxApi {
 
     trackUser(options: TrackUserOptions, nativeMap?: any): Promise<void>;
 
+    getTrackingMode(nativeMap?: any): UserLocationCameraMode;
+
     addLayer(style, nativeMapView?: any): Promise<any>;
 
     removeLayer(id: string, nativeMapView?: any): Promise<any>;
@@ -626,6 +628,8 @@ export interface MapboxViewApi {
     getUserLocation(): Promise<UserLocation>;
 
     trackUser(options: TrackUserOptions): Promise<any>;
+
+    getTrackingMode(): UserLocationCameraMode;
 
     showUserLocationMarker(options): void;
 
@@ -826,6 +830,10 @@ export abstract class MapboxViewCommonBase extends ContentView implements Mapbox
 
     trackUser(options: TrackUserOptions): Promise<any> {
         return this.mapbox.trackUser(options, this.getNativeMapView());
+    }
+
+    getTrackingMode(): UserLocationCameraMode {
+        return this.mapbox.getTrackingMode(this.getNativeMapView());
     }
 
     addLayer(style): Promise<any> {

@@ -98,23 +98,6 @@ const _getMapStyle = (input: any): NSURL => {
     }
 };
 
-const _getTrackingMode = (input: UserLocationCameraMode): MGLUserTrackingMode => {
-    /*
-      if (input === "FOLLOW") {
-        return MGLUserTrackingMode.Follow;
-      } else if (input === "FOLLOW_WITH_HEADING") {
-        return MGLUserTrackingMode.FollowWithHeading;
-      } else if (input === "FOLLOW_WITH_COURSE") {
-        return MGLUserTrackingMode.FollowWithCourse;
-      } else {
-        return MGLUserTrackingMode.None;
-      }
-    */
-
-    return MGLUserTrackingMode.None;
-
-};
-
 /*************** XML definition START ****************/
 
 /**
@@ -977,6 +960,19 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
                 reject(ex);
             }
         });
+    }
+
+    _convertCameraMode(mode: MGLUserTrackingMode): UserLocationCameraMode {
+        switch (mode) {
+            case MGLUserTrackingMode.None:
+                return "NONE";
+            case MGLUserTrackingMode.Follow:
+                return "TRACKING";
+            case MGLUserTrackingMode.FollowWithHeading:
+                return "TRACK_COMPASS";
+            case MGLUserTrackingMode.FollowWithCourse:
+                return "TRACK_GPS_NORTH";
+        }
     }
 
     /**
@@ -1953,7 +1949,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
                     return;
                 }
 
-                theMap.setUserTrackingModeAnimated(_getTrackingMode(options.mode), options.animated !== false);
+                theMap.setUserTrackingModeAnimated(this._stringToCameraMode(options.mode), options.animated !== false);
 
                 resolve();
             } catch (ex) {
@@ -1961,6 +1957,18 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
                 reject(ex);
             }
         });
+    }
+
+    // -------------------------------------------------------------------------------------
+
+    getTrackingMode(nativeMap?: any): UserLocationCameraMode {
+        let theMap: MGLMapView = nativeMap || _mapbox.mapView;
+
+        if (!theMap) {
+            return "NONE";
+        }
+
+        return this._convertCameraMode(theMap.userTrackingMode);
     }
 
     // -------------------------------------------------------------------------------------

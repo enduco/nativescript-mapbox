@@ -2681,6 +2681,38 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
 
     // -----------------------------------------------------------------------------------------
 
+    _convertCameraMode(mode: any): UserLocationCameraMode {
+
+        const modeRef = com.mapbox.mapboxsdk.location.modes.CameraMode;
+
+        switch (mode) {
+            case modeRef.NONE:
+                return "NONE";
+
+            case modeRef.NONE_COMPASS:
+                return "NONE_COMPASS";
+
+            case modeRef.NONE_GPS:
+                return "NONE_GPS";
+
+            case modeRef.TRACKING:
+                return "TRACKING";
+
+            case modeRef.TRACK_COMPASS:
+                return "TRACK_COMPASS";
+
+            case modeRef.TRACKING_GPS:
+                return "TRACKING_GPS";
+
+            case modeRef.TRACK_GPS_NORTH:
+                return "TRACK_GPS_NORTH";
+        }
+
+        return "NONE";
+    }
+
+    // -----------------------------------------------------------------------------------------
+
     /**
      * convert string to camera mode constant.
      *
@@ -3979,6 +4011,18 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
             }
         });
 
+    }
+
+    getTrackingMode(nativeMap?: any): UserLocationCameraMode {
+        if (!this._mapboxMapInstance) {
+            return "NONE";
+        }
+
+        if (!this._locationComponent) {
+            return "NONE";
+        }
+
+        return this._convertCameraMode(this._locationComponent.getCameraMode());
     } // end of addCircleAnnotation()
 
 } // end of class Mapbox
