@@ -2757,25 +2757,41 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
 
     _stringToRenderMode(mode): any {
 
-        let renderMode: any;
+        const modeRef = com.mapbox.mapboxsdk.location.modes.RenderMode;
 
         switch (mode) {
 
-            case 'NORMAL':
-                renderMode = com.mapbox.mapboxsdk.location.modes.RenderMode.NORMAL;
-                break;
+            case "NONE":
+                return modeRef.NORMAL;
 
-            case 'COMPASS':
-                renderMode = com.mapbox.mapboxsdk.location.modes.RenderMode.COMPASS;
-                break;
+            case "NONE_COMPASS":
+                return modeRef.NORMAL;
 
-            case 'GPS':
-                renderMode = com.mapbox.mapboxsdk.location.modes.RenderMode.GPS;
-                break;
+            case "NONE_GPS":
+                return modeRef.NORMAL;
+
+            case "TRACKING":
+                return modeRef.NORMAL;
+
+            case "TRACK_COMPASS":
+                return modeRef.COMPASS;
+
+            case "TRACKING_GPS":
+                return modeRef.GPS;
+
+            case "TRACK_GPS_NORTH":
+                return modeRef.GPS;
+
+            case "NORMAL":
+                return modeRef.NORMAL;
+
+            case "COMPASS":
+                return modeRef.COMPASS;
+
+            case "GPS":
+                return modeRef.GPS;
 
         }
-
-        return renderMode;
 
     }
 
