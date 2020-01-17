@@ -203,6 +203,9 @@ export class MapboxView extends MapboxViewBase {
 
                 }, this.nativeMapView);
 
+                // set tint color to black
+                this.nativeMapView.tintColor = UIColor.blackColor;
+
             };
             setTimeout(drawMap, settings.delay ? settings.delay : 0);
         }
@@ -225,312 +228,6 @@ export class MapboxView extends MapboxViewBase {
 }
 
 /*************** XML definition END ****************/
-
-/**
- * a custom user location marker
- *
- * We want to add some behavior to the user location marker to visibly
- * show the user when locations are being stored and when they are not.
- *
- * Sadly, it's not as easy under iOS as it is on Android. It involves
- * creating a custom annotation view.
- *
- * @link https://docs.mapbox.com/ios/maps/examples/user-location-annotation/
- */
-
-export class CustomUserLocationAnnotationView extends MGLUserLocationAnnotationView implements MGLUserLocationAnnotationView {
-
-    public size: number;
-    public dot: CALayer;
-    public arrow: CAShapeLayer;
-
-    // may be NORMAL, COMPASS, or GPS.
-
-    private userLocationRenderMode: string;
-    private renderModeChanged: boolean;
-
-    /**
-     * init
-     *
-     * @link https://docs.nativescript.org/core-concepts/ios-runtime/HelloWorld
-     */
-
-    public init() {
-
-        this.size = 48;
-        super.initWithFrame(CGRectMake(0, 0, this.size, this.size));
-
-        this.renderModeChanged = true;
-        this.userLocationRenderMode = 'NORMAL';
-
-        return this;
-
-    }
-
-    /**
-     * update
-     *
-     * The note from the Objective-C sample indicates this method may be called quite
-     * often so it needs to be kept lightweight.
-     */
-
-    update() {
-
-        if (CLLocationCoordinate2DIsValid(this.userLocation.coordinate)) {
-
-            // if it's the first time here, setup the layers that make up the
-            // location marker.
-
-            if (!this.dot) {
-                this.drawNonTrackingLocationMarker();
-            }
-
-            if (this.userLocationRenderMode == 'GPS') {
-                this.updateHeading();
-            }
-
-        }
-
-    }
-
-    /**
-     * Draw the GPS tracking arrow.
-     *
-     * @link https://docs.nativescript.org/ns-framework-modules/color
-     */
-
-    drawTrackingLocationMarker() {
-
-        console.log("CustomerUserLocationAnnotatinView::drawTrackingLocationMarker()");
-
-        this.drawTrackingDot();
-        this.drawArrow();
-
-    } // end of setupLayers()
-
-    /**
-     * draw the non-tracking marker
-     */
-
-    drawNonTrackingLocationMarker() {
-
-        console.log("CustomerUserLocationAnnotatinView::drawNonTrackingLocationMarker()");
-
-        this.drawNonTrackingDot();
-
-        if (this.arrow) {
-            this.arrow.removeFromSuperlayer();
-            this.arrow = null;
-        }
-
-    }
-
-    /**
-     * draw the tracking dot.
-     */
-
-    drawTrackingDot() {
-
-        this.size = 48;
-
-        // we need to adjust the size of the bounds of the marker. The Tracking marker
-        // is larger than the non tracking marker.
-
-        this.bounds = CGRectMake(0, 0, this.size, this.size);
-
-        let dot = CALayer.layer();
-
-        dot.frame = this.bounds;
-
-        // user corner radius to turn the layer into a circle
-
-        dot.cornerRadius = this.size / 2;
-        dot.backgroundColor = this.tintColor.CGColor;
-        dot.borderWidth = 4;
-
-        let whiteColor = new Color("#FFFFFF");
-        dot.borderColor = whiteColor.ios.CGColor;
-
-        if (!this.dot) {
-            this.layer.addSublayer(dot);
-        } else {
-            this.layer.replaceSublayerWith(this.dot, dot);
-        }
-
-        // QUESTION: does GC catch this?
-
-        this.dot = dot;
-    }
-
-    /**
-     * draw the non-tracking dot.
-     */
-
-    drawNonTrackingDot() {
-
-        this.size = 24;
-        this.bounds = CGRectMake(0, 0, this.size, this.size);
-        let dot = CALayer.layer();
-
-        dot.frame = this.bounds;
-
-        // user corner radius to turn the layer into a circle
-
-        dot.cornerRadius = this.size / 2;
-        dot.backgroundColor = this.tintColor.CGColor;
-
-        dot.borderWidth = 1;
-
-        let whiteColor = new Color("#FFFFFF");
-        dot.borderColor = whiteColor.ios.CGColor;
-
-        if (!this.dot) {
-            this.layer.addSublayer(dot);
-        } else {
-            this.layer.replaceSublayerWith(this.dot, dot);
-        }
-
-        // QUESTION: does GC catch this?
-
-        this.dot = dot;
-    }
-
-    /**
-     * draw an arrow
-     */
-
-    drawArrow() {
-
-        let arrow = CAShapeLayer.layer();
-
-        arrow.path = this.arrowPath();
-        arrow.frame = CGRectMake(0, 0, this.size / 2, this.size / 2);
-        arrow.position = CGPointMake(CGRectGetMidX(this.dot.frame), CGRectGetMidY(this.dot.frame));
-        arrow.fillColor = this.dot.borderColor;
-
-        if (!this.arrow) {
-            this.layer.addSublayer(arrow);
-        } else {
-            this.layer.replaceSublayerWith(this.arrow, arrow);
-        }
-
-        // QUESTION: Does GC catch this?
-
-        this.arrow = arrow;
-    }
-
-    /**
-     * update arrow heading
-     *
-     * @link https://docs.nativescript.org/core-concepts/ios-runtime/types/C-Functions
-     */
-
-    updateHeading() {
-
-        // just to avoid a possible race condition where the arrow isnt' drawn yet
-
-        if (!this.arrow) {
-            return;
-        }
-
-        if (typeof this.userLocation == 'undefined') {
-            return;
-        }
-
-        if ((typeof this.userLocation.heading == 'undefined') || (this.userLocation.heading === null)) {
-            return;
-        }
-
-        if ((typeof this.userLocation.heading.trueHeading == 'undefined') || (this.userLocation.heading.trueHeading === null)) {
-            return;
-        }
-
-        if (this.userLocation.heading.trueHeading > 0) {
-            this.arrow.hidden = false;
-
-            // get the difference between the map's current direction and the
-            // user's heading, then convert it from degrees to radians
-            //
-            // The original Objective-C example uses the inline C function MGLRadiansFromDegrees but because
-            // it's declared as inline it is not available for NativeScript. See linked article above.
-
-            // let rotation : number = MGLRadiansFromDegrees( this.mapView.direction - this.userLocation.heading.trueHeading );
-
-            let degrees: number = this.mapView.direction - this.userLocation.heading.trueHeading;
-
-            // in radians
-
-            let rotation: number = degrees * Math.PI / 180;
-
-            rotation = -rotation;
-
-            // if the difference would be perceptible, rotate the arrow.
-
-            if (fabs(rotation) > 0.01) {
-
-                // Disable implicit animations of this rotation, which reduces lag between updates
-
-                CATransaction.begin();
-                CATransaction.setDisableActions(true);
-
-                this.arrow.setAffineTransform(CGAffineTransformRotate(CGAffineTransformIdentity, rotation));
-
-                CATransaction.commit();
-            }
-        } else {
-            this.arrow.hidden = true;
-        }
-
-    }
-
-    /**
-     * Calculate the vector path for an arrow
-     */
-
-    arrowPath() {
-
-        let max: number = this.size / 2;
-        let pad: number = 3;
-
-        let top: CGPoint = CGPointMake(max * 0.5, 0);
-        let left: CGPoint = CGPointMake(0 + pad, max - pad);
-        let right: CGPoint = CGPointMake(max - pad, max - pad);
-        let center: CGPoint = CGPointMake(max * 0.5, max * 0.6);
-
-        let bezierPath = UIBezierPath.bezierPath();
-        bezierPath.moveToPoint(top);
-        bezierPath.addLineToPoint(left);
-        bezierPath.addLineToPoint(center);
-
-        bezierPath.addLineToPoint(right);
-        bezierPath.addLineToPoint(top);
-        bezierPath.closePath();
-
-        return bezierPath.CGPath;
-
-    }
-
-    /**
-     * change Render mode
-     *
-     * @param {string} renderMode
-     */
-
-    changeUserLocationRenderMode(renderMode) {
-
-        console.log("CustomUserLocationAnnotatinView::changeUserLocationRenderMode(): changing mode to '" + renderMode + "'");
-
-        this.userLocationRenderMode = renderMode;
-
-        if (renderMode == 'GPS') {
-            this.drawTrackingLocationMarker();
-        } else {
-            this.drawNonTrackingLocationMarker();
-        }
-
-    }
-
-} // end of class CustomUserLocationAnnotationView
 
 // ----------------------------------------------------------------------
 
@@ -960,19 +657,6 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
                 reject(ex);
             }
         });
-    }
-
-    _convertCameraMode(mode: MGLUserTrackingMode): UserLocationCameraMode {
-        switch (mode) {
-            case MGLUserTrackingMode.None:
-                return "NONE";
-            case MGLUserTrackingMode.Follow:
-                return "TRACKING";
-            case MGLUserTrackingMode.FollowWithHeading:
-                return "TRACK_COMPASS";
-            case MGLUserTrackingMode.FollowWithCourse:
-                return "TRACK_GPS_NORTH";
-        }
     }
 
     /**
@@ -1961,18 +1645,6 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
 
     // -------------------------------------------------------------------------------------
 
-    getTrackingMode(nativeMap?: any): UserLocationCameraMode {
-        let theMap: MGLMapView = nativeMap || _mapbox.mapView;
-
-        if (!theMap) {
-            return "NONE";
-        }
-
-        return this._convertCameraMode(theMap.userTrackingMode);
-    }
-
-    // -------------------------------------------------------------------------------------
-
     isScrollingEnabled(nativeMap?): Promise<boolean> {
         return new Promise((resolve, reject) => {
             try {
@@ -2581,7 +2253,30 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
 
         }); // end of Promise()
 
-    } // end of addCircleLayer()
+    }
+
+    _convertCameraMode(mode: MGLUserTrackingMode): UserLocationCameraMode {
+        switch (mode) {
+            case MGLUserTrackingMode.None:
+                return "NONE";
+            case MGLUserTrackingMode.Follow:
+                return "TRACKING";
+            case MGLUserTrackingMode.FollowWithHeading:
+                return "TRACK_COMPASS";
+            case MGLUserTrackingMode.FollowWithCourse:
+                return "TRACK_GPS_NORTH";
+        }
+    }
+
+    getTrackingMode(nativeMap?: any): UserLocationCameraMode {
+        let theMap: MGLMapView = nativeMap || _mapbox.mapView;
+
+        if (!theMap) {
+            return "NONE";
+        }
+
+        return this._convertCameraMode(theMap.userTrackingMode);
+    }
 }
 
 const _addObserver = (eventName, callback) => {
@@ -2701,7 +2396,6 @@ class MGLMapViewDelegateImpl extends NSObject implements MGLMapViewDelegate {
     private mapboxApi: any;
     private userLocationClickListener: any;
     private userLocationRenderMode: any;
-    private userLocationAnnotationView: CustomUserLocationAnnotationView;
 
     static new(): MGLMapViewDelegateImpl {
         return <MGLMapViewDelegateImpl>super.new();
@@ -2748,7 +2442,7 @@ class MGLMapViewDelegateImpl extends NSObject implements MGLMapViewDelegate {
      */
 
     changeUserLocationRenderMode(userLocationRenderMode) {
-        this.userLocationAnnotationView.changeUserLocationRenderMode(userLocationRenderMode);
+        // nothing to do here
     }
 
     // -----------------------
@@ -2958,27 +2652,6 @@ class MGLMapViewDelegateImpl extends NSObject implements MGLMapViewDelegate {
         if (cachedMarker && cachedMarker.onCalloutTap) {
             cachedMarker.onCalloutTap(cachedMarker);
         }
-    }
-
-    // -----------------------------------------------------------------------------------
-
-    /**
-     * override the standard location marker
-     */
-
-    mapViewViewForAnnotation(mapView: MGLMapView, annotation: MGLAnnotation): MGLAnnotationView {
-
-        console.log("MGLMapViewDelegateImpl::mapViewViewForAnnotation() top");
-
-        if (annotation.isKindOfClass(MGLUserLocation.class())) {
-
-            this.userLocationAnnotationView = <CustomUserLocationAnnotationView>CustomUserLocationAnnotationView.alloc().init();
-
-            return this.userLocationAnnotationView;
-        }
-
-        return null;
-
     }
 
     // ------------------------------------------------------------------------------------
