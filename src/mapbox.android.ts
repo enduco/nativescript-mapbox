@@ -2698,13 +2698,13 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
             case modeRef.TRACKING:
                 return "TRACKING";
 
-            case modeRef.TRACK_COMPASS:
+            case modeRef.TRACKING_COMPASS:
                 return "TRACK_COMPASS";
 
             case modeRef.TRACKING_GPS:
                 return "TRACKING_GPS";
 
-            case modeRef.TRACK_GPS_NORTH:
+            case modeRef.TRACKING_GPS_NORTH:
                 return "TRACK_GPS_NORTH";
         }
 
