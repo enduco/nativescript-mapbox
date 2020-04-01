@@ -96,6 +96,12 @@ export interface AddPolylineOptions {
      */
     opacity?: number;
     points: LatLng[];
+
+    /**
+     * Draw white arrows on the route.
+     * Default is true.
+     */
+    drawArrows?: boolean;
 }
 
 export interface MapboxMarker extends LatLng {

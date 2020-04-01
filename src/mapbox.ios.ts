@@ -974,6 +974,30 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
 
         theMap.style.addLayer(layer);
 
+        // default is that arrows are drawn
+        const drawArrows = options.drawArrows != null ? options.drawArrows : true;
+
+        if (drawArrows) {
+            // add arrow image
+            const image = UIImage.imageNamed("navigation_arrow");
+            theMap.style.setImageForName(image, "Arrow");
+
+            // infer arrow id
+            const arrowId = "arrows_" + id;
+
+            // create and add arrow layer
+            const arrowLayer = MGLSymbolStyleLayer.alloc().initWithIdentifierSource(arrowId, source);
+            arrowLayer.symbolPlacement = NSExpression.expressionForConstantValue("line");
+            arrowLayer.symbolSpacing = NSExpression.expressionForConstantValue(100);
+            arrowLayer.iconAllowsOverlap = NSExpression.expressionForConstantValue(false);
+            arrowLayer.visible = true;
+            arrowLayer.iconImageName = NSExpression.expressionForConstantValue("Arrow");
+            arrowLayer.iconColor = NSExpression.expressionForConstantValue(UIColor.whiteColor);
+            arrowLayer.iconScale = NSExpression.expressionForConstantValue(0.3);
+            arrowLayer.symbolAvoidsEdges = NSExpression.expressionForConstantValue(true);
+            theMap.style.insertLayerAboveLayer(arrowLayer, layer);
+        }
+
         return id;
     }
 
@@ -991,7 +1015,12 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
 
     removePolylines(ids?: Array<any>, nativeMap?) {
         let theMap: MGLMapView = nativeMap || _mapbox.mapView;
-        ids.map(id => this.removePolyById(theMap, "polyline_" + id));
+        ids.map(id => {
+            // remove arrows
+            this.removePolyById(theMap, "arrows_" + id);
+            // remove polyline
+            this.removePolyById(theMap, "polyline_" + id);
+        });
     }
 
     updatePolyline(id: string, newPoints: Array<LatLng>, nativeMap?: any) {
