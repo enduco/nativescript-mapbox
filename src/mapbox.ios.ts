@@ -1241,7 +1241,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
         const coordinateArray = [];
         points.forEach(point => coordinateArray.push([point.lng, point.lat]));
 
-        const id = options.id || new Date().getTime();
+        const id = options.id || new Date().getTime()
         const polylineID = "polyline_" + id;
 
         // this would otherwise crash the app
@@ -1275,7 +1275,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
             theMap.style.setImageForName(image, "Arrow");
 
             // infer arrow id
-            const arrowId = "arrows_" + id;
+            const arrowId = polylineID + "_arrows";
 
             // create and add arrow layer
             const arrowLayer = MGLSymbolStyleLayer.alloc().initWithIdentifierSource(arrowId, source);
@@ -1305,6 +1305,11 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
         if (layer !== null) {
             theMap.style.removeLayer(layer);
         }
+        // polylines may have an 'arrows' layer
+        layer = theMap.style.layerWithIdentifier(id + "_arrows");
+        if (layer !== null) {
+            theMap.style.removeLayer(layer);
+        }
         const source = theMap.style.sourceWithIdentifier(id);
         if (source !== null) {
             theMap.style.removeSource(source);
@@ -1324,10 +1329,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
     }
 
     removePolylines(ids?: Array<any>, nativeMap?: any): Promise<any> {
-        return this.removePolys("polyline_", ids, nativeMap)
-            .then(() => {
-                return this.removePolys("arrows_", ids, nativeMap);
-            });
+        return this.removePolys("polyline_", ids, nativeMap);
     }
 
     updatePolyline(id: string, newPoints: Array<LatLng>, nativeMap?: any) {
@@ -2692,7 +2694,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
                     return;
                 }
 
-                theMap.setUserTrackingModeAnimated(_getTrackingMode(options.mode), options.animated !== false);
+                theMap.setUserTrackingModeAnimated(this._stringToCameraMode(options.mode), options.animated !== false);
 
                 resolve();
             } catch (ex) {
