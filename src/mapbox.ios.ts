@@ -581,7 +581,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
                     this._mapboxViewInstance.removeFromSuperview();
                 }
 
-                const view = utils.ios.getter(UIApplication, UIApplication.sharedApplication).keyWindow.rootViewController.view,
+                const view = UIApplication.sharedApplication.keyWindow.rootViewController.view,
                     frameRect = view.frame,
                     mapFrame = CGRectMake(
                         settings.margins.left,
@@ -637,7 +637,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
         return new Promise((resolve, reject) => {
             try {
                 if (this._mapboxViewInstance) {
-                    let view = utils.ios.getter(UIApplication, UIApplication.sharedApplication).keyWindow.rootViewController.view;
+                    let view = UIApplication.sharedApplication.keyWindow.rootViewController.view;
                     view.addSubview(this._mapboxViewInstance);
                     resolve();
                 } else {
@@ -1241,7 +1241,8 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
         const coordinateArray = [];
         points.forEach(point => coordinateArray.push([point.lng, point.lat]));
 
-        const polylineID = "polyline_" + (options.id || new Date().getTime());
+        const id = options.id || new Date().getTime();
+        const polylineID = "polyline_" + id;
 
         // this would otherwise crash the app
         if (theMap.style.sourceWithIdentifier(polylineID)) {
@@ -2831,8 +2832,8 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
 }
 
 const _addObserver = (eventName, callback) => {
-    return utils.ios.getter(NSNotificationCenter, NSNotificationCenter.defaultCenter).addObserverForNameObjectQueueUsingBlock(
-        eventName, null, utils.ios.getter(NSOperationQueue, NSOperationQueue.mainQueue), callback);
+    return NSNotificationCenter.defaultCenter.addObserverForNameObjectQueueUsingBlock(
+        eventName, null, NSOperationQueue.mainQueue, callback);
 };
 
 const _downloadImage = marker => {

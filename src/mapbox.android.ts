@@ -791,18 +791,6 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
     setMapboxMapInstance(mapboxMapInstance: any): void {
     }
 
-    // ---------------------------------------------------------------------------------
-
-    private static getAndroidColor(color: string | Color): any {
-        let androidColor;
-        if (color && Color.isValid(color)) {
-            androidColor = new Color("" + color).android;
-        } else {
-            androidColor = new Color('#000').android;
-        }
-        return androidColor;
-    }
-
     // ----------------------------------------------------------------------------------
 
     /**
