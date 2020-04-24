@@ -1,26 +1,24 @@
-# This is a Fork of Nativescript-Mapbox
-
-This is fork of the [NativeScript Mapbox plugin by EddyVerbruggen](https://github.com/EddyVerbruggen/nativescript-mapbox).
-
-The original thought was to submit the changes I made here to the upstream project but the projects have diverged to the point
-that merging the two would involve significant work. 
-
-This forks adds:
-
-- significant code reorganization and comments.
-- support for the Mapbox Native Android SDK v 8.1.0 and iOS v 5.1.0
-- addLayer() and removeLayer() methods mirroring the methods from mapbox-gl-js supporting lines and circles 
-  with various styling options including stops and dash arrays.
-- click handlers for layers on Android (incomplete on iOS)
-- updating of line layers with new points to animate them 
-- customized UserLocation marker
-- the beginnings of an angular demo in ./demo-angular
-
-Most of the remaining documentation comes for the upstream fork. 
-
 <a href="https://www.mapbox.com">
   <img src="/screenshots/mapbox_logo.png" width="400"/>
 </a>
+
+# To run the Angular demo
+
+```
+cd src
+npm run build.dist
+cd ../demo-angular
+tns run <platform>
+```
+
+# To run the plain Nativescript demo
+
+```
+cd src
+npm run build.dist
+cd ../demo
+tns run <platform>
+```
 
 # NativeScript Mapbox plugin
 
@@ -40,16 +38,39 @@ Awesome native OpenGL-powered maps - by Mapbox
 
 <img src="https://raw.githubusercontent.com/EddyVerbruggen/nativescript-mapbox/master/screenshots/ios-demoapp-slice.png" width="375px" height="196px" />
 
-> Plugin version 4.4.0 may crash on Android when pausing and resuming the app. If this affects you, pin your version to "4.3.1" for now. So in package.json do `"nativescript-mapbox": "4.3.1"` (without the `~` / `^` version prefix).
+> There is a NativeScript Core Modules bug under Android that causes random crashes on navigation. See ./demo-angular/README.md for a workaround.
+> https://github.com/NativeScript/NativeScript/issues/7954
+> https://github.com/NativeScript/NativeScript/issues/7867
 
 ## Prerequisites
-You need a Mapbox API access token (they have a 🆓 Starter plan!), so [sign up with Mapbox](https://www.mapbox.com/signup/).
+You either need your own tile server such as the one provided by [openmaptiles.org](https://openmaptiles.org) or a Mapbox API access token (they have a 🆓 Starter plan!), so [sign up with Mapbox](https://www.mapbox.com/signup/).
 Once you've registered go to your Account > Apps > New token. The 'Default Secret Token' is what you'll need.
 
+Your access_token can then be set in the top level mapbox_config.ts file.
+
+The style can be set to one of the Mapbox style names or it can be the URL of your own hosted tile server.
+
+> NOTE: As of this writing, the NativeScript demo only works with a mapbox token. The demo-angular will work with either a self hosted tile server or a mapbox token.
+
+## Breaking Changes
+
+This version includes breaking API changes. 
+
+The intent moving forward is to mirror, to the maximum extent practical, the Mapbox GL JS API to enable
+sharing of mapping code between browser based and native applications. 
+
 ## Installation
-From the command prompt go to your app's root folder and execute:
+This version of the plugin is still in development and not yet available via NPM.
+
+To add the plugin to our own project first 
 ```
-tns plugin add nativescript-mapbox
+cd src
+npm run build.dist
+```
+then in your package.json file in the dependencies section add:
+
+```
+  "nativescript-mapbox": "file:/path/to/nativescript-mapbox/publish/dist/package"
 ```
 
 If you get an error during iOS build related to Podspec versions, probably the easiest fix is:
@@ -66,16 +87,16 @@ If you get an error related to `TelemetryService` then please check it's there.
 ## Usage
 
 ### Demo app (XML + TypeScript)
-If you want a quickstart, [clone our demo app](https://github.com/EddyVerbruggen/nativescript-mapbox-demo).
+If you want a quickstart, see the demo in this repository.
 It shows you how to draw a map in XML and JS with almost all possible options.
 
 ### Demo app (Angular)
-This plugin is part of the [plugin showcase app](https://github.com/EddyVerbruggen/nativescript-pluginshowcase/tree/master/app/mapping) I built using Angular.
+There is also the beginnings of an Angular demo in demo-angular in this repository.
 
 ## Declaring a map in the view
 
 ### XML
-You can instantiate a map from JS or TS but declaring it in XML has a few advantages. As the map is yet another view component it will play nice with any NativeScript layout you throw it in. You can also easily add multiple maps to the same page or to different pages in any layout you like.
+You can instantiate a map from JS or TS. As the map is yet another view component it will play nice with any NativeScript layout you throw it in. You can also easily add multiple maps to the same page or to different pages in any layout you like.
 
 A simple layout could look like this:
 
@@ -88,7 +109,6 @@ Could be rendered by a definition like this:
   <StackLayout>
     <Label text="Nice map, huh!" class="title"/>
     <ContentView height="240" width="240">
-      <!-- IMPORTANT: plugin version 3 uses :MapboxView, lower versions use :Mapbox -->
       <map:MapboxView
           accessToken="your_token"
           mapStyle="traffic_night"
@@ -139,7 +159,7 @@ All currently supported options for your XML based map are (__don't__ use other 
 |---|---|---
 |`accesstoken`|-|see 'Prerequisites' above
 |`delay`|0|A delay in milliseconds - you can set this to have better control over when Mapbox is invoked so it won't clash with other computations your app may need to perform.
-|`mapStyle`|streets|streets, light, dark, satellite_streets, satellite, traffic_day, traffic_night, an URL starting with mapbox:// or pointing to a custom JSON definition (http://, https://, or local relative to nativescript app path ~/) 
+|`mapStyle`|streets|streets, light, dark, satellite_streets, satellite, traffic_day, traffic_night, an URL starting with mapbox:// or pointing to a custom JSON definition (http://, https://, or local relative to nativescript app path ~/)
 |`latitude `|-|Set the center of the map by passing this in
 |`longitude`|-|.. and this as well
 |`zoomLevel`|0|0-20
@@ -152,6 +172,7 @@ All currently supported options for your XML based map are (__don't__ use other 
 |`disableScroll`|false|Don't allow the user to move the center of the map (one finger drag)
 |`disableTilt`|false|Don't allow the user to tilt the map (two finger drag up or down)
 |`mapReady`|-|The name of a callback function you can declare to interact with the map after it has been drawn
+|`moveBeginEvent`|-|The name of a function to be called when the map is moved.
 |`locationPermissionGranted`|-|The name of a callback function you can declare to get notified when the user granted location permissions
 |`locationPermissionDenied`|-|The name of a callback function you can declare to get notified when the user denied location permissions (will never fire on iOS because there's nothing to deny)
 
@@ -214,56 +235,98 @@ Check out the usage details on the functions below.
 
 ## Declaring a map programmatically
 
-### show
-```js
-  var mapbox = require("nativescript-mapbox");
-  var platform = require("platform");
-  var isIOS = platform.device.os === platform.platformNames.ios;
+Add a container to your view XML where you want to programmatically add the map. Give it an id. 
 
-  mapbox.show({
-    accessToken: 'YOUR_API_ACCESS_TOKEN', // see 'Prerequisites' above
-    style: mapbox.MapStyle.TRAFFIC_DAY, // see the mapbox.MapStyle enum for other options, default mapbox.MapStyle.STREETS
-    margins: {
-      left: 40, // default 0
-      right: 40, // default 0
-      top: 450, // default 0
-      bottom: isIOS ? 50: 0 // default 0, this shows how to override the style for iOS
-    },
-    center: { // optional without a default
-      lat: 52.3702160,
-      lng: 4.8951680
-    },
-    zoomLevel: 9.25, // 0-20, default 0
-    showUserLocation: true, // default false - requires location permissions on Android which you can remove from AndroidManifest.xml if you don't need them
-    hideAttribution: false, // default true, Mapbox requires `false` if you're on a free plan
-    hideLogo: false, // default false, Mapbox requires this default if you're on a free plan
-    hideCompass: false, // default false
-    disableRotation: false, // default false
-    disableScroll: false, // default false
-    disableZoom: false, // default false
-    markers: [ // optional without a default
-      {
-        id: 1, // can be user in 'removeMarkers()'
-        lat: 52.3732160, // mandatory
-        lng: 4.8941680, // mandatory
-        title: 'Nice location', // recommended to pass in
-        subtitle: 'Really really nice location', // one line is available on iOS, multiple on Android
-        icon: 'res://cool_marker', // use either this preferred way (to grab a density-independent marker from app resources), or:
-        // icon: 'http(s)://my-remote-image', // an image from the interwebs (see the note at the bottom of this readme), or:
-        iconPath: 'res/markers/green_pin_marker.png', // anywhere in your app folder
-        selected: true, // makes the callout show immediately when the marker is added (note: only 1 marker can be selected at a time)
-        onTap: function(marker) { console.log("This marker was tapped"); },
-        onCalloutTap: function(marker) { console.log("The callout of this marker was tapped"); }
-      }
-    ]
-  }).then(
-      function(showResult) {
-        console.log("Mapbox show done for " + (showResult.ios ? "iOS" : "Android") + ", native object received: " + (showResult.ios ? showResult.ios : showResult.android));
+```
+<ContentView id="mapContainer" />
+```
+
+### show
+```ts
+
+    const contentView : ContentView = <ContentView>page.getViewById( 'mapContainer' );
+
+    const settings = {
+
+      // NOTE: passing in the container here.
+
+      container: contentView,
+      accessToken: ACCESS_TOKEN,
+      style: MapStyle.LIGHT,
+      margins: {
+        left: 18,
+        right: 18,
+        top: isIOS ? 390 : 454,
+        bottom: isIOS ? 50 : 8
       },
-      function(error) {
-        console.log("mapbox show error: " + error);
-      }
-  )
+      center: {
+        lat: 52.3702160,
+        lng: 4.8951680
+      },
+      zoomLevel: 9, // 0 (most of the world) to 20, default 0
+      showUserLocation: true, // default false
+      hideAttribution: true, // default false
+      hideLogo: true, // default false
+      hideCompass: false, // default false
+      disableRotation: false, // default false
+      disableScroll: false, // default false
+      disableZoom: false, // default false
+      disableTilt: false, // default false
+      markers: [
+        {
+          id: 1,
+          lat: 52.3732160,
+          lng: 4.8941680,
+          title: 'Nice location',
+          subtitle: 'Really really nice location',
+          iconPath: 'res/markers/green_pin_marker.png',
+          onTap: () => console.log("'Nice location' marker tapped"),
+          onCalloutTap: () => console.log("'Nice location' marker callout tapped")
+        }
+      ]
+    };
+
+    console.log( "main-view-model:: doShow(): creating new MapboxView." );
+
+    const mapView = new MapboxView();
+
+    // Bind some event handlers onto our newly created map view. 
+
+    mapView.on( 'mapReady', ( args : any ) => {
+
+      console.log( "main-view-model: onMapReady fired." );
+
+      // this is an instance of class MapboxView
+
+      this.mapboxView = args.map;
+
+      // get a reference to the Mapbox API shim object so we can directly call its methods.
+
+      this.mapbox = this.mapboxView.getMapboxApi();
+
+      this.mapbox.setOnMapClickListener( point => {
+        console.log(`>> Map clicked: ${JSON.stringify(point)}`);
+        return true;
+      });
+
+      this.mapbox.setOnMapLongClickListener( point => {
+        console.log(`>> Map longpressed: ${JSON.stringify(point)}`);
+        return true;
+      });
+
+      this.mapbox.setOnScrollListener((point: LatLng) => {
+        // console.log(`>> Map scrolled`);
+      });
+
+      this.mapbox.setOnFlingListener(() => {
+        console.log(`>> Map flinged"`);
+      }).catch( err => console.log(err) );
+
+    });
+
+    mapView.setConfig( settings );
+    contentView.content = mapView;
+  
 ```
 
 ### hide
@@ -486,6 +549,129 @@ The map will continuously move along with the last known location.
   });
 ```
 
+### addSource
+
+https://docs.mapbox.com/mapbox-gl-js/api/#map#addsource 
+
+Adds a vector to GeoJSON source to the map.
+
+```js
+  mapbox.addSource( id, {
+    type: 'vector',
+    url: 'url to source'
+  } );
+```
+
+-or-
+
+```js
+  mapbox.addSource( id, {
+    'type': 'geojson',
+    'data': {
+      "type": "Feature",
+        "geometry": {
+        "type": "LineString",
+          "coordinates": [ [ lng, lat ], [ lng, lat ], ..... ]
+        }
+      }
+    }
+  );
+```
+### removeSource
+
+Remove a source by id
+
+```js
+  mapbox.removeSource( id );
+```
+
+### addLayer
+NOTE: For version 5 the API for addLayer() has changed and is now a subset of the web-gl-js API.
+
+https://docs.mapbox.com/mapbox-gl-js/style-spec/#layers
+ 
+To add a line:
+
+```js
+  mapbox.addLayer({
+    'id': someid,
+    'type': 'line',
+    'source': {
+      'type': 'geojson',
+      'data': {
+        "type": "Feature",
+          "geometry": {
+          "type": "LineString",
+            "coordinates": [ [ lng, lat ], [ lng, lat ], ..... ]
+          }
+        }
+      }
+    },
+    'layout': {
+      'line-cap': 'round',
+      'line-join': 'round'
+    },    
+    'paint': {
+      'line-color': '#ed6498',
+      'line-width': 5,
+      'line-opacity': .8,
+      'line-dash-array': [ 1, 1, 1, ..]
+    }
+  });
+```
+
+To add a circle:
+
+```js
+  mapbox.addLayer({
+    "id": someid,
+    "type": 'circle',
+    "radius-meters": 500,   // FIXME: radius in meters used for in-circle click detection. 
+    "source": {
+      "type": 'geojson',
+      "data": {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [ lng, lat ]
+        }
+      }
+    }, 
+    "paint": {
+      "circle-radius": {
+        "stops": [
+          [0, 0],
+          [20, 8000 ]
+        ],
+        "base": 2
+      },
+      'circle-opacity': 0.05,
+      'circle-color': '#ed6498',
+      'circle-stroke-width': 2,
+      'circle-stroke-color': '#ed6498'
+    } 
+  });
+```
+
+Source may be a geojson or vector source description or may be 
+the id of a source added using addSource()
+
+### removeLayer
+Remove a layer added with addLayer() by id.
+
+```js
+  mapbox.removeLayer( id );
+```
+
+### addLinePoint
+Dynamically add a point to a line.
+
+```js
+  mapbox.addLinePoint( <id of line layer>, lnglat )
+```
+
+where lnglat is an array of two points, a longitude and a latitude.
+
 ### addPolygon
 Draw a shape. Just connect the dots like we did as a toddler.
 
@@ -544,6 +730,8 @@ or remove specific polygon id's (which you specified previously).
 ```
 
 ### addPolyline
+Deprecated. Use addLayer() instead.
+
 Draw a polyline. Connect the points given as parameters.
 
 ```js
@@ -571,6 +759,8 @@ Draw a polyline. Connect the points given as parameters.
 ```
 
 ### removePolylines
+Deprecated. Use removeLayer() instead.
+
 You can either remove all polylines by not passing in an argument,
 or remove specific polyline id's (which you specified previously).
 
@@ -580,6 +770,47 @@ or remove specific polyline id's (which you specified previously).
 
   // remove specific polylines by id
   mapbox.removePolylines([1, 2]);
+```
+
+### addSource
+Add a source that can be used by `addLayer`. Note only `vector` type is currently supported.
+
+```js
+  mapbox.addSource(
+    id: "terrain-source", // required
+    type: "vector", // supported types: vector
+    url: "mapbox://mapbox.mapbox-terrain-v2"
+  );
+```
+
+### removeSource
+Remove a source by `id`.
+
+```js
+  mapbox.removeSource("terrain-source");
+```
+
+### addLayer
+Add a layer from a source to the map. Note only `circle`, `fill` and `line` types are currently supported.
+
+```js
+  mapbox.addLayer(
+    id: "terrain-data",  // required
+    source: "terrain-source",  // id of source
+    sourceLayer: "contour",  // id of layer from source
+    type: "line", // supported types: circle, fill, line
+    lineJoin: "round",
+    lineCap: "round",
+    lineColor: "#ff69b4",
+    lineWidth: 1,
+  );
+```
+
+### removeLayer
+Remove a layer by `id`.
+
+```js
+  mapbox.removeLayer("terrain-data");
 ```
 
 ### setOnMapClickListener
@@ -619,7 +850,7 @@ This example downloads the region 'Amsterdam' on zoom levels 9, 10 and 11 for ma
 
 ```js
   mapbox.downloadOfflineRegion(
-    {      
+    {
       accessToken: accessToken, // required for Android in case no map has been shown yet
       name: "Amsterdam", // this name can be used to delete the region later
       style: mapbox.MapStyle.OUTDOORS,

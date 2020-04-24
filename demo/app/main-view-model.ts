@@ -1,32 +1,64 @@
 import { Observable } from "tns-core-modules/data/observable";
 import { Color } from "tns-core-modules/color";
 import { alert, AlertOptions } from "tns-core-modules/ui/dialogs";
+
+import { Frame, topmost } from "tns-core-modules/ui/frame";
+
+import { Button } from "tns-core-modules/ui/button";
+import { Page } from "tns-core-modules/ui/page";
+import { Label } from "tns-core-modules/ui/label";
+import { ContentView } from "tns-core-modules/ui/content-view";
+
 import * as platform from "tns-core-modules/platform";
-import { Mapbox, MapStyle, OfflineRegion, LatLng, Viewport, DownloadProgress, MapboxMarker } from "nativescript-mapbox";
+import { MapboxView, Mapbox, MapStyle, OfflineRegion, LatLng, Viewport, DownloadProgress, MapboxMarker } from "nativescript-mapbox";
+
+import { SETTINGS } from '../../mapbox_config';
 
 const isIOS = platform.device.os === platform.platformNames.ios;
-const ACCESS_TOKEN = "<ACCESS_TOKEN_HERE>";
+
+const ACCESS_TOKEN = SETTINGS.mapbox_access_token;
+
+// -------------------------------------------------------------------------------
 
 export class HelloWorldModel extends Observable {
 
+  private mapboxView: MapboxView;
   private mapbox: Mapbox;
 
   constructor() {
     super();
-
-    console.log( "HelloWorldModel::constructor(): before new Mapbox()" );
-
-    this.mapbox = new Mapbox();
+    console.log( "HelloWorldModel::constructor()" );
   }
 
   // --------------------------------------------------------------------
 
-  public doShow(): void {
+  /**
+  * show a map programmatically
+  */
 
-    console.log( "HelloWorldModel::doShow(): before mapbox.show()" );
+  public doShow( args ): void {
 
-    this.mapbox.show({
+    console.log( "HelloWorldModel::doShow(): top" );
+
+    // the idea is to get a reference to a container component,
+    // in this case the StackLayout, and then to add a programmatically created
+    // MapboxView as a child of that container. 
+    //
+    // A button click got us here. From that we can get the Button object and that then
+    // gives us a reference to the current page from which we can look up components by id.
+
+    const button : Button = args.object;
+    const page : Page = button.page;
+
+    const contentView : ContentView = <ContentView>page.getViewById( 'mapContainer' );
+
+    const settings = {
+
       accessToken: ACCESS_TOKEN,
+
+      // NOTE: passing in the container here.
+
+      container: contentView,
       style: MapStyle.LIGHT,
       margins: {
         left: 18,
@@ -59,32 +91,55 @@ export class HelloWorldModel extends Observable {
           onCalloutTap: () => console.log("'Nice location' marker callout tapped")
         }
       ]
-    }).then(
-        showResult => {
+    };
 
-          console.log( `HelloWorldModel::doShow(): Mapbox show done for ${showResult.ios ? "iOS" : "Android"}, native object received: ${showResult.ios ? showResult.ios : showResult.android}`);
+    console.log( "main-view-model:: doShow(): creating new MapboxView." );
 
-          this.mapbox.setOnMapClickListener( point => {
-            console.log(`>> Map clicked: ${JSON.stringify(point)}`);
-            return true;
-          });
+    const mapView = new MapboxView();
 
-          this.mapbox.setOnMapLongClickListener( point => {
-            console.log(`>> Map longpressed: ${JSON.stringify(point)}`);
-            return true;
-          });
+    mapView.setConfig( settings );
 
-          this.mapbox.setOnScrollListener((point: LatLng) => {
-            // console.log(`>> Map scrolled: ${JSON.stringify(point)}`);
-          });
+    // Bind some event handlers onto our newly created map view. 
 
-          this.mapbox.setOnFlingListener(() => {
-            console.log(`>> Map flinged"}`);
-          }).catch(err => console.log(err));
-        },
-        (error: string) => console.log("mapbox show error: " + error)
-    );
+    mapView.on( 'mapReady', ( args : any ) => {
+
+      console.log( "main-view-model: onMapReady fired." );
+
+      // this is an instance of class MapboxView
+
+      this.mapboxView = args.map;
+
+      // get a reference to the Mapbox API shim object so we can directly call its methods.
+
+      this.mapbox = this.mapboxView.getMapboxApi();
+
+      this.mapbox.setOnMapClickListener( point => {
+        console.log(`>> Map clicked: ${JSON.stringify(point)}`);
+        return true;
+      });
+
+      this.mapbox.setOnMapLongClickListener( point => {
+        console.log(`>> Map longpressed: ${JSON.stringify(point)}`);
+        return true;
+      });
+
+      this.mapbox.setOnScrollListener((point: LatLng) => {
+        // console.log(`>> Map scrolled`);
+      });
+
+      this.mapbox.setOnFlingListener(() => {
+        console.log(`>> Map flinged"`);
+      }).catch( err => console.log(err) );
+
+    });
+
+    console.log( "main-view-model:: doShow(): adding MapboxView to container." );
+
+    contentView.content = mapView;
+
   }
+
+  // -------------------------------------------------------------------------------
 
   public doHide(): void {
     this.mapbox.hide().then(
@@ -97,6 +152,8 @@ export class HelloWorldModel extends Observable {
     );
   }
 
+  // -------------------------------------------------------------------------------
+
   public doDestroy(): void {
     this.mapbox.destroy().then(
         () => {
@@ -107,6 +164,8 @@ export class HelloWorldModel extends Observable {
         }
     );
   }
+
+  // -------------------------------------------------------------------------------
 
   public doUnhide(): void {
     this.mapbox.unhide().then(
@@ -119,6 +178,8 @@ export class HelloWorldModel extends Observable {
     );
   }
 
+  // -------------------------------------------------------------------------------
+
   public doRemoveAllMarkers(): void {
     this.mapbox.removeMarkers().then(
         () => console.log("Mapbox doRemoveAllMarkers done"),
@@ -126,12 +187,16 @@ export class HelloWorldModel extends Observable {
     );
   }
 
+  // -------------------------------------------------------------------------------
+
   public doRemove2Markers(): void {
     this.mapbox.removeMarkers([2, 3]).then(
         () => console.log("Mapbox doRemove2Markers done"),
         error => console.log("mapbox doRemove2Markers error: " + error)
     );
   }
+
+  // -------------------------------------------------------------------------------
 
   public doAddMarkers(): void {
     const onTap = (marker: MapboxMarker) => console.log(`Marker tapped with title: ${marker.title}`);
@@ -159,7 +224,7 @@ export class HelloWorldModel extends Observable {
         selected: true,
         onTap: (marker: MapboxMarker) => console.log(`UPDATED Marker tapped with title: ${marker.title}`),
         onCalloutTap: (marker: MapboxMarker) => alert(`UPDATED Marker callout tapped with title: ${marker.title}`)
-      })
+      });
     }, 8000);
 
     this.mapbox.addMarkers([
@@ -210,6 +275,8 @@ export class HelloWorldModel extends Observable {
     );
   }
 
+  // -------------------------------------------------------------------------------
+
   public doGetViewport(): void {
     this.mapbox.getViewport().then(
         (result: Viewport) => {
@@ -223,6 +290,8 @@ export class HelloWorldModel extends Observable {
         (error: string) => console.log("mapbox doGetViewport error: " + error)
     );
   }
+
+  // -------------------------------------------------------------------------------
 
   public doSetViewport(): void {
     this.mapbox.setViewport(
@@ -241,7 +310,10 @@ export class HelloWorldModel extends Observable {
     );
   }
 
+  // -------------------------------------------------------------------------------
+
   // Add an option to download the current viewport: https://www.mapbox.com/ios-sdk/examples/offline-pack/ (look for visibleCoordinateBounds)
+
   public doDownloadAmsterdam(): void {
     this.mapbox.downloadOfflineRegion(
         {
@@ -282,6 +354,8 @@ export class HelloWorldModel extends Observable {
     alert(alertOptions);
   }
 
+  // -------------------------------------------------------------------------------
+
   public doDownloadCurrentViewportAsOfflineRegion(): void {
     this.mapbox.getViewport().then(
         (viewport: Viewport) => {
@@ -315,6 +389,8 @@ export class HelloWorldModel extends Observable {
           alert(alertOptions);
         });
   }
+
+  // -------------------------------------------------------------------------------
 
   public doAddAndClusterGeoJSON(): void {
     this.mapbox.addGeoJsonClustered(
@@ -355,6 +431,69 @@ export class HelloWorldModel extends Observable {
     );
   }
 
+// ===================================================================================
+/**
+* 
+* @todo INTEGRATE THIS 
+*
+  public doAddLayerAndSource(): void {
+    this.mapbox.addSource(
+        {
+          id: "terrain-source",
+          type: "vector",
+          url: "mapbox://mapbox.mapbox-terrain-v2"
+        }
+    ).then(
+      () => {
+          this.mapbox.addLayer(
+            {
+              id: "terrain-data",
+              source: "terrain-source",
+              sourceLayer: "contour",
+              type: "line",
+              lineJoin: "round",
+              lineCap: "round",
+              lineColor: "#ff69b4",
+              lineWidth: 1,
+            }
+          ).then(
+            () => {
+              console.log("Mapbox doAddLayerAndSource done");
+            },
+            (error: string) => {
+              console.log("mapbox doAddLayerAndSource error: " + error);
+            }
+          );
+        },
+        (error: string) => {
+          console.log("mapbox doAddLayerAndSource error: " + error);
+        }
+    );
+  }
+
+  public doRemoveLayerAndSource(): void {
+    this.mapbox.removeLayer("terrain-data").then(
+      () => {
+          this.mapbox.removeSource("terrain-source").then(
+            () => {
+              console.log("Mapbox doRemoveLayerAndSource done");
+            },
+            (error: string) => {
+              console.log("mapbox doAddSource error: " + error);
+            }
+          );
+        },
+        (error: string) => {
+          console.log("mapbox doAddSource error: " + error);
+        }
+    );
+  }
+
+*/
+// ===============================================================
+
+  // -------------------------------------------------------------------------------
+
   public doListOfflineRegions(): void {
     this.mapbox.listOfflineRegions({
       accessToken: ACCESS_TOKEN
@@ -378,6 +517,8 @@ export class HelloWorldModel extends Observable {
     );
   }
 
+  // -------------------------------------------------------------------------------
+
   public doDeleteOfflineRegion(): void {
     this.mapbox.deleteOfflineRegion({
       name: "Amsterdam"
@@ -400,6 +541,8 @@ export class HelloWorldModel extends Observable {
     );
   }
 
+  // -------------------------------------------------------------------------------
+
   public doGetTilt(): void {
     this.mapbox.getTilt().then(
         (result: number) => {
@@ -415,6 +558,8 @@ export class HelloWorldModel extends Observable {
         }
     );
   }
+
+  // -------------------------------------------------------------------------------
 
   public doGetUserLocation(): void {
     this.mapbox.getUserLocation().then(
@@ -432,12 +577,16 @@ export class HelloWorldModel extends Observable {
     );
   }
 
+  // -------------------------------------------------------------------------------
+
   public doTrackUser(): void {
     this.mapbox.trackUser({
-      mode: "FOLLOW_WITH_HEADING",
+      mode: "TRACKING_GPS",
       animated: true
-    }).then(() => console.log("Following"));
+    }).then(() => console.log("Following User"));
   }
+
+  // -------------------------------------------------------------------------------
 
   public doSetTilt(): void {
     this.mapbox.setTilt(
@@ -454,6 +603,8 @@ export class HelloWorldModel extends Observable {
         }
     );
   }
+
+  // -------------------------------------------------------------------------------
 
   public doAnimateCamera(): void {
     this.mapbox.animateCamera(
@@ -478,6 +629,8 @@ export class HelloWorldModel extends Observable {
     );
   }
 
+  // -------------------------------------------------------------------------------
+
   public doSetCenter(): void {
     this.mapbox.setCenter(
         {
@@ -495,6 +648,8 @@ export class HelloWorldModel extends Observable {
     );
   }
 
+  // -------------------------------------------------------------------------------
+
   public doGetCenter(): void {
     this.mapbox.getCenter().then(
         (result: LatLng) => {
@@ -510,6 +665,8 @@ export class HelloWorldModel extends Observable {
         }
     );
   }
+
+  // -------------------------------------------------------------------------------
 
   public doGetZoomLevel(): void {
     this.mapbox.getZoomLevel().then(
@@ -527,6 +684,8 @@ export class HelloWorldModel extends Observable {
     );
   }
 
+  // -------------------------------------------------------------------------------
+
   public doSetZoomLevel(): void {
     this.mapbox.setZoomLevel(
         {
@@ -542,6 +701,8 @@ export class HelloWorldModel extends Observable {
         }
     );
   }
+
+  // -------------------------------------------------------------------------------
 
   public doAddPolygon(): void {
     this.mapbox.addPolygon(
@@ -581,6 +742,8 @@ export class HelloWorldModel extends Observable {
         .then(result => console.log("Mapbox addPolygon done"))
         .catch((error: string) => console.log("mapbox addPolygon error: " + error));
   }
+
+  // -------------------------------------------------------------------------------
 
   public doAddPolyline(): void {
     this.mapbox.addPolyline({
@@ -628,6 +791,8 @@ export class HelloWorldModel extends Observable {
     );
   }
 
+  // -------------------------------------------------------------------------------
+
   public doRemovePolyline(): void {
     this.mapbox.removePolylines([1]).then(
         result => console.log("Mapbox removePolylines done"),
@@ -635,12 +800,16 @@ export class HelloWorldModel extends Observable {
     );
   }
 
+  // -------------------------------------------------------------------------------
+
   public doRemovePolygon(): void {
     this.mapbox.removePolygons([1]).then(
         result => console.log("Mapbox removePolygons done"),
         (error: string) => console.log("mapbox removePolygons error: " + error)
     );
   }
+
+  // -------------------------------------------------------------------------------
 
   public doCheckHasFineLocationPermission(): void {
     this.mapbox.hasFineLocationPermission().then(
@@ -654,6 +823,8 @@ export class HelloWorldModel extends Observable {
         }
     );
   }
+
+  // -------------------------------------------------------------------------------
 
   public doRequestFineLocationPermission(): void {
     this.mapbox.requestFineLocationPermission().then(

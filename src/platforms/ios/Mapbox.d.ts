@@ -1,499 +1,543 @@
+
 declare var MGLAbstractClassException: string;
 
 declare class MGLAccountManager extends NSObject {
 
-    static accessToken: string;
+	static alloc(): MGLAccountManager; // inherited from NSObject
 
-    static alloc(): MGLAccountManager; // inherited from NSObject
+	static new(): MGLAccountManager; // inherited from NSObject
 
-    static new(): MGLAccountManager; // inherited from NSObject
+	static accessToken: string;
 }
 
 declare function MGLAltitudeForZoomLevel(zoomLevel: number, pitch: number, latitude: number, size: CGSize): number;
 
 interface MGLAnnotation extends NSObjectProtocol {
 
-    coordinate: CLLocationCoordinate2D;
+	coordinate: CLLocationCoordinate2D;
 
-    subtitle?: string;
+	subtitle?: string;
 
-    title?: string;
+	title?: string;
 }
-
 declare var MGLAnnotation: {
 
-    prototype: MGLAnnotation;
+	prototype: MGLAnnotation;
 };
 
 declare class MGLAnnotationImage extends NSObject implements NSSecureCoding {
 
-    static readonly supportsSecureCoding: boolean; // inherited from NSSecureCoding
-    enabled: boolean;
-    image: UIImage;
-    readonly reuseIdentifier: string;
+	static alloc(): MGLAnnotationImage; // inherited from NSObject
 
-    constructor(o: { coder: NSCoder; }); // inherited from NSCoding
+	static annotationImageWithImageReuseIdentifier(image: UIImage, reuseIdentifier: string): MGLAnnotationImage;
 
-    static alloc(): MGLAnnotationImage; // inherited from NSObject
+	static new(): MGLAnnotationImage; // inherited from NSObject
 
-    static annotationImageWithImageReuseIdentifier(image: UIImage, reuseIdentifier: string): MGLAnnotationImage;
+	enabled: boolean;
 
-    static new(): MGLAnnotationImage; // inherited from NSObject
+	image: UIImage;
 
-    encodeWithCoder(aCoder: NSCoder): void;
+	readonly reuseIdentifier: string;
 
-    initWithCoder(aDecoder: NSCoder): this;
+	static readonly supportsSecureCoding: boolean; // inherited from NSSecureCoding
+
+	constructor(o: { coder: NSCoder; }); // inherited from NSCoding
+
+	encodeWithCoder(aCoder: NSCoder): void;
+
+	initWithCoder(aDecoder: NSCoder): this;
 }
 
 declare const enum MGLAnnotationVerticalAlignment {
 
-    Center = 0,
+	Center = 0,
 
-    Top = 1,
+	Top = 1,
 
-    Bottom = 2
+	Bottom = 2
 }
 
 declare class MGLAnnotationView extends UIView implements NSSecureCoding {
 
-    static readonly supportsSecureCoding: boolean; // inherited from NSSecureCoding
-    annotation: MGLAnnotation;
-    centerOffset: CGVector;
-    readonly dragState: MGLAnnotationViewDragState;
-    draggable: boolean;
-    enabled: boolean;
-    readonly reuseIdentifier: string;
-    rotatesToMatchCamera: boolean;
-    scalesWithViewingDistance: boolean;
-    selected: boolean;
+	static alloc(): MGLAnnotationView; // inherited from NSObject
 
-    constructor(o: { annotation: MGLAnnotation; reuseIdentifier: string; });
+	static appearance(): MGLAnnotationView; // inherited from UIAppearance
 
-    constructor(o: { coder: NSCoder; }); // inherited from NSCoding
+	static appearanceForTraitCollection(trait: UITraitCollection): MGLAnnotationView; // inherited from UIAppearance
 
-    constructor(o: { reuseIdentifier: string; });
+	static appearanceForTraitCollectionWhenContainedIn(trait: UITraitCollection, ContainerClass: typeof NSObject): MGLAnnotationView; // inherited from UIAppearance
 
-    static alloc(): MGLAnnotationView; // inherited from NSObject
+	static appearanceForTraitCollectionWhenContainedInInstancesOfClasses(trait: UITraitCollection, containerTypes: NSArray<typeof NSObject> | typeof NSObject[]): MGLAnnotationView; // inherited from UIAppearance
 
-    static appearance(): MGLAnnotationView; // inherited from UIAppearance
+	static appearanceWhenContainedIn(ContainerClass: typeof NSObject): MGLAnnotationView; // inherited from UIAppearance
 
-    static appearanceForTraitCollection(trait: UITraitCollection): MGLAnnotationView; // inherited from UIAppearance
+	static appearanceWhenContainedInInstancesOfClasses(containerTypes: NSArray<typeof NSObject> | typeof NSObject[]): MGLAnnotationView; // inherited from UIAppearance
 
-    static appearanceForTraitCollectionWhenContainedIn(trait: UITraitCollection, ContainerClass: typeof NSObject): MGLAnnotationView; // inherited from UIAppearance
+	static new(): MGLAnnotationView; // inherited from NSObject
 
-    static appearanceForTraitCollectionWhenContainedInInstancesOfClasses(trait: UITraitCollection, containerTypes: NSArray<typeof NSObject> | typeof NSObject[]): MGLAnnotationView; // inherited from UIAppearance
+	annotation: MGLAnnotation;
 
-    static appearanceWhenContainedIn(ContainerClass: typeof NSObject): MGLAnnotationView; // inherited from UIAppearance
+	centerOffset: CGVector;
 
-    static appearanceWhenContainedInInstancesOfClasses(containerTypes: NSArray<typeof NSObject> | typeof NSObject[]): MGLAnnotationView; // inherited from UIAppearance
+	readonly dragState: MGLAnnotationViewDragState;
 
-    static new(): MGLAnnotationView; // inherited from NSObject
+	draggable: boolean;
 
-    encodeWithCoder(aCoder: NSCoder): void;
+	enabled: boolean;
 
-    initWithAnnotationReuseIdentifier(annotation: MGLAnnotation, reuseIdentifier: string): this;
+	readonly reuseIdentifier: string;
 
-    initWithCoder(aDecoder: NSCoder): this;
+	rotatesToMatchCamera: boolean;
 
-    initWithReuseIdentifier(reuseIdentifier: string): this;
+	scalesWithViewingDistance: boolean;
 
-    prepareForReuse(): void;
+	selected: boolean;
 
-    setDragStateAnimated(dragState: MGLAnnotationViewDragState, animated: boolean): void;
+	static readonly supportsSecureCoding: boolean; // inherited from NSSecureCoding
 
-    setSelectedAnimated(selected: boolean, animated: boolean): void;
+	constructor(o: { annotation: MGLAnnotation; reuseIdentifier: string; });
+
+	constructor(o: { coder: NSCoder; }); // inherited from NSCoding
+
+	constructor(o: { reuseIdentifier: string; });
+
+	encodeWithCoder(aCoder: NSCoder): void;
+
+	initWithAnnotationReuseIdentifier(annotation: MGLAnnotation, reuseIdentifier: string): this;
+
+	initWithCoder(aDecoder: NSCoder): this;
+
+	initWithReuseIdentifier(reuseIdentifier: string): this;
+
+	prepareForReuse(): void;
+
+	setDragStateAnimated(dragState: MGLAnnotationViewDragState, animated: boolean): void;
+
+	setSelectedAnimated(selected: boolean, animated: boolean): void;
 }
 
 declare const enum MGLAnnotationViewDragState {
 
-    None = 0,
+	None = 0,
 
-    Starting = 1,
+	Starting = 1,
 
-    Dragging = 2,
+	Dragging = 2,
 
-    Canceling = 3,
+	Canceling = 3,
 
-    Ending = 4
+	Ending = 4
 }
 
 declare class MGLAttributedExpression extends NSObject {
 
-    readonly attributes: NSDictionary<string, NSExpression>;
-    expression: NSExpression;
+	static alloc(): MGLAttributedExpression; // inherited from NSObject
 
-    constructor(o: { expression: NSExpression; });
+	static attributedExpressionAttributes(expression: NSExpression, attrs: NSDictionary<string, NSExpression>): MGLAttributedExpression;
 
-    constructor(o: { expression: NSExpression; attributes: NSDictionary<string, NSExpression>; });
+	static attributedExpressionFontNamesFontScale(expression: NSExpression, fontNames: NSArray<string> | string[], fontScale: number): MGLAttributedExpression;
 
-    static alloc(): MGLAttributedExpression; // inherited from NSObject
+	static new(): MGLAttributedExpression; // inherited from NSObject
 
-    static attributedExpressionAttributes(expression: NSExpression, attrs: NSDictionary<string, NSExpression>): MGLAttributedExpression;
+	readonly attributes: NSDictionary<string, NSExpression>;
 
-    static attributedExpressionFontNamesFontScale(expression: NSExpression, fontNames: NSArray<string> | string[], fontScale: number): MGLAttributedExpression;
+	expression: NSExpression;
 
-    static new(): MGLAttributedExpression; // inherited from NSObject
+	constructor(o: { expression: NSExpression; });
 
-    initWithExpression(expression: NSExpression): this;
+	constructor(o: { expression: NSExpression; attributes: NSDictionary<string, NSExpression>; });
 
-    initWithExpressionAttributes(expression: NSExpression, attrs: NSDictionary<string, NSExpression>): this;
+	initWithExpression(expression: NSExpression): this;
+
+	initWithExpressionAttributes(expression: NSExpression, attrs: NSDictionary<string, NSExpression>): this;
 }
 
 declare class MGLAttributionInfo extends NSObject {
 
-    URL: NSURL;
-    feedbackLink: boolean;
-    title: NSAttributedString;
+	static alloc(): MGLAttributionInfo; // inherited from NSObject
 
-    constructor(o: { title: NSAttributedString; URL: NSURL; });
+	static new(): MGLAttributionInfo; // inherited from NSObject
 
-    static alloc(): MGLAttributionInfo; // inherited from NSObject
+	URL: NSURL;
 
-    static new(): MGLAttributionInfo; // inherited from NSObject
+	feedbackLink: boolean;
 
-    feedbackURLAtCenterCoordinateZoomLevel(centerCoordinate: CLLocationCoordinate2D, zoomLevel: number): NSURL;
+	title: NSAttributedString;
 
-    initWithTitleURL(title: NSAttributedString, URL: NSURL): this;
+	constructor(o: { title: NSAttributedString; URL: NSURL; });
 
-    titleWithStyle(style: MGLAttributionInfoStyle): NSAttributedString;
+	feedbackURLAtCenterCoordinateZoomLevel(centerCoordinate: CLLocationCoordinate2D, zoomLevel: number): NSURL;
+
+	initWithTitleURL(title: NSAttributedString, URL: NSURL): this;
+
+	titleWithStyle(style: MGLAttributionInfoStyle): NSAttributedString;
 }
 
 declare const enum MGLAttributionInfoStyle {
 
-    Short = 1,
+	Short = 1,
 
-    Medium = 2,
+	Medium = 2,
 
-    Long = 3
+	Long = 3
 }
 
 declare class MGLBackgroundStyleLayer extends MGLStyleLayer {
 
-    backgroundColor: NSExpression;
-    backgroundColorTransition: MGLTransition;
-    backgroundOpacity: NSExpression;
-    backgroundOpacityTransition: MGLTransition;
-    backgroundPattern: NSExpression;
-    backgroundPatternTransition: MGLTransition;
+	static alloc(): MGLBackgroundStyleLayer; // inherited from NSObject
 
-    constructor(o: { identifier: string; });
+	static new(): MGLBackgroundStyleLayer; // inherited from NSObject
 
-    static alloc(): MGLBackgroundStyleLayer; // inherited from NSObject
+	backgroundColor: NSExpression;
 
-    static new(): MGLBackgroundStyleLayer; // inherited from NSObject
+	backgroundColorTransition: MGLTransition;
 
-    initWithIdentifier(identifier: string): this;
+	backgroundOpacity: NSExpression;
+
+	backgroundOpacityTransition: MGLTransition;
+
+	backgroundPattern: NSExpression;
+
+	backgroundPatternTransition: MGLTransition;
+
+	constructor(o: { identifier: string; });
+
+	initWithIdentifier(identifier: string): this;
 }
 
 interface MGLCalloutView extends NSObjectProtocol {
 
-    anchoredToAnnotation?: boolean;
+	anchoredToAnnotation?: boolean;
 
-    delegate: MGLCalloutViewDelegate;
+	delegate: MGLCalloutViewDelegate;
 
-    dismissesAutomatically?: boolean;
+	dismissesAutomatically?: boolean;
 
-    leftAccessoryView: UIView;
+	leftAccessoryView: UIView;
 
-    representedObject: MGLAnnotation;
+	representedObject: MGLAnnotation;
 
-    rightAccessoryView: UIView;
+	rightAccessoryView: UIView;
 
-    dismissCalloutAnimated(animated: boolean): void;
+	dismissCalloutAnimated(animated: boolean): void;
 
-    marginInsetsHintForPresentationFromRect?(rect: CGRect): UIEdgeInsets;
+	marginInsetsHintForPresentationFromRect?(rect: CGRect): UIEdgeInsets;
 
-    presentCalloutFromRectInViewConstrainedToRectAnimated(rect: CGRect, view: UIView, constrainedRect: CGRect, animated: boolean): void;
+	presentCalloutFromRectInViewConstrainedToRectAnimated(rect: CGRect, view: UIView, constrainedRect: CGRect, animated: boolean): void;
 }
-
 declare var MGLCalloutView: {
 
-    prototype: MGLCalloutView;
+	prototype: MGLCalloutView;
 };
 
 interface MGLCalloutViewDelegate extends NSObjectProtocol {
 
-    calloutViewDidAppear?(calloutView: UIView): void;
+	calloutViewDidAppear?(calloutView: UIView): void;
 
-    calloutViewShouldHighlight?(calloutView: UIView): boolean;
+	calloutViewShouldHighlight?(calloutView: UIView): boolean;
 
-    calloutViewTapped?(calloutView: UIView): void;
+	calloutViewTapped?(calloutView: UIView): void;
 
-    calloutViewWillAppear?(calloutView: UIView): void;
+	calloutViewWillAppear?(calloutView: UIView): void;
 }
-
 declare var MGLCalloutViewDelegate: {
 
-    prototype: MGLCalloutViewDelegate;
+	prototype: MGLCalloutViewDelegate;
 };
 
 declare const enum MGLCameraChangeReason {
 
-    None = 0,
+	None = 0,
 
-    Programmatic = 1,
+	Programmatic = 1,
 
-    ResetNorth = 2,
+	ResetNorth = 2,
 
-    GesturePan = 4,
+	GesturePan = 4,
 
-    GesturePinch = 8,
+	GesturePinch = 8,
 
-    GestureRotate = 16,
+	GestureRotate = 16,
 
-    GestureZoomIn = 32,
+	GestureZoomIn = 32,
 
-    GestureZoomOut = 64,
+	GestureZoomOut = 64,
 
-    GestureOneFingerZoom = 128,
+	GestureOneFingerZoom = 128,
 
-    GestureTilt = 256,
+	GestureTilt = 256,
 
-    TransitionCancelled = 65536
+	TransitionCancelled = 65536
 }
 
 declare const enum MGLCirclePitchAlignment {
 
-    Map = 0,
+	Map = 0,
 
-    Viewport = 1
+	Viewport = 1
 }
 
 declare const enum MGLCircleScaleAlignment {
 
-    Map = 0,
+	Map = 0,
 
-    Viewport = 1
+	Viewport = 1
 }
 
 declare class MGLCircleStyleLayer extends MGLVectorStyleLayer {
 
-    circleBlur: NSExpression;
-    circleBlurTransition: MGLTransition;
-    circleColor: NSExpression;
-    circleColorTransition: MGLTransition;
-    circleOpacity: NSExpression;
-    circleOpacityTransition: MGLTransition;
-    circlePitchAlignment: NSExpression;
-    circleRadius: NSExpression;
-    circleRadiusTransition: MGLTransition;
-    circleScaleAlignment: NSExpression;
-    circleStrokeColor: NSExpression;
-    circleStrokeColorTransition: MGLTransition;
-    circleStrokeOpacity: NSExpression;
-    circleStrokeOpacityTransition: MGLTransition;
-    circleStrokeWidth: NSExpression;
-    circleStrokeWidthTransition: MGLTransition;
-    circleTranslation: NSExpression;
-    circleTranslationAnchor: NSExpression;
-    circleTranslationTransition: MGLTransition;
+	static alloc(): MGLCircleStyleLayer; // inherited from NSObject
 
-    constructor(o: { identifier: string; source: MGLSource; });
+	static new(): MGLCircleStyleLayer; // inherited from NSObject
 
-    static alloc(): MGLCircleStyleLayer; // inherited from NSObject
+	circleBlur: NSExpression;
 
-    static new(): MGLCircleStyleLayer; // inherited from NSObject
+	circleBlurTransition: MGLTransition;
 
-    initWithIdentifierSource(identifier: string, source: MGLSource): this;
+	circleColor: NSExpression;
+
+	circleColorTransition: MGLTransition;
+
+	circleOpacity: NSExpression;
+
+	circleOpacityTransition: MGLTransition;
+
+	circlePitchAlignment: NSExpression;
+
+	circleRadius: NSExpression;
+
+	circleRadiusTransition: MGLTransition;
+
+	circleScaleAlignment: NSExpression;
+
+	circleStrokeColor: NSExpression;
+
+	circleStrokeColorTransition: MGLTransition;
+
+	circleStrokeOpacity: NSExpression;
+
+	circleStrokeOpacityTransition: MGLTransition;
+
+	circleStrokeWidth: NSExpression;
+
+	circleStrokeWidthTransition: MGLTransition;
+
+	circleTranslation: NSExpression;
+
+	circleTranslationAnchor: NSExpression;
+
+	circleTranslationTransition: MGLTransition;
+
+	constructor(o: { identifier: string; source: MGLSource; });
+
+	initWithIdentifierSource(identifier: string, source: MGLSource): this;
 }
 
 declare const enum MGLCircleTranslationAnchor {
 
-    Map = 0,
+	Map = 0,
 
-    Viewport = 1
+	Viewport = 1
 }
 
 declare class MGLClockDirectionFormatter extends NSFormatter {
 
-    unitStyle: NSFormattingUnitStyle;
+	static alloc(): MGLClockDirectionFormatter; // inherited from NSObject
 
-    static alloc(): MGLClockDirectionFormatter; // inherited from NSObject
+	static new(): MGLClockDirectionFormatter; // inherited from NSObject
 
-    static new(): MGLClockDirectionFormatter; // inherited from NSObject
+	unitStyle: NSFormattingUnitStyle;
 
-    stringFromDirection(direction: number): string;
+	stringFromDirection(direction: number): string;
 }
 
 interface MGLCluster extends MGLFeature {
 
-    clusterIdentifier: number;
+	clusterIdentifier: number;
 
-    clusterPointCount: number;
+	clusterPointCount: number;
 }
-
 declare var MGLCluster: {
 
-    prototype: MGLCluster;
+	prototype: MGLCluster;
 };
 
 declare var MGLClusterIdentifierInvalid: number;
 
 declare class MGLCompassDirectionFormatter extends NSFormatter {
 
-    unitStyle: NSFormattingUnitStyle;
+	static alloc(): MGLCompassDirectionFormatter; // inherited from NSObject
 
-    static alloc(): MGLCompassDirectionFormatter; // inherited from NSObject
+	static new(): MGLCompassDirectionFormatter; // inherited from NSObject
 
-    static new(): MGLCompassDirectionFormatter; // inherited from NSObject
+	unitStyle: NSFormattingUnitStyle;
 
-    stringFromDirection(direction: number): string;
+	stringFromDirection(direction: number): string;
 }
 
 declare class MGLComputedShapeSource extends MGLSource {
 
-    dataSource: MGLComputedShapeSourceDataSource;
-    readonly requestQueue: NSOperationQueue;
+	static alloc(): MGLComputedShapeSource; // inherited from NSObject
 
-    constructor(o: { identifier: string; dataSource: MGLComputedShapeSourceDataSource; options: NSDictionary<string, any>; });
+	static new(): MGLComputedShapeSource; // inherited from NSObject
 
-    constructor(o: { identifier: string; options: NSDictionary<string, any>; });
+	dataSource: MGLComputedShapeSourceDataSource;
 
-    static alloc(): MGLComputedShapeSource; // inherited from NSObject
+	readonly requestQueue: NSOperationQueue;
 
-    static new(): MGLComputedShapeSource; // inherited from NSObject
+	constructor(o: { identifier: string; dataSource: MGLComputedShapeSourceDataSource; options: NSDictionary<string, any>; });
 
-    initWithIdentifierDataSourceOptions(identifier: string, dataSource: MGLComputedShapeSourceDataSource, options: NSDictionary<string, any>): this;
+	constructor(o: { identifier: string; options: NSDictionary<string, any>; });
 
-    initWithIdentifierOptions(identifier: string, options: NSDictionary<string, any>): this;
+	initWithIdentifierDataSourceOptions(identifier: string, dataSource: MGLComputedShapeSourceDataSource, options: NSDictionary<string, any>): this;
 
-    invalidateBounds(bounds: MGLCoordinateBounds): void;
+	initWithIdentifierOptions(identifier: string, options: NSDictionary<string, any>): this;
 
-    invalidateTileAtXYZoomLevel(x: number, y: number, zoomLevel: number): void;
+	invalidateBounds(bounds: MGLCoordinateBounds): void;
 
-    setFeaturesInTileAtXYZoomLevel(features: NSArray<MGLShape> | MGLShape[], x: number, y: number, zoomLevel: number): void;
+	invalidateTileAtXYZoomLevel(x: number, y: number, zoomLevel: number): void;
+
+	setFeaturesInTileAtXYZoomLevel(features: NSArray<MGLShape> | MGLShape[], x: number, y: number, zoomLevel: number): void;
 }
 
 interface MGLComputedShapeSourceDataSource extends NSObjectProtocol {
 
-    featuresInCoordinateBoundsZoomLevel?(bounds: MGLCoordinateBounds, zoomLevel: number): NSArray<MGLShape>;
+	featuresInCoordinateBoundsZoomLevel?(bounds: MGLCoordinateBounds, zoomLevel: number): NSArray<MGLShape>;
 
-    featuresInTileAtXYZoomLevel?(x: number, y: number, zoomLevel: number): NSArray<MGLShape>;
+	featuresInTileAtXYZoomLevel?(x: number, y: number, zoomLevel: number): NSArray<MGLShape>;
 }
-
 declare var MGLComputedShapeSourceDataSource: {
 
-    prototype: MGLComputedShapeSourceDataSource;
+	prototype: MGLComputedShapeSourceDataSource;
 };
 
 interface MGLCoordinateBounds {
-    sw: CLLocationCoordinate2D;
-    ne: CLLocationCoordinate2D;
+	sw: CLLocationCoordinate2D;
+	ne: CLLocationCoordinate2D;
 }
-
 declare var MGLCoordinateBounds: interop.StructType<MGLCoordinateBounds>;
 
 declare class MGLCoordinateFormatter extends NSFormatter {
 
-    allowsMinutes: boolean;
-    allowsSeconds: boolean;
-    unitStyle: NSFormattingUnitStyle;
+	static alloc(): MGLCoordinateFormatter; // inherited from NSObject
 
-    static alloc(): MGLCoordinateFormatter; // inherited from NSObject
+	static new(): MGLCoordinateFormatter; // inherited from NSObject
 
-    static new(): MGLCoordinateFormatter; // inherited from NSObject
+	allowsMinutes: boolean;
 
-    stringFromCoordinate(coordinate: CLLocationCoordinate2D): string;
+	allowsSeconds: boolean;
+
+	unitStyle: NSFormattingUnitStyle;
+
+	stringFromCoordinate(coordinate: CLLocationCoordinate2D): string;
 }
 
 interface MGLCoordinateQuad {
-    topLeft: CLLocationCoordinate2D;
-    bottomLeft: CLLocationCoordinate2D;
-    bottomRight: CLLocationCoordinate2D;
-    topRight: CLLocationCoordinate2D;
+	topLeft: CLLocationCoordinate2D;
+	bottomLeft: CLLocationCoordinate2D;
+	bottomRight: CLLocationCoordinate2D;
+	topRight: CLLocationCoordinate2D;
 }
-
 declare var MGLCoordinateQuad: interop.StructType<MGLCoordinateQuad>;
 
 interface MGLCoordinateSpan {
-    latitudeDelta: number;
-    longitudeDelta: number;
+	latitudeDelta: number;
+	longitudeDelta: number;
 }
-
 declare var MGLCoordinateSpan: interop.StructType<MGLCoordinateSpan>;
 
 declare var MGLCoordinateSpanZero: MGLCoordinateSpan;
 
 declare const enum MGLDEMEncoding {
 
-    Mapbox = 0,
+	Mapbox = 0,
 
-    Terrarium = 1
+	Terrarium = 1
 }
 
 declare class MGLDistanceFormatter extends NSLengthFormatter {
 
-    static alloc(): MGLDistanceFormatter; // inherited from NSObject
+	static alloc(): MGLDistanceFormatter; // inherited from NSObject
 
-    static new(): MGLDistanceFormatter; // inherited from NSObject
+	static new(): MGLDistanceFormatter; // inherited from NSObject
 
-    stringFromDistance(distance: number): string;
+	stringFromDistance(distance: number): string;
 }
 
 declare class MGLEmptyFeature extends MGLShape implements MGLFeature {
 
-    attributes: NSDictionary<string, any>; // inherited from MGLFeature
-    readonly coordinate: CLLocationCoordinate2D; // inherited from MGLAnnotation
-    readonly debugDescription: string; // inherited from NSObjectProtocol
-    readonly description: string; // inherited from NSObjectProtocol
-    readonly hash: number; // inherited from NSObjectProtocol
-    identifier: any; // inherited from MGLFeature
-    readonly isProxy: boolean; // inherited from NSObjectProtocol
-    readonly subtitle: string; // inherited from MGLAnnotation
-    readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
-    readonly title: string; // inherited from MGLAnnotation
-    readonly;  // inherited from NSObjectProtocol
+	static alloc(): MGLEmptyFeature; // inherited from NSObject
 
-    static alloc(): MGLEmptyFeature; // inherited from NSObject
+	static new(): MGLEmptyFeature; // inherited from NSObject
 
-    static new(): MGLEmptyFeature; // inherited from NSObject
+	attributes: NSDictionary<string, any>; // inherited from MGLFeature
 
-    attributeForKey(key: string): any;
+	readonly coordinate: CLLocationCoordinate2D; // inherited from MGLAnnotation
 
-    class(): typeof NSObject;
+	readonly debugDescription: string; // inherited from NSObjectProtocol
 
-    conformsToProtocol(aProtocol: any /* Protocol */): boolean;
+	readonly description: string; // inherited from NSObjectProtocol
 
-    geoJSONDictionary(): NSDictionary<string, any>;
+	readonly hash: number; // inherited from NSObjectProtocol
 
-    isEqual(object: any): boolean;
+	identifier: any; // inherited from MGLFeature
 
-    isKindOfClass(aClass: typeof NSObject): boolean;
+	readonly isProxy: boolean; // inherited from NSObjectProtocol
 
-    isMemberOfClass(aClass: typeof NSObject): boolean;
+	readonly subtitle: string; // inherited from MGLAnnotation
 
-    performSelector(aSelector: string): any;
+	readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
 
-    performSelectorWithObject(aSelector: string, object: any): any;
+	readonly title: string; // inherited from MGLAnnotation
 
-    performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
+	readonly  // inherited from NSObjectProtocol
 
-    respondsToSelector(aSelector: string): boolean;
+	attributeForKey(key: string): any;
 
-    retainCount(): number;
+	class(): typeof NSObject;
 
-    self(): this;
+	conformsToProtocol(aProtocol: any /* Protocol */): boolean;
+
+	geoJSONDictionary(): NSDictionary<string, any>;
+
+	isEqual(object: any): boolean;
+
+	isKindOfClass(aClass: typeof NSObject): boolean;
+
+	isMemberOfClass(aClass: typeof NSObject): boolean;
+
+	performSelector(aSelector: string): any;
+
+	performSelectorWithObject(aSelector: string, object: any): any;
+
+	performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
+
+	respondsToSelector(aSelector: string): boolean;
+
+	retainCount(): number;
+
+	self(): this;
 }
 
 declare const enum MGLErrorCode {
 
-    Unknown = -1,
+	Unknown = -1,
 
-    NotFound = 1,
+	NotFound = 1,
 
-    BadServerResponse = 2,
+	BadServerResponse = 2,
 
-    ConnectionFailed = 3,
+	ConnectionFailed = 3,
 
-    ParseStyleFailed = 4,
+	ParseStyleFailed = 4,
 
-    LoadStyleFailed = 5,
+	LoadStyleFailed = 5,
 
-    SnapshotFailed = 6,
+	SnapshotFailed = 6,
 
-    SourceIsInUseCannotRemove = 7,
+	SourceIsInUseCannotRemove = 7,
 
-    SourceIdentifierMismatch = 8
+	SourceIdentifierMismatch = 8
 }
 
 declare var MGLErrorDomain: string;
@@ -506,82 +550,105 @@ declare var MGLExpressionInterpolationModeLinear: string;
 
 interface MGLFeature extends MGLAnnotation {
 
-    attributes: NSDictionary<string, any>;
+	attributes: NSDictionary<string, any>;
 
-    identifier: any;
+	identifier: any;
 
-    attributeForKey(key: string): any;
+	attributeForKey(key: string): any;
 
-    geoJSONDictionary(): NSDictionary<string, any>;
+	geoJSONDictionary(): NSDictionary<string, any>;
 }
-
 declare var MGLFeature: {
 
-    prototype: MGLFeature;
+	prototype: MGLFeature;
 };
 
 declare class MGLFillExtrusionStyleLayer extends MGLVectorStyleLayer {
 
-    fillExtrusionBase: NSExpression;
-    fillExtrusionBaseTransition: MGLTransition;
-    fillExtrusionColor: NSExpression;
-    fillExtrusionColorTransition: MGLTransition;
-    fillExtrusionHasVerticalGradient: NSExpression;
-    fillExtrusionHeight: NSExpression;
-    fillExtrusionHeightTransition: MGLTransition;
-    fillExtrusionOpacity: NSExpression;
-    fillExtrusionOpacityTransition: MGLTransition;
-    fillExtrusionPattern: NSExpression;
-    fillExtrusionPatternTransition: MGLTransition;
-    fillExtrusionTranslation: NSExpression;
-    fillExtrusionTranslationAnchor: NSExpression;
-    fillExtrusionTranslationTransition: MGLTransition;
+	static alloc(): MGLFillExtrusionStyleLayer; // inherited from NSObject
 
-    constructor(o: { identifier: string; source: MGLSource; });
+	static new(): MGLFillExtrusionStyleLayer; // inherited from NSObject
 
-    static alloc(): MGLFillExtrusionStyleLayer; // inherited from NSObject
+	fillExtrusionBase: NSExpression;
 
-    static new(): MGLFillExtrusionStyleLayer; // inherited from NSObject
+	fillExtrusionBaseTransition: MGLTransition;
 
-    initWithIdentifierSource(identifier: string, source: MGLSource): this;
+	fillExtrusionColor: NSExpression;
+
+	fillExtrusionColorTransition: MGLTransition;
+
+	fillExtrusionHasVerticalGradient: NSExpression;
+
+	fillExtrusionHeight: NSExpression;
+
+	fillExtrusionHeightTransition: MGLTransition;
+
+	fillExtrusionOpacity: NSExpression;
+
+	fillExtrusionOpacityTransition: MGLTransition;
+
+	fillExtrusionPattern: NSExpression;
+
+	fillExtrusionPatternTransition: MGLTransition;
+
+	fillExtrusionTranslation: NSExpression;
+
+	fillExtrusionTranslationAnchor: NSExpression;
+
+	fillExtrusionTranslationTransition: MGLTransition;
+
+	constructor(o: { identifier: string; source: MGLSource; });
+
+	initWithIdentifierSource(identifier: string, source: MGLSource): this;
 }
 
 declare const enum MGLFillExtrusionTranslationAnchor {
 
-    Map = 0,
+	Map = 0,
 
-    Viewport = 1
+	Viewport = 1
 }
 
 declare class MGLFillStyleLayer extends MGLVectorStyleLayer {
 
-    fillAntialiased: NSExpression;
-    fillColor: NSExpression;
-    fillColorTransition: MGLTransition;
-    fillOpacity: NSExpression;
-    fillOpacityTransition: MGLTransition;
-    fillOutlineColor: NSExpression;
-    fillOutlineColorTransition: MGLTransition;
-    fillPattern: NSExpression;
-    fillPatternTransition: MGLTransition;
-    fillTranslation: NSExpression;
-    fillTranslationAnchor: NSExpression;
-    fillTranslationTransition: MGLTransition;
+	static alloc(): MGLFillStyleLayer; // inherited from NSObject
 
-    constructor(o: { identifier: string; source: MGLSource; });
+	static new(): MGLFillStyleLayer; // inherited from NSObject
 
-    static alloc(): MGLFillStyleLayer; // inherited from NSObject
+	fillAntialiased: NSExpression;
 
-    static new(): MGLFillStyleLayer; // inherited from NSObject
+	fillColor: NSExpression;
 
-    initWithIdentifierSource(identifier: string, source: MGLSource): this;
+	fillColorTransition: MGLTransition;
+
+	fillOpacity: NSExpression;
+
+	fillOpacityTransition: MGLTransition;
+
+	fillOutlineColor: NSExpression;
+
+	fillOutlineColorTransition: MGLTransition;
+
+	fillPattern: NSExpression;
+
+	fillPatternTransition: MGLTransition;
+
+	fillTranslation: NSExpression;
+
+	fillTranslationAnchor: NSExpression;
+
+	fillTranslationTransition: MGLTransition;
+
+	constructor(o: { identifier: string; source: MGLSource; });
+
+	initWithIdentifierSource(identifier: string, source: MGLSource): this;
 }
 
 declare const enum MGLFillTranslationAnchor {
 
-    Map = 0,
+	Map = 0,
 
-    Viewport = 1
+	Viewport = 1
 }
 
 declare var MGLFontColorAttribute: string;
@@ -592,136 +659,154 @@ declare var MGLFontScaleAttribute: string;
 
 declare class MGLForegroundStyleLayer extends MGLStyleLayer {
 
-    readonly sourceIdentifier: string;
+	static alloc(): MGLForegroundStyleLayer; // inherited from NSObject
 
-    static alloc(): MGLForegroundStyleLayer; // inherited from NSObject
+	static new(): MGLForegroundStyleLayer; // inherited from NSObject
 
-    static new(): MGLForegroundStyleLayer; // inherited from NSObject
+	readonly sourceIdentifier: string;
 }
 
 declare class MGLHeatmapStyleLayer extends MGLVectorStyleLayer {
 
-    heatmapColor: NSExpression;
-    heatmapIntensity: NSExpression;
-    heatmapIntensityTransition: MGLTransition;
-    heatmapOpacity: NSExpression;
-    heatmapOpacityTransition: MGLTransition;
-    heatmapRadius: NSExpression;
-    heatmapRadiusTransition: MGLTransition;
-    heatmapWeight: NSExpression;
+	static alloc(): MGLHeatmapStyleLayer; // inherited from NSObject
 
-    constructor(o: { identifier: string; source: MGLSource; });
+	static new(): MGLHeatmapStyleLayer; // inherited from NSObject
 
-    static alloc(): MGLHeatmapStyleLayer; // inherited from NSObject
+	heatmapColor: NSExpression;
 
-    static new(): MGLHeatmapStyleLayer; // inherited from NSObject
+	heatmapIntensity: NSExpression;
 
-    initWithIdentifierSource(identifier: string, source: MGLSource): this;
+	heatmapIntensityTransition: MGLTransition;
+
+	heatmapOpacity: NSExpression;
+
+	heatmapOpacityTransition: MGLTransition;
+
+	heatmapRadius: NSExpression;
+
+	heatmapRadiusTransition: MGLTransition;
+
+	heatmapWeight: NSExpression;
+
+	constructor(o: { identifier: string; source: MGLSource; });
+
+	initWithIdentifierSource(identifier: string, source: MGLSource): this;
 }
 
 declare const enum MGLHillshadeIlluminationAnchor {
 
-    Map = 0,
+	Map = 0,
 
-    Viewport = 1
+	Viewport = 1
 }
 
 declare class MGLHillshadeStyleLayer extends MGLForegroundStyleLayer {
 
-    hillshadeAccentColor: NSExpression;
-    hillshadeAccentColorTransition: MGLTransition;
-    hillshadeExaggeration: NSExpression;
-    hillshadeExaggerationTransition: MGLTransition;
-    hillshadeHighlightColor: NSExpression;
-    hillshadeHighlightColorTransition: MGLTransition;
-    hillshadeIlluminationAnchor: NSExpression;
-    hillshadeIlluminationDirection: NSExpression;
-    hillshadeShadowColor: NSExpression;
-    hillshadeShadowColorTransition: MGLTransition;
+	static alloc(): MGLHillshadeStyleLayer; // inherited from NSObject
 
-    constructor(o: { identifier: string; source: MGLSource; });
+	static new(): MGLHillshadeStyleLayer; // inherited from NSObject
 
-    static alloc(): MGLHillshadeStyleLayer; // inherited from NSObject
+	hillshadeAccentColor: NSExpression;
 
-    static new(): MGLHillshadeStyleLayer; // inherited from NSObject
+	hillshadeAccentColorTransition: MGLTransition;
 
-    initWithIdentifierSource(identifier: string, source: MGLSource): this;
+	hillshadeExaggeration: NSExpression;
+
+	hillshadeExaggerationTransition: MGLTransition;
+
+	hillshadeHighlightColor: NSExpression;
+
+	hillshadeHighlightColorTransition: MGLTransition;
+
+	hillshadeIlluminationAnchor: NSExpression;
+
+	hillshadeIlluminationDirection: NSExpression;
+
+	hillshadeShadowColor: NSExpression;
+
+	hillshadeShadowColorTransition: MGLTransition;
+
+	constructor(o: { identifier: string; source: MGLSource; });
+
+	initWithIdentifierSource(identifier: string, source: MGLSource): this;
 }
 
 declare const enum MGLIconAnchor {
 
-    Center = 0,
+	Center = 0,
 
-    Left = 1,
+	Left = 1,
 
-    Right = 2,
+	Right = 2,
 
-    Top = 3,
+	Top = 3,
 
-    Bottom = 4,
+	Bottom = 4,
 
-    TopLeft = 5,
+	TopLeft = 5,
 
-    TopRight = 6,
+	TopRight = 6,
 
-    BottomLeft = 7,
+	BottomLeft = 7,
 
-    BottomRight = 8
+	BottomRight = 8
 }
 
 declare const enum MGLIconPitchAlignment {
 
-    Map = 0,
+	Map = 0,
 
-    Viewport = 1,
+	Viewport = 1,
 
-    Auto = 2
+	Auto = 2
 }
 
 declare const enum MGLIconRotationAlignment {
 
-    Map = 0,
+	Map = 0,
 
-    Viewport = 1,
+	Viewport = 1,
 
-    Auto = 2
+	Auto = 2
 }
 
 declare const enum MGLIconTextFit {
 
-    None = 0,
+	None = 0,
 
-    Width = 1,
+	Width = 1,
 
-    Height = 2,
+	Height = 2,
 
-    Both = 3
+	Both = 3
 }
 
 declare const enum MGLIconTranslationAnchor {
 
-    Map = 0,
+	Map = 0,
 
-    Viewport = 1
+	Viewport = 1
 }
 
 declare class MGLImageSource extends MGLSource {
 
-    URL: NSURL;
-    coordinates: MGLCoordinateQuad;
-    image: UIImage;
+	static alloc(): MGLImageSource; // inherited from NSObject
 
-    constructor(o: { identifier: string; coordinateQuad: MGLCoordinateQuad; image: UIImage; });
+	static new(): MGLImageSource; // inherited from NSObject
 
-    constructor(o: { identifier: string; coordinateQuad: MGLCoordinateQuad; URL: NSURL; });
+	URL: NSURL;
 
-    static alloc(): MGLImageSource; // inherited from NSObject
+	coordinates: MGLCoordinateQuad;
 
-    static new(): MGLImageSource; // inherited from NSObject
+	image: UIImage;
 
-    initWithIdentifierCoordinateQuadImage(identifier: string, coordinateQuad: MGLCoordinateQuad, image: UIImage): this;
+	constructor(o: { identifier: string; coordinateQuad: MGLCoordinateQuad; image: UIImage; });
 
-    initWithIdentifierCoordinateQuadURL(identifier: string, coordinateQuad: MGLCoordinateQuad, url: NSURL): this;
+	constructor(o: { identifier: string; coordinateQuad: MGLCoordinateQuad; URL: NSURL; });
+
+	initWithIdentifierCoordinateQuadImage(identifier: string, coordinateQuad: MGLCoordinateQuad, image: UIImage): this;
+
+	initWithIdentifierCoordinateQuadURL(identifier: string, coordinateQuad: MGLCoordinateQuad, url: NSURL): this;
 }
 
 declare var MGLInvalidDatasourceException: string;
@@ -734,471 +819,561 @@ declare var MGLInvalidStyleURLException: string;
 
 declare class MGLLight extends NSObject {
 
-    anchor: NSExpression;
-    color: NSExpression;
-    colorTransition: MGLTransition;
-    intensity: NSExpression;
-    intensityTransition: MGLTransition;
-    position: NSExpression;
-    positionTransition: MGLTransition;
+	static alloc(): MGLLight; // inherited from NSObject
 
-    static alloc(): MGLLight; // inherited from NSObject
+	static new(): MGLLight; // inherited from NSObject
 
-    static new(): MGLLight; // inherited from NSObject
+	anchor: NSExpression;
+
+	color: NSExpression;
+
+	colorTransition: MGLTransition;
+
+	intensity: NSExpression;
+
+	intensityTransition: MGLTransition;
+
+	position: NSExpression;
+
+	positionTransition: MGLTransition;
 }
 
 declare const enum MGLLightAnchor {
 
-    Map = 0,
+	Map = 0,
 
-    Viewport = 1
+	Viewport = 1
 }
 
 declare const enum MGLLineCap {
 
-    Butt = 0,
+	Butt = 0,
 
-    Round = 1,
+	Round = 1,
 
-    Square = 2
+	Square = 2
 }
 
 declare const enum MGLLineJoin {
 
-    Bevel = 0,
+	Bevel = 0,
 
-    Round = 1,
+	Round = 1,
 
-    Miter = 2
+	Miter = 2
 }
 
 declare class MGLLineStyleLayer extends MGLVectorStyleLayer {
 
-    lineBlur: NSExpression;
-    lineBlurTransition: MGLTransition;
-    lineCap: NSExpression;
-    lineColor: NSExpression;
-    lineColorTransition: MGLTransition;
-    lineDashPattern: NSExpression;
-    lineDashPatternTransition: MGLTransition;
-    lineGapWidth: NSExpression;
-    lineGapWidthTransition: MGLTransition;
-    lineGradient: NSExpression;
-    lineJoin: NSExpression;
-    lineMiterLimit: NSExpression;
-    lineOffset: NSExpression;
-    lineOffsetTransition: MGLTransition;
-    lineOpacity: NSExpression;
-    lineOpacityTransition: MGLTransition;
-    linePattern: NSExpression;
-    linePatternTransition: MGLTransition;
-    lineRoundLimit: NSExpression;
-    lineTranslation: NSExpression;
-    lineTranslationAnchor: NSExpression;
-    lineTranslationTransition: MGLTransition;
-    lineWidth: NSExpression;
-    lineWidthTransition: MGLTransition;
+	static alloc(): MGLLineStyleLayer; // inherited from NSObject
 
-    constructor(o: { identifier: string; source: MGLSource; });
+	static new(): MGLLineStyleLayer; // inherited from NSObject
 
-    static alloc(): MGLLineStyleLayer; // inherited from NSObject
+	lineBlur: NSExpression;
 
-    static new(): MGLLineStyleLayer; // inherited from NSObject
+	lineBlurTransition: MGLTransition;
 
-    initWithIdentifierSource(identifier: string, source: MGLSource): this;
+	lineCap: NSExpression;
+
+	lineColor: NSExpression;
+
+	lineColorTransition: MGLTransition;
+
+	lineDashPattern: NSExpression;
+
+	lineDashPatternTransition: MGLTransition;
+
+	lineGapWidth: NSExpression;
+
+	lineGapWidthTransition: MGLTransition;
+
+	lineGradient: NSExpression;
+
+	lineJoin: NSExpression;
+
+	lineMiterLimit: NSExpression;
+
+	lineOffset: NSExpression;
+
+	lineOffsetTransition: MGLTransition;
+
+	lineOpacity: NSExpression;
+
+	lineOpacityTransition: MGLTransition;
+
+	linePattern: NSExpression;
+
+	linePatternTransition: MGLTransition;
+
+	lineRoundLimit: NSExpression;
+
+	lineTranslation: NSExpression;
+
+	lineTranslationAnchor: NSExpression;
+
+	lineTranslationTransition: MGLTransition;
+
+	lineWidth: NSExpression;
+
+	lineWidthTransition: MGLTransition;
+
+	constructor(o: { identifier: string; source: MGLSource; });
+
+	initWithIdentifierSource(identifier: string, source: MGLSource): this;
 }
 
 declare const enum MGLLineTranslationAnchor {
 
-    Map = 0,
+	Map = 0,
 
-    Viewport = 1
+	Viewport = 1
 }
 
 interface MGLLocationManager extends NSObjectProtocol {
 
-    authorizationStatus: CLAuthorizationStatus;
+	authorizationStatus: CLAuthorizationStatus;
 
-    delegate: MGLLocationManagerDelegate;
+	delegate: MGLLocationManagerDelegate;
 
-    headingOrientation: CLDeviceOrientation;
+	headingOrientation: CLDeviceOrientation;
 
-    activityType?(): CLActivityType;
+	activityType?(): CLActivityType;
 
-    desiredAccuracy?(): number;
+	desiredAccuracy?(): number;
 
-    dismissHeadingCalibrationDisplay(): void;
+	dismissHeadingCalibrationDisplay(): void;
 
-    distanceFilter?(): number;
+	distanceFilter?(): number;
 
-    requestAlwaysAuthorization(): void;
+	requestAlwaysAuthorization(): void;
 
-    requestWhenInUseAuthorization(): void;
+	requestWhenInUseAuthorization(): void;
 
-    setActivityType?(activityType: CLActivityType): void;
+	setActivityType?(activityType: CLActivityType): void;
 
-    setDesiredAccuracy?(desiredAccuracy: number): void;
+	setDesiredAccuracy?(desiredAccuracy: number): void;
 
-    setDistanceFilter?(distanceFilter: number): void;
+	setDistanceFilter?(distanceFilter: number): void;
 
-    startUpdatingHeading(): void;
+	startUpdatingHeading(): void;
 
-    startUpdatingLocation(): void;
+	startUpdatingLocation(): void;
 
-    stopUpdatingHeading(): void;
+	stopUpdatingHeading(): void;
 
-    stopUpdatingLocation(): void;
+	stopUpdatingLocation(): void;
 }
-
 declare var MGLLocationManager: {
 
-    prototype: MGLLocationManager;
+	prototype: MGLLocationManager;
 };
 
 interface MGLLocationManagerDelegate extends NSObjectProtocol {
 
-    locationManagerDidFailWithError(manager: MGLLocationManager, error: NSError): void;
+	locationManagerDidFailWithError(manager: MGLLocationManager, error: NSError): void;
 
-    locationManagerDidUpdateHeading(manager: MGLLocationManager, newHeading: CLHeading): void;
+	locationManagerDidUpdateHeading(manager: MGLLocationManager, newHeading: CLHeading): void;
 
-    locationManagerDidUpdateLocations(manager: MGLLocationManager, locations: NSArray<CLLocation> | CLLocation[]): void;
+	locationManagerDidUpdateLocations(manager: MGLLocationManager, locations: NSArray<CLLocation> | CLLocation[]): void;
 
-    locationManagerShouldDisplayHeadingCalibration(manager: MGLLocationManager): boolean;
+	locationManagerShouldDisplayHeadingCalibration(manager: MGLLocationManager): boolean;
 }
-
 declare var MGLLocationManagerDelegate: {
 
-    prototype: MGLLocationManagerDelegate;
+	prototype: MGLLocationManagerDelegate;
 };
 
 declare class MGLLoggingConfiguration extends NSObject {
 
-    static readonly sharedConfiguration: MGLLoggingConfiguration;
-    loggingLevel: MGLLoggingLevel;
+	static alloc(): MGLLoggingConfiguration; // inherited from NSObject
 
-    static alloc(): MGLLoggingConfiguration; // inherited from NSObject
+	static new(): MGLLoggingConfiguration; // inherited from NSObject
 
-    static new(): MGLLoggingConfiguration; // inherited from NSObject
+	loggingLevel: MGLLoggingLevel;
+
+	static readonly sharedConfiguration: MGLLoggingConfiguration;
 }
 
 declare const enum MGLLoggingLevel {
 
-    None = 0,
+	None = 0,
 
-    Info = 1,
+	Info = 1,
 
-    Debug = 2,
+	Debug = 2,
 
-    Error = 3,
+	Error = 3,
 
-    Fault = 4
+	Fault = 4
 }
 
 declare class MGLMapCamera extends NSObject implements NSCopying, NSSecureCoding {
 
-    static readonly supportsSecureCoding: boolean; // inherited from NSSecureCoding
-    altitude: number;
-    centerCoordinate: CLLocationCoordinate2D;
-    heading: number;
-    pitch: number;
-    viewingDistance: number;
+	static alloc(): MGLMapCamera; // inherited from NSObject
 
-    constructor(o: { coder: NSCoder; }); // inherited from NSCoding
+	static camera(): MGLMapCamera;
 
-    static alloc(): MGLMapCamera; // inherited from NSObject
+	static cameraLookingAtCenterCoordinateAcrossDistancePitchHeading(centerCoordinate: CLLocationCoordinate2D, distance: number, pitch: number, heading: number): MGLMapCamera;
 
-    static camera(): MGLMapCamera;
+	static cameraLookingAtCenterCoordinateAltitudePitchHeading(centerCoordinate: CLLocationCoordinate2D, altitude: number, pitch: number, heading: number): MGLMapCamera;
 
-    static cameraLookingAtCenterCoordinateAcrossDistancePitchHeading(centerCoordinate: CLLocationCoordinate2D, distance: number, pitch: number, heading: number): MGLMapCamera;
+	static cameraLookingAtCenterCoordinateFromDistancePitchHeading(centerCoordinate: CLLocationCoordinate2D, distance: number, pitch: number, heading: number): MGLMapCamera;
 
-    static cameraLookingAtCenterCoordinateAltitudePitchHeading(centerCoordinate: CLLocationCoordinate2D, altitude: number, pitch: number, heading: number): MGLMapCamera;
+	static cameraLookingAtCenterCoordinateFromEyeCoordinateEyeAltitude(centerCoordinate: CLLocationCoordinate2D, eyeCoordinate: CLLocationCoordinate2D, eyeAltitude: number): MGLMapCamera;
 
-    static cameraLookingAtCenterCoordinateFromDistancePitchHeading(centerCoordinate: CLLocationCoordinate2D, distance: number, pitch: number, heading: number): MGLMapCamera;
+	static new(): MGLMapCamera; // inherited from NSObject
 
-    static cameraLookingAtCenterCoordinateFromEyeCoordinateEyeAltitude(centerCoordinate: CLLocationCoordinate2D, eyeCoordinate: CLLocationCoordinate2D, eyeAltitude: number): MGLMapCamera;
+	altitude: number;
 
-    static new(): MGLMapCamera; // inherited from NSObject
+	centerCoordinate: CLLocationCoordinate2D;
 
-    copyWithZone(zone: interop.Pointer | interop.Reference<any>): any;
+	heading: number;
 
-    encodeWithCoder(aCoder: NSCoder): void;
+	pitch: number;
 
-    initWithCoder(aDecoder: NSCoder): this;
+	viewingDistance: number;
 
-    isEqualToMapCamera(otherCamera: MGLMapCamera): boolean;
+	static readonly supportsSecureCoding: boolean; // inherited from NSSecureCoding
+
+	constructor(o: { coder: NSCoder; }); // inherited from NSCoding
+
+	copyWithZone(zone: interop.Pointer | interop.Reference<any>): any;
+
+	encodeWithCoder(aCoder: NSCoder): void;
+
+	initWithCoder(aDecoder: NSCoder): this;
+
+	isEqualToMapCamera(otherCamera: MGLMapCamera): boolean;
 }
 
 declare const enum MGLMapDebugMaskOptions {
 
-    TileBoundariesMask = 2,
+	TileBoundariesMask = 2,
 
-    TileInfoMask = 4,
+	TileInfoMask = 4,
 
-    TimestampsMask = 8,
+	TimestampsMask = 8,
 
-    CollisionBoxesMask = 16,
+	CollisionBoxesMask = 16,
 
-    OverdrawVisualizationMask = 32
+	OverdrawVisualizationMask = 32
 }
 
 interface MGLMapPoint {
-    x: number;
-    y: number;
-    zoomLevel: number;
+	x: number;
+	y: number;
+	zoomLevel: number;
 }
-
 declare var MGLMapPoint: interop.StructType<MGLMapPoint>;
 
 declare function MGLMapPointForCoordinate(coordinate: CLLocationCoordinate2D, zoomLevel: number): MGLMapPoint;
 
 declare class MGLMapSnapshot extends NSObject {
 
-    readonly image: UIImage;
+	static alloc(): MGLMapSnapshot; // inherited from NSObject
 
-    static alloc(): MGLMapSnapshot; // inherited from NSObject
+	static new(): MGLMapSnapshot; // inherited from NSObject
 
-    static new(): MGLMapSnapshot; // inherited from NSObject
+	readonly image: UIImage;
 
-    coordinateForPoint(point: CGPoint): CLLocationCoordinate2D;
+	coordinateForPoint(point: CGPoint): CLLocationCoordinate2D;
 
-    pointForCoordinate(coordinate: CLLocationCoordinate2D): CGPoint;
+	pointForCoordinate(coordinate: CLLocationCoordinate2D): CGPoint;
 }
 
 declare class MGLMapSnapshotOptions extends NSObject {
 
-    camera: MGLMapCamera;
-    coordinateBounds: MGLCoordinateBounds;
-    scale: number;
-    readonly size: CGSize;
-    readonly styleURL: NSURL;
-    zoomLevel: number;
+	static alloc(): MGLMapSnapshotOptions; // inherited from NSObject
 
-    constructor(o: { styleURL: NSURL; camera: MGLMapCamera; size: CGSize; });
+	static new(): MGLMapSnapshotOptions; // inherited from NSObject
 
-    static alloc(): MGLMapSnapshotOptions; // inherited from NSObject
+	camera: MGLMapCamera;
 
-    static new(): MGLMapSnapshotOptions; // inherited from NSObject
+	coordinateBounds: MGLCoordinateBounds;
 
-    initWithStyleURLCameraSize(styleURL: NSURL, camera: MGLMapCamera, size: CGSize): this;
+	scale: number;
+
+	readonly size: CGSize;
+
+	readonly styleURL: NSURL;
+
+	zoomLevel: number;
+
+	constructor(o: { styleURL: NSURL; camera: MGLMapCamera; size: CGSize; });
+
+	initWithStyleURLCameraSize(styleURL: NSURL, camera: MGLMapCamera, size: CGSize): this;
 }
 
 declare class MGLMapSnapshotter extends NSObject {
 
-    readonly loading: boolean;
-    options: MGLMapSnapshotOptions;
+	static alloc(): MGLMapSnapshotter; // inherited from NSObject
 
-    constructor(o: { options: MGLMapSnapshotOptions; });
+	static new(): MGLMapSnapshotter; // inherited from NSObject
 
-    static alloc(): MGLMapSnapshotter; // inherited from NSObject
+	readonly loading: boolean;
 
-    static new(): MGLMapSnapshotter; // inherited from NSObject
+	options: MGLMapSnapshotOptions;
 
-    cancel(): void;
+	constructor(o: { options: MGLMapSnapshotOptions; });
 
-    initWithOptions(options: MGLMapSnapshotOptions): this;
+	cancel(): void;
 
-    startWithCompletionHandler(completionHandler: (p1: MGLMapSnapshot, p2: NSError) => void): void;
+	initWithOptions(options: MGLMapSnapshotOptions): this;
 
-    startWithQueueCompletionHandler(queue: NSObject, completionHandler: (p1: MGLMapSnapshot, p2: NSError) => void): void;
+	startWithCompletionHandler(completionHandler: (p1: MGLMapSnapshot, p2: NSError) => void): void;
+
+	startWithQueueCompletionHandler(queue: NSObject, completionHandler: (p1: MGLMapSnapshot, p2: NSError) => void): void;
 }
 
 declare class MGLMapView extends UIView {
 
-    allowsRotating: boolean;
-    allowsScrolling: boolean;
-    allowsTilting: boolean;
-    allowsZooming: boolean;
-    readonly annotations: NSArray<MGLAnnotation>;
-    readonly attributionButton: UIButton;
-    attributionButtonMargins: CGPoint;
-    attributionButtonPosition: MGLOrnamentPosition;
-    camera: MGLMapCamera;
-    centerCoordinate: CLLocationCoordinate2D;
-    readonly compassView: UIImageView;
-    compassViewMargins: CGPoint;
-    compassViewPosition: MGLOrnamentPosition;
-    contentInset: UIEdgeInsets;
-    debugMask: MGLMapDebugMaskOptions;
-    decelerationRate: number;
-    delegate: MGLMapViewDelegate;
-    direction: number;
-    displayHeadingCalibration: boolean;
-    hapticFeedbackEnabled: boolean;
-    latitude: number;
-    locationManager: MGLLocationManager;
-    readonly logoView: UIImageView;
-    logoViewMargins: CGPoint;
-    logoViewPosition: MGLOrnamentPosition;
-    longitude: number;
-    maximumZoomLevel: number;
-    minimumZoomLevel: number;
-    readonly overlays: NSArray<MGLOverlay>;
-    pitchEnabled: boolean;
-    preferredFramesPerSecond: number;
-    prefetchesTiles: boolean;
-    rotateEnabled: boolean;
-    readonly scaleBar: UIView;
-    scaleBarMargins: CGPoint;
-    scaleBarPosition: MGLOrnamentPosition;
-    scrollEnabled: boolean;
-    selectedAnnotations: NSArray<MGLAnnotation>;
-    showsHeading: boolean;
-    showsScale: boolean;
-    showsUserHeadingIndicator: boolean;
-    showsUserLocation: boolean;
-    readonly style: MGLStyle;
-    styleURL: NSURL;
-    targetCoordinate: CLLocationCoordinate2D;
-    readonly userLocation: MGLUserLocation;
-    userLocationVerticalAlignment: MGLAnnotationVerticalAlignment;
-    readonly userLocationVisible: boolean;
-    userTrackingMode: MGLUserTrackingMode;
-    readonly visibleAnnotations: NSArray<MGLAnnotation>;
-    visibleCoordinateBounds: MGLCoordinateBounds;
-    zoomEnabled: boolean;
-    zoomLevel: number;
+	static alloc(): MGLMapView; // inherited from NSObject
 
-    constructor(o: { frame: CGRect; styleURL: NSURL; });
+	static appearance(): MGLMapView; // inherited from UIAppearance
 
-    static alloc(): MGLMapView; // inherited from NSObject
+	static appearanceForTraitCollection(trait: UITraitCollection): MGLMapView; // inherited from UIAppearance
 
-    static appearance(): MGLMapView; // inherited from UIAppearance
+	static appearanceForTraitCollectionWhenContainedIn(trait: UITraitCollection, ContainerClass: typeof NSObject): MGLMapView; // inherited from UIAppearance
 
-    static appearanceForTraitCollection(trait: UITraitCollection): MGLMapView; // inherited from UIAppearance
+	static appearanceForTraitCollectionWhenContainedInInstancesOfClasses(trait: UITraitCollection, containerTypes: NSArray<typeof NSObject> | typeof NSObject[]): MGLMapView; // inherited from UIAppearance
 
-    static appearanceForTraitCollectionWhenContainedIn(trait: UITraitCollection, ContainerClass: typeof NSObject): MGLMapView; // inherited from UIAppearance
+	static appearanceWhenContainedIn(ContainerClass: typeof NSObject): MGLMapView; // inherited from UIAppearance
 
-    static appearanceForTraitCollectionWhenContainedInInstancesOfClasses(trait: UITraitCollection, containerTypes: NSArray<typeof NSObject> | typeof NSObject[]): MGLMapView; // inherited from UIAppearance
+	static appearanceWhenContainedInInstancesOfClasses(containerTypes: NSArray<typeof NSObject> | typeof NSObject[]): MGLMapView; // inherited from UIAppearance
 
-    static appearanceWhenContainedIn(ContainerClass: typeof NSObject): MGLMapView; // inherited from UIAppearance
+	static new(): MGLMapView; // inherited from NSObject
 
-    static appearanceWhenContainedInInstancesOfClasses(containerTypes: NSArray<typeof NSObject> | typeof NSObject[]): MGLMapView; // inherited from UIAppearance
+	allowsRotating: boolean;
 
-    static new(): MGLMapView; // inherited from NSObject
+	allowsScrolling: boolean;
 
-    addAnnotation(annotation: MGLAnnotation): void;
+	allowsTilting: boolean;
 
-    addAnnotations(annotations: NSArray<MGLAnnotation> | MGLAnnotation[]): void;
+	allowsZooming: boolean;
 
-    addOverlay(overlay: MGLOverlay): void;
+	readonly annotations: NSArray<MGLAnnotation>;
 
-    addOverlays(overlays: NSArray<MGLOverlay> | MGLOverlay[]): void;
+	readonly attributionButton: UIButton;
 
-    anchorPointForGesture(gesture: UIGestureRecognizer): CGPoint;
+	attributionButtonMargins: CGPoint;
 
-    cameraFittingCoordinateBoundsEdgePadding(camera: MGLMapCamera, bounds: MGLCoordinateBounds, insets: UIEdgeInsets): MGLMapCamera;
+	attributionButtonPosition: MGLOrnamentPosition;
 
-    cameraFittingShapeEdgePadding(camera: MGLMapCamera, shape: MGLShape, insets: UIEdgeInsets): MGLMapCamera;
+	camera: MGLMapCamera;
 
-    cameraThatFitsCoordinateBounds(bounds: MGLCoordinateBounds): MGLMapCamera;
+	centerCoordinate: CLLocationCoordinate2D;
 
-    cameraThatFitsCoordinateBoundsEdgePadding(bounds: MGLCoordinateBounds, insets: UIEdgeInsets): MGLMapCamera;
+	readonly compassView: UIImageView;
 
-    cameraThatFitsShapeDirectionEdgePadding(shape: MGLShape, direction: number, insets: UIEdgeInsets): MGLMapCamera;
+	compassViewMargins: CGPoint;
 
-    convertCoordinateBoundsToRectToView(bounds: MGLCoordinateBounds, view: UIView): CGRect;
+	compassViewPosition: MGLOrnamentPosition;
 
-    convertCoordinateToPointToView(coordinate: CLLocationCoordinate2D, view: UIView): CGPoint;
+	contentInset: UIEdgeInsets;
 
-    convertPointToCoordinateFromView(point: CGPoint, view: UIView): CLLocationCoordinate2D;
+	debugMask: MGLMapDebugMaskOptions;
 
-    convertRectToCoordinateBoundsFromView(rect: CGRect, view: UIView): MGLCoordinateBounds;
+	decelerationRate: number;
 
-    dequeueReusableAnnotationImageWithIdentifier(identifier: string): MGLAnnotationImage;
+	delegate: MGLMapViewDelegate;
 
-    dequeueReusableAnnotationViewWithIdentifier(identifier: string): MGLAnnotationView;
+	direction: number;
 
-    deselectAnnotationAnimated(annotation: MGLAnnotation, animated: boolean): void;
+	displayHeadingCalibration: boolean;
 
-    flyToCameraCompletionHandler(camera: MGLMapCamera, completion: () => void): void;
+	hapticFeedbackEnabled: boolean;
 
-    flyToCameraWithDurationCompletionHandler(camera: MGLMapCamera, duration: number, completion: () => void): void;
+	latitude: number;
 
-    flyToCameraWithDurationPeakAltitudeCompletionHandler(camera: MGLMapCamera, duration: number, peakAltitude: number, completion: () => void): void;
+	locationManager: MGLLocationManager;
 
-    initWithFrameStyleURL(frame: CGRect, styleURL: NSURL): this;
+	readonly logoView: UIImageView;
 
-    metersPerPointAtLatitude(latitude: number): number;
+	logoViewMargins: CGPoint;
 
-    reloadStyle(sender: any): void;
+	logoViewPosition: MGLOrnamentPosition;
 
-    removeAnnotation(annotation: MGLAnnotation): void;
+	longitude: number;
 
-    removeAnnotations(annotations: NSArray<MGLAnnotation> | MGLAnnotation[]): void;
+	maximumZoomLevel: number;
 
-    removeOverlay(overlay: MGLOverlay): void;
+	minimumZoomLevel: number;
 
-    removeOverlays(overlays: NSArray<MGLOverlay> | MGLOverlay[]): void;
+	readonly overlays: NSArray<MGLOverlay>;
 
-    resetNorth(): void;
+	pitchEnabled: boolean;
 
-    resetPosition(): void;
+	preferredFramesPerSecond: number;
 
-    selectAnnotationAnimated(annotation: MGLAnnotation, animated: boolean): void;
+	prefetchesTiles: boolean;
 
-    selectAnnotationMoveIntoViewAnimateSelection(annotation: MGLAnnotation, moveIntoView: boolean, animateSelection: boolean): void;
+	rotateEnabled: boolean;
 
-    setCameraAnimated(camera: MGLMapCamera, animated: boolean): void;
+	readonly scaleBar: UIView;
 
-    setCameraWithDurationAnimationTimingFunction(camera: MGLMapCamera, duration: number, _function: CAMediaTimingFunction): void;
+	scaleBarMargins: CGPoint;
 
-    setCameraWithDurationAnimationTimingFunctionCompletionHandler(camera: MGLMapCamera, duration: number, _function: CAMediaTimingFunction, completion: () => void): void;
+	scaleBarPosition: MGLOrnamentPosition;
 
-    setCameraWithDurationAnimationTimingFunctionEdgePaddingCompletionHandler(camera: MGLMapCamera, duration: number, _function: CAMediaTimingFunction, edgePadding: UIEdgeInsets, completion: () => void): void;
+	scrollEnabled: boolean;
 
-    setCenterCoordinateAnimated(coordinate: CLLocationCoordinate2D, animated: boolean): void;
+	selectedAnnotations: NSArray<MGLAnnotation>;
 
-    setCenterCoordinateZoomLevelAnimated(centerCoordinate: CLLocationCoordinate2D, zoomLevel: number, animated: boolean): void;
+	showsHeading: boolean;
 
-    setCenterCoordinateZoomLevelDirectionAnimated(centerCoordinate: CLLocationCoordinate2D, zoomLevel: number, direction: number, animated: boolean): void;
+	showsScale: boolean;
 
-    setCenterCoordinateZoomLevelDirectionAnimatedCompletionHandler(centerCoordinate: CLLocationCoordinate2D, zoomLevel: number, direction: number, animated: boolean, completion: () => void): void;
+	showsUserHeadingIndicator: boolean;
 
-    setContentInsetAnimated(contentInset: UIEdgeInsets, animated: boolean): void;
+	showsUserLocation: boolean;
 
-    setDirectionAnimated(direction: number, animated: boolean): void;
+	readonly style: MGLStyle;
 
-    setTargetCoordinateAnimated(targetCoordinate: CLLocationCoordinate2D, animated: boolean): void;
+	styleURL: NSURL;
 
-    setUserLocationVerticalAlignmentAnimated(alignment: MGLAnnotationVerticalAlignment, animated: boolean): void;
+	targetCoordinate: CLLocationCoordinate2D;
 
-    setUserTrackingModeAnimated(mode: MGLUserTrackingMode, animated: boolean): void;
+	readonly userLocation: MGLUserLocation;
 
-    setVisibleCoordinateBoundsAnimated(bounds: MGLCoordinateBounds, animated: boolean): void;
+	userLocationVerticalAlignment: MGLAnnotationVerticalAlignment;
 
-    setVisibleCoordinateBoundsEdgePaddingAnimated(bounds: MGLCoordinateBounds, insets: UIEdgeInsets, animated: boolean): void;
+	readonly userLocationVisible: boolean;
 
-    setVisibleCoordinatesCountEdgePaddingAnimated(coordinates: interop.Pointer | interop.Reference<CLLocationCoordinate2D>, count: number, insets: UIEdgeInsets, animated: boolean): void;
+	userTrackingMode: MGLUserTrackingMode;
 
-    setVisibleCoordinatesCountEdgePaddingDirectionDurationAnimationTimingFunctionCompletionHandler(coordinates: interop.Pointer | interop.Reference<CLLocationCoordinate2D>, count: number, insets: UIEdgeInsets, direction: number, duration: number, _function: CAMediaTimingFunction, completion: () => void): void;
+	readonly visibleAnnotations: NSArray<MGLAnnotation>;
 
-    setZoomLevelAnimated(zoomLevel: number, animated: boolean): void;
+	visibleCoordinateBounds: MGLCoordinateBounds;
 
-    showAnnotationsAnimated(annotations: NSArray<MGLAnnotation> | MGLAnnotation[], animated: boolean): void;
+	zoomEnabled: boolean;
 
-    showAnnotationsEdgePaddingAnimated(annotations: NSArray<MGLAnnotation> | MGLAnnotation[], insets: UIEdgeInsets, animated: boolean): void;
+	zoomLevel: number;
 
-    showAttribution(sender: any): void;
+	constructor(o: { frame: CGRect; styleURL: NSURL; });
 
-    updateUserLocationAnnotationView(): void;
+	addAnnotation(annotation: MGLAnnotation): void;
 
-    updateUserLocationAnnotationViewAnimatedWithDuration(duration: number): void;
+	addAnnotations(annotations: NSArray<MGLAnnotation> | MGLAnnotation[]): void;
 
-    viewForAnnotation(annotation: MGLAnnotation): MGLAnnotationView;
+	addOverlay(overlay: MGLOverlay): void;
 
-    visibleAnnotationsInRect(rect: CGRect): NSArray<MGLAnnotation>;
+	addOverlays(overlays: NSArray<MGLOverlay> | MGLOverlay[]): void;
 
-    visibleFeaturesAtPoint(point: CGPoint): NSArray<MGLFeature>;
+	anchorPointForGesture(gesture: UIGestureRecognizer): CGPoint;
 
-    visibleFeaturesAtPointInStyleLayersWithIdentifiers(point: CGPoint, styleLayerIdentifiers: NSSet<string>): NSArray<MGLFeature>;
+	cameraFittingCoordinateBoundsEdgePadding(camera: MGLMapCamera, bounds: MGLCoordinateBounds, insets: UIEdgeInsets): MGLMapCamera;
 
-    visibleFeaturesAtPointInStyleLayersWithIdentifiersPredicate(point: CGPoint, styleLayerIdentifiers: NSSet<string>, predicate: NSPredicate): NSArray<MGLFeature>;
+	cameraFittingShapeEdgePadding(camera: MGLMapCamera, shape: MGLShape, insets: UIEdgeInsets): MGLMapCamera;
 
-    visibleFeaturesInRect(rect: CGRect): NSArray<MGLFeature>;
+	cameraThatFitsCoordinateBounds(bounds: MGLCoordinateBounds): MGLMapCamera;
 
-    visibleFeaturesInRectInStyleLayersWithIdentifiers(rect: CGRect, styleLayerIdentifiers: NSSet<string>): NSArray<MGLFeature>;
+	cameraThatFitsCoordinateBoundsEdgePadding(bounds: MGLCoordinateBounds, insets: UIEdgeInsets): MGLMapCamera;
 
-    visibleFeaturesInRectInStyleLayersWithIdentifiersPredicate(rect: CGRect, styleLayerIdentifiers: NSSet<string>, predicate: NSPredicate): NSArray<MGLFeature>;
+	cameraThatFitsShapeDirectionEdgePadding(shape: MGLShape, direction: number, insets: UIEdgeInsets): MGLMapCamera;
+
+	convertCoordinateBoundsToRectToView(bounds: MGLCoordinateBounds, view: UIView): CGRect;
+
+	convertCoordinateToPointToView(coordinate: CLLocationCoordinate2D, view: UIView): CGPoint;
+
+	convertPointToCoordinateFromView(point: CGPoint, view: UIView): CLLocationCoordinate2D;
+
+	convertRectToCoordinateBoundsFromView(rect: CGRect, view: UIView): MGLCoordinateBounds;
+
+	dequeueReusableAnnotationImageWithIdentifier(identifier: string): MGLAnnotationImage;
+
+	dequeueReusableAnnotationViewWithIdentifier(identifier: string): MGLAnnotationView;
+
+	deselectAnnotationAnimated(annotation: MGLAnnotation, animated: boolean): void;
+
+	flyToCameraCompletionHandler(camera: MGLMapCamera, completion: () => void): void;
+
+	flyToCameraWithDurationCompletionHandler(camera: MGLMapCamera, duration: number, completion: () => void): void;
+
+	flyToCameraWithDurationPeakAltitudeCompletionHandler(camera: MGLMapCamera, duration: number, peakAltitude: number, completion: () => void): void;
+
+	initWithFrameStyleURL(frame: CGRect, styleURL: NSURL): this;
+
+	metersPerPointAtLatitude(latitude: number): number;
+
+	reloadStyle(sender: any): void;
+
+	removeAnnotation(annotation: MGLAnnotation): void;
+
+	removeAnnotations(annotations: NSArray<MGLAnnotation> | MGLAnnotation[]): void;
+
+	removeOverlay(overlay: MGLOverlay): void;
+
+	removeOverlays(overlays: NSArray<MGLOverlay> | MGLOverlay[]): void;
+
+	resetNorth(): void;
+
+	resetPosition(): void;
+
+	selectAnnotationAnimated(annotation: MGLAnnotation, animated: boolean): void;
+
+	selectAnnotationMoveIntoViewAnimateSelection(annotation: MGLAnnotation, moveIntoView: boolean, animateSelection: boolean): void;
+
+	setCameraAnimated(camera: MGLMapCamera, animated: boolean): void;
+
+	setCameraWithDurationAnimationTimingFunction(camera: MGLMapCamera, duration: number, _function: CAMediaTimingFunction): void;
+
+	setCameraWithDurationAnimationTimingFunctionCompletionHandler(camera: MGLMapCamera, duration: number, _function: CAMediaTimingFunction, completion: () => void): void;
+
+	setCameraWithDurationAnimationTimingFunctionEdgePaddingCompletionHandler(camera: MGLMapCamera, duration: number, _function: CAMediaTimingFunction, edgePadding: UIEdgeInsets, completion: () => void): void;
+
+	setCenterCoordinateAnimated(coordinate: CLLocationCoordinate2D, animated: boolean): void;
+
+	setCenterCoordinateZoomLevelAnimated(centerCoordinate: CLLocationCoordinate2D, zoomLevel: number, animated: boolean): void;
+
+	setCenterCoordinateZoomLevelDirectionAnimated(centerCoordinate: CLLocationCoordinate2D, zoomLevel: number, direction: number, animated: boolean): void;
+
+	setCenterCoordinateZoomLevelDirectionAnimatedCompletionHandler(centerCoordinate: CLLocationCoordinate2D, zoomLevel: number, direction: number, animated: boolean, completion: () => void): void;
+
+	setContentInsetAnimated(contentInset: UIEdgeInsets, animated: boolean): void;
+
+	setDirectionAnimated(direction: number, animated: boolean): void;
+
+	setTargetCoordinateAnimated(targetCoordinate: CLLocationCoordinate2D, animated: boolean): void;
+
+	setUserLocationVerticalAlignmentAnimated(alignment: MGLAnnotationVerticalAlignment, animated: boolean): void;
+
+	setUserTrackingModeAnimated(mode: MGLUserTrackingMode, animated: boolean): void;
+
+	setVisibleCoordinateBoundsAnimated(bounds: MGLCoordinateBounds, animated: boolean): void;
+
+	setVisibleCoordinateBoundsEdgePaddingAnimated(bounds: MGLCoordinateBounds, insets: UIEdgeInsets, animated: boolean): void;
+
+	setVisibleCoordinatesCountEdgePaddingAnimated(coordinates: interop.Pointer | interop.Reference<CLLocationCoordinate2D>, count: number, insets: UIEdgeInsets, animated: boolean): void;
+
+	setVisibleCoordinatesCountEdgePaddingDirectionDurationAnimationTimingFunctionCompletionHandler(coordinates: interop.Pointer | interop.Reference<CLLocationCoordinate2D>, count: number, insets: UIEdgeInsets, direction: number, duration: number, _function: CAMediaTimingFunction, completion: () => void): void;
+
+	setZoomLevelAnimated(zoomLevel: number, animated: boolean): void;
+
+	showAnnotationsAnimated(annotations: NSArray<MGLAnnotation> | MGLAnnotation[], animated: boolean): void;
+
+	showAnnotationsEdgePaddingAnimated(annotations: NSArray<MGLAnnotation> | MGLAnnotation[], insets: UIEdgeInsets, animated: boolean): void;
+
+	showAttribution(sender: any): void;
+
+	updateUserLocationAnnotationView(): void;
+
+	updateUserLocationAnnotationViewAnimatedWithDuration(duration: number): void;
+
+	viewForAnnotation(annotation: MGLAnnotation): MGLAnnotationView;
+
+	visibleAnnotationsInRect(rect: CGRect): NSArray<MGLAnnotation>;
+
+	visibleFeaturesAtPoint(point: CGPoint): NSArray<MGLFeature>;
+
+	visibleFeaturesAtPointInStyleLayersWithIdentifiers(point: CGPoint, styleLayerIdentifiers: NSSet<string>): NSArray<MGLFeature>;
+
+	visibleFeaturesAtPointInStyleLayersWithIdentifiersPredicate(point: CGPoint, styleLayerIdentifiers: NSSet<string>, predicate: NSPredicate): NSArray<MGLFeature>;
+
+	visibleFeaturesInRect(rect: CGRect): NSArray<MGLFeature>;
+
+	visibleFeaturesInRectInStyleLayersWithIdentifiers(rect: CGRect, styleLayerIdentifiers: NSSet<string>): NSArray<MGLFeature>;
+
+	visibleFeaturesInRectInStyleLayersWithIdentifiersPredicate(rect: CGRect, styleLayerIdentifiers: NSSet<string>, predicate: NSPredicate): NSArray<MGLFeature>;
 }
 
 declare var MGLMapViewDecelerationRateFast: number;
@@ -1209,94 +1384,93 @@ declare var MGLMapViewDecelerationRateNormal: number;
 
 interface MGLMapViewDelegate extends NSObjectProtocol {
 
-    mapViewAlphaForShapeAnnotation?(mapView: MGLMapView, annotation: MGLShape): number;
+	mapViewAlphaForShapeAnnotation?(mapView: MGLMapView, annotation: MGLShape): number;
 
-    mapViewAnnotationCalloutAccessoryControlTapped?(mapView: MGLMapView, annotation: MGLAnnotation, control: UIControl): void;
+	mapViewAnnotationCalloutAccessoryControlTapped?(mapView: MGLMapView, annotation: MGLAnnotation, control: UIControl): void;
 
-    mapViewAnnotationCanShowCallout?(mapView: MGLMapView, annotation: MGLAnnotation): boolean;
+	mapViewAnnotationCanShowCallout?(mapView: MGLMapView, annotation: MGLAnnotation): boolean;
 
-    mapViewCalloutViewForAnnotation?(mapView: MGLMapView, annotation: MGLAnnotation): MGLCalloutView;
+	mapViewCalloutViewForAnnotation?(mapView: MGLMapView, annotation: MGLAnnotation): MGLCalloutView;
 
-    mapViewDidAddAnnotationViews?(mapView: MGLMapView, annotationViews: NSArray<MGLAnnotationView> | MGLAnnotationView[]): void;
+	mapViewDidAddAnnotationViews?(mapView: MGLMapView, annotationViews: NSArray<MGLAnnotationView> | MGLAnnotationView[]): void;
 
-    mapViewDidBecomeIdle?(mapView: MGLMapView): void;
+	mapViewDidBecomeIdle?(mapView: MGLMapView): void;
 
-    mapViewDidChangeUserTrackingModeAnimated?(mapView: MGLMapView, mode: MGLUserTrackingMode, animated: boolean): void;
+	mapViewDidChangeUserTrackingModeAnimated?(mapView: MGLMapView, mode: MGLUserTrackingMode, animated: boolean): void;
 
-    mapViewDidDeselectAnnotation?(mapView: MGLMapView, annotation: MGLAnnotation): void;
+	mapViewDidDeselectAnnotation?(mapView: MGLMapView, annotation: MGLAnnotation): void;
 
-    mapViewDidDeselectAnnotationView?(mapView: MGLMapView, annotationView: MGLAnnotationView): void;
+	mapViewDidDeselectAnnotationView?(mapView: MGLMapView, annotationView: MGLAnnotationView): void;
 
-    mapViewDidFailLoadingMapWithError?(mapView: MGLMapView, error: NSError): void;
+	mapViewDidFailLoadingMapWithError?(mapView: MGLMapView, error: NSError): void;
 
-    mapViewDidFailToLoadImage?(mapView: MGLMapView, imageName: string): UIImage;
+	mapViewDidFailToLoadImage?(mapView: MGLMapView, imageName: string): UIImage;
 
-    mapViewDidFailToLocateUserWithError?(mapView: MGLMapView, error: NSError): void;
+	mapViewDidFailToLocateUserWithError?(mapView: MGLMapView, error: NSError): void;
 
-    mapViewDidFinishLoadingMap?(mapView: MGLMapView): void;
+	mapViewDidFinishLoadingMap?(mapView: MGLMapView): void;
 
-    mapViewDidFinishLoadingStyle?(mapView: MGLMapView, style: MGLStyle): void;
+	mapViewDidFinishLoadingStyle?(mapView: MGLMapView, style: MGLStyle): void;
 
-    mapViewDidFinishRenderingFrameFullyRendered?(mapView: MGLMapView, fullyRendered: boolean): void;
+	mapViewDidFinishRenderingFrameFullyRendered?(mapView: MGLMapView, fullyRendered: boolean): void;
 
-    mapViewDidFinishRenderingMapFullyRendered?(mapView: MGLMapView, fullyRendered: boolean): void;
+	mapViewDidFinishRenderingMapFullyRendered?(mapView: MGLMapView, fullyRendered: boolean): void;
 
-    mapViewDidSelectAnnotation?(mapView: MGLMapView, annotation: MGLAnnotation): void;
+	mapViewDidSelectAnnotation?(mapView: MGLMapView, annotation: MGLAnnotation): void;
 
-    mapViewDidSelectAnnotationView?(mapView: MGLMapView, annotationView: MGLAnnotationView): void;
+	mapViewDidSelectAnnotationView?(mapView: MGLMapView, annotationView: MGLAnnotationView): void;
 
-    mapViewDidStopLocatingUser?(mapView: MGLMapView): void;
+	mapViewDidStopLocatingUser?(mapView: MGLMapView): void;
 
-    mapViewDidUpdateUserLocation?(mapView: MGLMapView, userLocation: MGLUserLocation): void;
+	mapViewDidUpdateUserLocation?(mapView: MGLMapView, userLocation: MGLUserLocation): void;
 
-    mapViewFillColorForPolygonAnnotation?(mapView: MGLMapView, annotation: MGLPolygon): UIColor;
+	mapViewFillColorForPolygonAnnotation?(mapView: MGLMapView, annotation: MGLPolygon): UIColor;
 
-    mapViewImageForAnnotation?(mapView: MGLMapView, annotation: MGLAnnotation): MGLAnnotationImage;
+	mapViewImageForAnnotation?(mapView: MGLMapView, annotation: MGLAnnotation): MGLAnnotationImage;
 
-    mapViewLeftCalloutAccessoryViewForAnnotation?(mapView: MGLMapView, annotation: MGLAnnotation): UIView;
+	mapViewLeftCalloutAccessoryViewForAnnotation?(mapView: MGLMapView, annotation: MGLAnnotation): UIView;
 
-    mapViewLineWidthForPolylineAnnotation?(mapView: MGLMapView, annotation: MGLPolyline): number;
+	mapViewLineWidthForPolylineAnnotation?(mapView: MGLMapView, annotation: MGLPolyline): number;
 
-    mapViewRegionDidChangeAnimated?(mapView: MGLMapView, animated: boolean): void;
+	mapViewRegionDidChangeAnimated?(mapView: MGLMapView, animated: boolean): void;
 
-    mapViewRegionDidChangeWithReasonAnimated?(mapView: MGLMapView, reason: MGLCameraChangeReason, animated: boolean): void;
+	mapViewRegionDidChangeWithReasonAnimated?(mapView: MGLMapView, reason: MGLCameraChangeReason, animated: boolean): void;
 
-    mapViewRegionIsChanging?(mapView: MGLMapView): void;
+	mapViewRegionIsChanging?(mapView: MGLMapView): void;
 
-    mapViewRegionIsChangingWithReason?(mapView: MGLMapView, reason: MGLCameraChangeReason): void;
+	mapViewRegionIsChangingWithReason?(mapView: MGLMapView, reason: MGLCameraChangeReason): void;
 
-    mapViewRegionWillChangeAnimated?(mapView: MGLMapView, animated: boolean): void;
+	mapViewRegionWillChangeAnimated?(mapView: MGLMapView, animated: boolean): void;
 
-    mapViewRegionWillChangeWithReasonAnimated?(mapView: MGLMapView, reason: MGLCameraChangeReason, animated: boolean): void;
+	mapViewRegionWillChangeWithReasonAnimated?(mapView: MGLMapView, reason: MGLCameraChangeReason, animated: boolean): void;
 
-    mapViewRightCalloutAccessoryViewForAnnotation?(mapView: MGLMapView, annotation: MGLAnnotation): UIView;
+	mapViewRightCalloutAccessoryViewForAnnotation?(mapView: MGLMapView, annotation: MGLAnnotation): UIView;
 
-    mapViewShapeAnnotationIsEnabled?(mapView: MGLMapView, annotation: MGLShape): boolean;
+	mapViewShapeAnnotationIsEnabled?(mapView: MGLMapView, annotation: MGLShape): boolean;
 
-    mapViewShouldChangeFromCameraToCamera?(mapView: MGLMapView, oldCamera: MGLMapCamera, newCamera: MGLMapCamera): boolean;
+	mapViewShouldChangeFromCameraToCamera?(mapView: MGLMapView, oldCamera: MGLMapCamera, newCamera: MGLMapCamera): boolean;
 
-    mapViewShouldChangeFromCameraToCameraReason?(mapView: MGLMapView, oldCamera: MGLMapCamera, newCamera: MGLMapCamera, reason: MGLCameraChangeReason): boolean;
+	mapViewShouldChangeFromCameraToCameraReason?(mapView: MGLMapView, oldCamera: MGLMapCamera, newCamera: MGLMapCamera, reason: MGLCameraChangeReason): boolean;
 
-    mapViewStrokeColorForShapeAnnotation?(mapView: MGLMapView, annotation: MGLShape): UIColor;
+	mapViewStrokeColorForShapeAnnotation?(mapView: MGLMapView, annotation: MGLShape): UIColor;
 
-    mapViewTapOnCalloutForAnnotation?(mapView: MGLMapView, annotation: MGLAnnotation): void;
+	mapViewTapOnCalloutForAnnotation?(mapView: MGLMapView, annotation: MGLAnnotation): void;
 
-    mapViewUserLocationAnchorPoint?(mapView: MGLMapView): CGPoint;
+	mapViewUserLocationAnchorPoint?(mapView: MGLMapView): CGPoint;
 
-    mapViewViewForAnnotation?(mapView: MGLMapView, annotation: MGLAnnotation): MGLAnnotationView;
+	mapViewViewForAnnotation?(mapView: MGLMapView, annotation: MGLAnnotation): MGLAnnotationView;
 
-    mapViewWillStartLoadingMap?(mapView: MGLMapView): void;
+	mapViewWillStartLoadingMap?(mapView: MGLMapView): void;
 
-    mapViewWillStartLocatingUser?(mapView: MGLMapView): void;
+	mapViewWillStartLocatingUser?(mapView: MGLMapView): void;
 
-    mapViewWillStartRenderingFrame?(mapView: MGLMapView): void;
+	mapViewWillStartRenderingFrame?(mapView: MGLMapView): void;
 
-    mapViewWillStartRenderingMap?(mapView: MGLMapView): void;
+	mapViewWillStartRenderingMap?(mapView: MGLMapView): void;
 }
-
 declare var MGLMapViewDelegate: {
 
-    prototype: MGLMapViewDelegate;
+	prototype: MGLMapViewDelegate;
 };
 
 declare var MGLMapViewPreferredFramesPerSecondDefault: number;
@@ -1306,291 +1480,335 @@ declare var MGLMapViewPreferredFramesPerSecondLowPower: number;
 declare var MGLMapViewPreferredFramesPerSecondMaximum: number;
 
 interface MGLMatrix4 {
-    m00: number;
-    m01: number;
-    m02: number;
-    m03: number;
-    m10: number;
-    m11: number;
-    m12: number;
-    m13: number;
-    m20: number;
-    m21: number;
-    m22: number;
-    m23: number;
-    m30: number;
-    m31: number;
-    m32: number;
-    m33: number;
+	m00: number;
+	m01: number;
+	m02: number;
+	m03: number;
+	m10: number;
+	m11: number;
+	m12: number;
+	m13: number;
+	m20: number;
+	m21: number;
+	m22: number;
+	m23: number;
+	m30: number;
+	m31: number;
+	m32: number;
+	m33: number;
 }
-
 declare var MGLMatrix4: interop.StructType<MGLMatrix4>;
 
 declare const enum MGLMetricType {
 
-    Performance = 0
+	Performance = 0
 }
 
 declare class MGLMetricsManager extends NSObject {
 
-    static readonly sharedManager: MGLMetricsManager;
-    delegate: MGLMetricsManagerDelegate;
+	static alloc(): MGLMetricsManager; // inherited from NSObject
 
-    static alloc(): MGLMetricsManager; // inherited from NSObject
+	static new(): MGLMetricsManager; // inherited from NSObject
 
-    static new(): MGLMetricsManager; // inherited from NSObject
+	delegate: MGLMetricsManagerDelegate;
 
-    pushMetricWithAttributes(metricType: MGLMetricType, attributes: NSDictionary<any, any>): void;
+	static readonly sharedManager: MGLMetricsManager;
+
+	pushMetricWithAttributes(metricType: MGLMetricType, attributes: NSDictionary<any, any>): void;
 }
 
 interface MGLMetricsManagerDelegate extends NSObjectProtocol {
 
-    metricsManagerDidCollectMetricWithAttributes(metricsManager: MGLMetricsManager, metricType: MGLMetricType, attributes: NSDictionary<any, any>): void;
+	metricsManagerDidCollectMetricWithAttributes(metricsManager: MGLMetricsManager, metricType: MGLMetricType, attributes: NSDictionary<any, any>): void;
 
-    metricsManagerShouldHandleMetric(metricsManager: MGLMetricsManager, metricType: MGLMetricType): boolean;
+	metricsManagerShouldHandleMetric(metricsManager: MGLMetricsManager, metricType: MGLMetricType): boolean;
 }
-
 declare var MGLMetricsManagerDelegate: {
 
-    prototype: MGLMetricsManagerDelegate;
+	prototype: MGLMetricsManagerDelegate;
 };
 
 declare var MGLMissingLocationServicesUsageDescriptionException: string;
 
 declare class MGLMultiPoint extends MGLShape {
 
-    readonly coordinates: interop.Pointer | interop.Reference<CLLocationCoordinate2D>;
-    readonly pointCount: number;
+	static alloc(): MGLMultiPoint; // inherited from NSObject
 
-    static alloc(): MGLMultiPoint; // inherited from NSObject
+	static new(): MGLMultiPoint; // inherited from NSObject
 
-    static new(): MGLMultiPoint; // inherited from NSObject
+	readonly coordinates: interop.Pointer | interop.Reference<CLLocationCoordinate2D>;
 
-    appendCoordinatesCount(coords: interop.Pointer | interop.Reference<CLLocationCoordinate2D>, count: number): void;
+	readonly pointCount: number;
 
-    getCoordinatesRange(coords: interop.Pointer | interop.Reference<CLLocationCoordinate2D>, range: NSRange): void;
+	appendCoordinatesCount(coords: interop.Pointer | interop.Reference<CLLocationCoordinate2D>, count: number): void;
 
-    insertCoordinatesCountAtIndex(coords: interop.Pointer | interop.Reference<CLLocationCoordinate2D>, count: number, index: number): void;
+	getCoordinatesRange(coords: interop.Pointer | interop.Reference<CLLocationCoordinate2D>, range: NSRange): void;
 
-    removeCoordinatesInRange(range: NSRange): void;
+	insertCoordinatesCountAtIndex(coords: interop.Pointer | interop.Reference<CLLocationCoordinate2D>, count: number, index: number): void;
 
-    replaceCoordinatesInRangeWithCoordinates(range: NSRange, coords: interop.Pointer | interop.Reference<CLLocationCoordinate2D>): void;
+	removeCoordinatesInRange(range: NSRange): void;
 
-    replaceCoordinatesInRangeWithCoordinatesCount(range: NSRange, coords: interop.Pointer | interop.Reference<CLLocationCoordinate2D>, count: number): void;
+	replaceCoordinatesInRangeWithCoordinates(range: NSRange, coords: interop.Pointer | interop.Reference<CLLocationCoordinate2D>): void;
 
-    setCoordinatesCount(coords: interop.Pointer | interop.Reference<CLLocationCoordinate2D>, count: number): void;
+	replaceCoordinatesInRangeWithCoordinatesCount(range: NSRange, coords: interop.Pointer | interop.Reference<CLLocationCoordinate2D>, count: number): void;
+
+	setCoordinatesCount(coords: interop.Pointer | interop.Reference<CLLocationCoordinate2D>, count: number): void;
 }
 
 declare class MGLMultiPolygon extends MGLShape implements MGLOverlay {
 
-    readonly polygons: NSArray<MGLPolygon>;
-    readonly coordinate: CLLocationCoordinate2D; // inherited from MGLAnnotation
-    readonly debugDescription: string; // inherited from NSObjectProtocol
-    readonly description: string; // inherited from NSObjectProtocol
-    readonly hash: number; // inherited from NSObjectProtocol
-    readonly isProxy: boolean; // inherited from NSObjectProtocol
-    readonly overlayBounds: MGLCoordinateBounds; // inherited from MGLOverlay
-    readonly subtitle: string; // inherited from MGLAnnotation
-    readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
-    readonly title: string; // inherited from MGLAnnotation
-    readonly;  // inherited from NSObjectProtocol
+	static alloc(): MGLMultiPolygon; // inherited from NSObject
 
-    static alloc(): MGLMultiPolygon; // inherited from NSObject
+	static multiPolygonWithPolygons(polygons: NSArray<MGLPolygon> | MGLPolygon[]): MGLMultiPolygon;
 
-    static multiPolygonWithPolygons(polygons: NSArray<MGLPolygon> | MGLPolygon[]): MGLMultiPolygon;
+	static new(): MGLMultiPolygon; // inherited from NSObject
 
-    static new(): MGLMultiPolygon; // inherited from NSObject
+	readonly polygons: NSArray<MGLPolygon>;
 
-    class(): typeof NSObject;
+	readonly coordinate: CLLocationCoordinate2D; // inherited from MGLAnnotation
 
-    conformsToProtocol(aProtocol: any /* Protocol */): boolean;
+	readonly debugDescription: string; // inherited from NSObjectProtocol
 
-    intersectsOverlayBounds(overlayBounds: MGLCoordinateBounds): boolean;
+	readonly description: string; // inherited from NSObjectProtocol
 
-    isEqual(object: any): boolean;
+	readonly hash: number; // inherited from NSObjectProtocol
 
-    isKindOfClass(aClass: typeof NSObject): boolean;
+	readonly isProxy: boolean; // inherited from NSObjectProtocol
 
-    isMemberOfClass(aClass: typeof NSObject): boolean;
+	readonly overlayBounds: MGLCoordinateBounds; // inherited from MGLOverlay
 
-    performSelector(aSelector: string): any;
+	readonly subtitle: string; // inherited from MGLAnnotation
 
-    performSelectorWithObject(aSelector: string, object: any): any;
+	readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
 
-    performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
+	readonly title: string; // inherited from MGLAnnotation
 
-    respondsToSelector(aSelector: string): boolean;
+	readonly  // inherited from NSObjectProtocol
 
-    retainCount(): number;
+	class(): typeof NSObject;
 
-    self(): this;
+	conformsToProtocol(aProtocol: any /* Protocol */): boolean;
+
+	intersectsOverlayBounds(overlayBounds: MGLCoordinateBounds): boolean;
+
+	isEqual(object: any): boolean;
+
+	isKindOfClass(aClass: typeof NSObject): boolean;
+
+	isMemberOfClass(aClass: typeof NSObject): boolean;
+
+	performSelector(aSelector: string): any;
+
+	performSelectorWithObject(aSelector: string, object: any): any;
+
+	performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
+
+	respondsToSelector(aSelector: string): boolean;
+
+	retainCount(): number;
+
+	self(): this;
 }
 
 declare class MGLMultiPolygonFeature extends MGLMultiPolygon implements MGLFeature {
 
-    attributes: NSDictionary<string, any>; // inherited from MGLFeature
-    readonly coordinate: CLLocationCoordinate2D; // inherited from MGLAnnotation
-    readonly debugDescription: string; // inherited from NSObjectProtocol
-    readonly description: string; // inherited from NSObjectProtocol
-    readonly hash: number; // inherited from NSObjectProtocol
-    identifier: any; // inherited from MGLFeature
-    readonly isProxy: boolean; // inherited from NSObjectProtocol
-    readonly subtitle: string; // inherited from MGLAnnotation
-    readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
-    readonly title: string; // inherited from MGLAnnotation
-    readonly;  // inherited from NSObjectProtocol
+	static alloc(): MGLMultiPolygonFeature; // inherited from NSObject
 
-    static alloc(): MGLMultiPolygonFeature; // inherited from NSObject
+	static multiPolygonWithPolygons(polygons: NSArray<MGLPolygon> | MGLPolygon[]): MGLMultiPolygonFeature; // inherited from MGLMultiPolygon
 
-    static multiPolygonWithPolygons(polygons: NSArray<MGLPolygon> | MGLPolygon[]): MGLMultiPolygonFeature; // inherited from MGLMultiPolygon
+	static new(): MGLMultiPolygonFeature; // inherited from NSObject
 
-    static new(): MGLMultiPolygonFeature; // inherited from NSObject
+	attributes: NSDictionary<string, any>; // inherited from MGLFeature
 
-    attributeForKey(key: string): any;
+	readonly coordinate: CLLocationCoordinate2D; // inherited from MGLAnnotation
 
-    class(): typeof NSObject;
+	readonly debugDescription: string; // inherited from NSObjectProtocol
 
-    conformsToProtocol(aProtocol: any /* Protocol */): boolean;
+	readonly description: string; // inherited from NSObjectProtocol
 
-    geoJSONDictionary(): NSDictionary<string, any>;
+	readonly hash: number; // inherited from NSObjectProtocol
 
-    isEqual(object: any): boolean;
+	identifier: any; // inherited from MGLFeature
 
-    isKindOfClass(aClass: typeof NSObject): boolean;
+	readonly isProxy: boolean; // inherited from NSObjectProtocol
 
-    isMemberOfClass(aClass: typeof NSObject): boolean;
+	readonly subtitle: string; // inherited from MGLAnnotation
 
-    performSelector(aSelector: string): any;
+	readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
 
-    performSelectorWithObject(aSelector: string, object: any): any;
+	readonly title: string; // inherited from MGLAnnotation
 
-    performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
+	readonly  // inherited from NSObjectProtocol
 
-    respondsToSelector(aSelector: string): boolean;
+	attributeForKey(key: string): any;
 
-    retainCount(): number;
+	class(): typeof NSObject;
 
-    self(): this;
+	conformsToProtocol(aProtocol: any /* Protocol */): boolean;
+
+	geoJSONDictionary(): NSDictionary<string, any>;
+
+	isEqual(object: any): boolean;
+
+	isKindOfClass(aClass: typeof NSObject): boolean;
+
+	isMemberOfClass(aClass: typeof NSObject): boolean;
+
+	performSelector(aSelector: string): any;
+
+	performSelectorWithObject(aSelector: string, object: any): any;
+
+	performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
+
+	respondsToSelector(aSelector: string): boolean;
+
+	retainCount(): number;
+
+	self(): this;
 }
 
 declare class MGLMultiPolyline extends MGLShape implements MGLOverlay {
 
-    readonly polylines: NSArray<MGLPolyline>;
-    readonly coordinate: CLLocationCoordinate2D; // inherited from MGLAnnotation
-    readonly debugDescription: string; // inherited from NSObjectProtocol
-    readonly description: string; // inherited from NSObjectProtocol
-    readonly hash: number; // inherited from NSObjectProtocol
-    readonly isProxy: boolean; // inherited from NSObjectProtocol
-    readonly overlayBounds: MGLCoordinateBounds; // inherited from MGLOverlay
-    readonly subtitle: string; // inherited from MGLAnnotation
-    readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
-    readonly title: string; // inherited from MGLAnnotation
-    readonly;  // inherited from NSObjectProtocol
+	static alloc(): MGLMultiPolyline; // inherited from NSObject
 
-    static alloc(): MGLMultiPolyline; // inherited from NSObject
+	static multiPolylineWithPolylines(polylines: NSArray<MGLPolyline> | MGLPolyline[]): MGLMultiPolyline;
 
-    static multiPolylineWithPolylines(polylines: NSArray<MGLPolyline> | MGLPolyline[]): MGLMultiPolyline;
+	static new(): MGLMultiPolyline; // inherited from NSObject
 
-    static new(): MGLMultiPolyline; // inherited from NSObject
+	readonly polylines: NSArray<MGLPolyline>;
 
-    class(): typeof NSObject;
+	readonly coordinate: CLLocationCoordinate2D; // inherited from MGLAnnotation
 
-    conformsToProtocol(aProtocol: any /* Protocol */): boolean;
+	readonly debugDescription: string; // inherited from NSObjectProtocol
 
-    intersectsOverlayBounds(overlayBounds: MGLCoordinateBounds): boolean;
+	readonly description: string; // inherited from NSObjectProtocol
 
-    isEqual(object: any): boolean;
+	readonly hash: number; // inherited from NSObjectProtocol
 
-    isKindOfClass(aClass: typeof NSObject): boolean;
+	readonly isProxy: boolean; // inherited from NSObjectProtocol
 
-    isMemberOfClass(aClass: typeof NSObject): boolean;
+	readonly overlayBounds: MGLCoordinateBounds; // inherited from MGLOverlay
 
-    performSelector(aSelector: string): any;
+	readonly subtitle: string; // inherited from MGLAnnotation
 
-    performSelectorWithObject(aSelector: string, object: any): any;
+	readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
 
-    performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
+	readonly title: string; // inherited from MGLAnnotation
 
-    respondsToSelector(aSelector: string): boolean;
+	readonly  // inherited from NSObjectProtocol
 
-    retainCount(): number;
+	class(): typeof NSObject;
 
-    self(): this;
+	conformsToProtocol(aProtocol: any /* Protocol */): boolean;
+
+	intersectsOverlayBounds(overlayBounds: MGLCoordinateBounds): boolean;
+
+	isEqual(object: any): boolean;
+
+	isKindOfClass(aClass: typeof NSObject): boolean;
+
+	isMemberOfClass(aClass: typeof NSObject): boolean;
+
+	performSelector(aSelector: string): any;
+
+	performSelectorWithObject(aSelector: string, object: any): any;
+
+	performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
+
+	respondsToSelector(aSelector: string): boolean;
+
+	retainCount(): number;
+
+	self(): this;
 }
 
 declare class MGLMultiPolylineFeature extends MGLMultiPolyline implements MGLFeature {
 
-    attributes: NSDictionary<string, any>; // inherited from MGLFeature
-    readonly coordinate: CLLocationCoordinate2D; // inherited from MGLAnnotation
-    readonly debugDescription: string; // inherited from NSObjectProtocol
-    readonly description: string; // inherited from NSObjectProtocol
-    readonly hash: number; // inherited from NSObjectProtocol
-    identifier: any; // inherited from MGLFeature
-    readonly isProxy: boolean; // inherited from NSObjectProtocol
-    readonly subtitle: string; // inherited from MGLAnnotation
-    readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
-    readonly title: string; // inherited from MGLAnnotation
-    readonly;  // inherited from NSObjectProtocol
+	static alloc(): MGLMultiPolylineFeature; // inherited from NSObject
 
-    static alloc(): MGLMultiPolylineFeature; // inherited from NSObject
+	static multiPolylineWithPolylines(polylines: NSArray<MGLPolyline> | MGLPolyline[]): MGLMultiPolylineFeature; // inherited from MGLMultiPolyline
 
-    static multiPolylineWithPolylines(polylines: NSArray<MGLPolyline> | MGLPolyline[]): MGLMultiPolylineFeature; // inherited from MGLMultiPolyline
+	static new(): MGLMultiPolylineFeature; // inherited from NSObject
 
-    static new(): MGLMultiPolylineFeature; // inherited from NSObject
+	attributes: NSDictionary<string, any>; // inherited from MGLFeature
 
-    attributeForKey(key: string): any;
+	readonly coordinate: CLLocationCoordinate2D; // inherited from MGLAnnotation
 
-    class(): typeof NSObject;
+	readonly debugDescription: string; // inherited from NSObjectProtocol
 
-    conformsToProtocol(aProtocol: any /* Protocol */): boolean;
+	readonly description: string; // inherited from NSObjectProtocol
 
-    geoJSONDictionary(): NSDictionary<string, any>;
+	readonly hash: number; // inherited from NSObjectProtocol
 
-    isEqual(object: any): boolean;
+	identifier: any; // inherited from MGLFeature
 
-    isKindOfClass(aClass: typeof NSObject): boolean;
+	readonly isProxy: boolean; // inherited from NSObjectProtocol
 
-    isMemberOfClass(aClass: typeof NSObject): boolean;
+	readonly subtitle: string; // inherited from MGLAnnotation
 
-    performSelector(aSelector: string): any;
+	readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
 
-    performSelectorWithObject(aSelector: string, object: any): any;
+	readonly title: string; // inherited from MGLAnnotation
 
-    performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
+	readonly  // inherited from NSObjectProtocol
 
-    respondsToSelector(aSelector: string): boolean;
+	attributeForKey(key: string): any;
 
-    retainCount(): number;
+	class(): typeof NSObject;
 
-    self(): this;
+	conformsToProtocol(aProtocol: any /* Protocol */): boolean;
+
+	geoJSONDictionary(): NSDictionary<string, any>;
+
+	isEqual(object: any): boolean;
+
+	isKindOfClass(aClass: typeof NSObject): boolean;
+
+	isMemberOfClass(aClass: typeof NSObject): boolean;
+
+	performSelector(aSelector: string): any;
+
+	performSelectorWithObject(aSelector: string, object: any): any;
+
+	performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
+
+	respondsToSelector(aSelector: string): boolean;
+
+	retainCount(): number;
+
+	self(): this;
 }
 
 declare class MGLNetworkConfiguration extends NSObject {
 
-    static readonly sharedManager: MGLNetworkConfiguration;
-    sessionConfiguration: NSURLSessionConfiguration;
+	static alloc(): MGLNetworkConfiguration; // inherited from NSObject
 
-    static alloc(): MGLNetworkConfiguration; // inherited from NSObject
+	static new(): MGLNetworkConfiguration; // inherited from NSObject
 
-    static new(): MGLNetworkConfiguration; // inherited from NSObject
+	sessionConfiguration: NSURLSessionConfiguration;
+
+	static readonly sharedManager: MGLNetworkConfiguration;
 }
 
 declare class MGLOfflinePack extends NSObject {
 
-    readonly context: NSData;
-    readonly progress: MGLOfflinePackProgress;
-    readonly region: MGLOfflineRegion;
-    readonly state: MGLOfflinePackState;
+	static alloc(): MGLOfflinePack; // inherited from NSObject
 
-    static alloc(): MGLOfflinePack; // inherited from NSObject
+	static new(): MGLOfflinePack; // inherited from NSObject
 
-    static new(): MGLOfflinePack; // inherited from NSObject
+	readonly context: NSData;
 
-    requestProgress(): void;
+	readonly progress: MGLOfflinePackProgress;
 
-    resume(): void;
+	readonly region: MGLOfflineRegion;
 
-    suspend(): void;
+	readonly state: MGLOfflinePackState;
+
+	requestProgress(): void;
+
+	resume(): void;
+
+	suspend(): void;
 }
 
 declare var MGLOfflinePackErrorNotification: string;
@@ -1598,29 +1816,28 @@ declare var MGLOfflinePackErrorNotification: string;
 declare var MGLOfflinePackMaximumMapboxTilesReachedNotification: string;
 
 interface MGLOfflinePackProgress {
-    countOfResourcesCompleted: number;
-    countOfBytesCompleted: number;
-    countOfTilesCompleted: number;
-    countOfTileBytesCompleted: number;
-    countOfResourcesExpected: number;
-    maximumResourcesExpected: number;
+	countOfResourcesCompleted: number;
+	countOfBytesCompleted: number;
+	countOfTilesCompleted: number;
+	countOfTileBytesCompleted: number;
+	countOfResourcesExpected: number;
+	maximumResourcesExpected: number;
 }
-
 declare var MGLOfflinePackProgress: interop.StructType<MGLOfflinePackProgress>;
 
 declare var MGLOfflinePackProgressChangedNotification: string;
 
 declare const enum MGLOfflinePackState {
 
-    Unknown = 0,
+	Unknown = 0,
 
-    Inactive = 1,
+	Inactive = 1,
 
-    Active = 2,
+	Active = 2,
 
-    Complete = 3,
+	Complete = 3,
 
-    Invalid = 4
+	Invalid = 4
 }
 
 declare var MGLOfflinePackUserInfoKeyError: string;
@@ -1633,539 +1850,637 @@ declare var MGLOfflinePackUserInfoKeyState: string;
 
 interface MGLOfflineRegion extends NSObjectProtocol {
 
-    includesIdeographicGlyphs: boolean;
+	includesIdeographicGlyphs: boolean;
 
-    styleURL: NSURL;
+	styleURL: NSURL;
 }
-
 declare var MGLOfflineRegion: {
 
-    prototype: MGLOfflineRegion;
+	prototype: MGLOfflineRegion;
 };
 
 declare class MGLOfflineStorage extends NSObject {
 
-    static readonly sharedOfflineStorage: MGLOfflineStorage;
-    readonly countOfBytesCompleted: number;
-    delegate: MGLOfflineStorageDelegate;
-    readonly packs: NSArray<MGLOfflinePack>;
+	static alloc(): MGLOfflineStorage; // inherited from NSObject
 
-    static alloc(): MGLOfflineStorage; // inherited from NSObject
+	static new(): MGLOfflineStorage; // inherited from NSObject
 
-    static new(): MGLOfflineStorage; // inherited from NSObject
+	readonly countOfBytesCompleted: number;
 
-    addContentsOfFileWithCompletionHandler(filePath: string, completion: (p1: NSURL, p2: NSArray<MGLOfflinePack>, p3: NSError) => void): void;
+	delegate: MGLOfflineStorageDelegate;
 
-    addContentsOfURLWithCompletionHandler(fileURL: NSURL, completion: (p1: NSURL, p2: NSArray<MGLOfflinePack>, p3: NSError) => void): void;
+	readonly packs: NSArray<MGLOfflinePack>;
 
-    addPackForRegionWithContextCompletionHandler(region: MGLOfflineRegion, context: NSData, completion: (p1: MGLOfflinePack, p2: NSError) => void): void;
+	static readonly sharedOfflineStorage: MGLOfflineStorage;
 
-    preloadDataForURLModificationDateExpirationDateETagMustRevalidate(data: NSData, url: NSURL, modified: Date, expires: Date, eTag: string, mustRevalidate: boolean): void;
+	addContentsOfFileWithCompletionHandler(filePath: string, completion: (p1: NSURL, p2: NSArray<MGLOfflinePack>, p3: NSError) => void): void;
 
-    putResourceWithUrlDataModifiedExpiresEtagMustRevalidate(url: NSURL, data: NSData, modified: Date, expires: Date, etag: string, mustRevalidate: boolean): void;
+	addContentsOfURLWithCompletionHandler(fileURL: NSURL, completion: (p1: NSURL, p2: NSArray<MGLOfflinePack>, p3: NSError) => void): void;
 
-    reloadPacks(): void;
+	addPackForRegionWithContextCompletionHandler(region: MGLOfflineRegion, context: NSData, completion: (p1: MGLOfflinePack, p2: NSError) => void): void;
 
-    removePackWithCompletionHandler(pack: MGLOfflinePack, completion: (p1: NSError) => void): void;
+	preloadDataForURLModificationDateExpirationDateETagMustRevalidate(data: NSData, url: NSURL, modified: Date, expires: Date, eTag: string, mustRevalidate: boolean): void;
 
-    setMaximumAllowedMapboxTiles(maximumCount: number): void;
+	putResourceWithUrlDataModifiedExpiresEtagMustRevalidate(url: NSURL, data: NSData, modified: Date, expires: Date, etag: string, mustRevalidate: boolean): void;
+
+	reloadPacks(): void;
+
+	removePackWithCompletionHandler(pack: MGLOfflinePack, completion: (p1: NSError) => void): void;
+
+	setMaximumAllowedMapboxTiles(maximumCount: number): void;
 }
 
 interface MGLOfflineStorageDelegate extends NSObjectProtocol {
 
-    offlineStorageURLForResourceOfKindWithURL(storage: MGLOfflineStorage, kind: MGLResourceKind, url: NSURL): NSURL;
+	offlineStorageURLForResourceOfKindWithURL(storage: MGLOfflineStorage, kind: MGLResourceKind, url: NSURL): NSURL;
 }
-
 declare var MGLOfflineStorageDelegate: {
 
-    prototype: MGLOfflineStorageDelegate;
+	prototype: MGLOfflineStorageDelegate;
 };
 
 declare class MGLOpenGLStyleLayer extends MGLStyleLayer {
 
-    readonly context: EAGLContext;
-    readonly style: MGLStyle;
+	static alloc(): MGLOpenGLStyleLayer; // inherited from NSObject
 
-    constructor(o: { identifier: string; });
+	static new(): MGLOpenGLStyleLayer; // inherited from NSObject
 
-    static alloc(): MGLOpenGLStyleLayer; // inherited from NSObject
+	readonly context: EAGLContext;
 
-    static new(): MGLOpenGLStyleLayer; // inherited from NSObject
+	readonly style: MGLStyle;
 
-    didMoveToMapView(mapView: MGLMapView): void;
+	constructor(o: { identifier: string; });
 
-    drawInMapViewWithContext(mapView: MGLMapView, context: MGLStyleLayerDrawingContext): void;
+	didMoveToMapView(mapView: MGLMapView): void;
 
-    initWithIdentifier(identifier: string): this;
+	drawInMapViewWithContext(mapView: MGLMapView, context: MGLStyleLayerDrawingContext): void;
 
-    setNeedsDisplay(): void;
+	initWithIdentifier(identifier: string): this;
 
-    willMoveFromMapView(mapView: MGLMapView): void;
+	setNeedsDisplay(): void;
+
+	willMoveFromMapView(mapView: MGLMapView): void;
 }
 
 declare const enum MGLOrnamentPosition {
 
-    TopLeft = 0,
+	TopLeft = 0,
 
-    TopRight = 1,
+	TopRight = 1,
 
-    BottomLeft = 2,
+	BottomLeft = 2,
 
-    BottomRight = 3
+	BottomRight = 3
 }
 
 interface MGLOverlay extends MGLAnnotation {
 
-    overlayBounds: MGLCoordinateBounds;
+	overlayBounds: MGLCoordinateBounds;
 
-    intersectsOverlayBounds(overlayBounds: MGLCoordinateBounds): boolean;
+	intersectsOverlayBounds(overlayBounds: MGLCoordinateBounds): boolean;
 }
-
 declare var MGLOverlay: {
 
-    prototype: MGLOverlay;
+	prototype: MGLOverlay;
 };
 
 declare class MGLPointAnnotation extends MGLShape {
 
-    coordinate: CLLocationCoordinate2D;
+	static alloc(): MGLPointAnnotation; // inherited from NSObject
 
-    static alloc(): MGLPointAnnotation; // inherited from NSObject
+	static new(): MGLPointAnnotation; // inherited from NSObject
 
-    static new(): MGLPointAnnotation; // inherited from NSObject
+	coordinate: CLLocationCoordinate2D;
 }
 
 declare class MGLPointCollection extends MGLShape implements MGLOverlay {
 
-    readonly coordinates: interop.Pointer | interop.Reference<CLLocationCoordinate2D>;
-    readonly pointCount: number;
-    readonly coordinate: CLLocationCoordinate2D; // inherited from MGLAnnotation
-    readonly debugDescription: string; // inherited from NSObjectProtocol
-    readonly description: string; // inherited from NSObjectProtocol
-    readonly hash: number; // inherited from NSObjectProtocol
-    readonly isProxy: boolean; // inherited from NSObjectProtocol
-    readonly overlayBounds: MGLCoordinateBounds; // inherited from MGLOverlay
-    readonly subtitle: string; // inherited from MGLAnnotation
-    readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
-    readonly title: string; // inherited from MGLAnnotation
-    readonly;  // inherited from NSObjectProtocol
+	static alloc(): MGLPointCollection; // inherited from NSObject
 
-    static alloc(): MGLPointCollection; // inherited from NSObject
+	static new(): MGLPointCollection; // inherited from NSObject
 
-    static new(): MGLPointCollection; // inherited from NSObject
+	static pointCollectionWithCoordinatesCount(coords: interop.Pointer | interop.Reference<CLLocationCoordinate2D>, count: number): MGLPointCollection;
 
-    static pointCollectionWithCoordinatesCount(coords: interop.Pointer | interop.Reference<CLLocationCoordinate2D>, count: number): MGLPointCollection;
+	readonly coordinates: interop.Pointer | interop.Reference<CLLocationCoordinate2D>;
 
-    class(): typeof NSObject;
+	readonly pointCount: number;
 
-    conformsToProtocol(aProtocol: any /* Protocol */): boolean;
+	readonly coordinate: CLLocationCoordinate2D; // inherited from MGLAnnotation
 
-    getCoordinatesRange(coords: interop.Pointer | interop.Reference<CLLocationCoordinate2D>, range: NSRange): void;
+	readonly debugDescription: string; // inherited from NSObjectProtocol
 
-    intersectsOverlayBounds(overlayBounds: MGLCoordinateBounds): boolean;
+	readonly description: string; // inherited from NSObjectProtocol
 
-    isEqual(object: any): boolean;
+	readonly hash: number; // inherited from NSObjectProtocol
 
-    isKindOfClass(aClass: typeof NSObject): boolean;
+	readonly isProxy: boolean; // inherited from NSObjectProtocol
 
-    isMemberOfClass(aClass: typeof NSObject): boolean;
+	readonly overlayBounds: MGLCoordinateBounds; // inherited from MGLOverlay
 
-    performSelector(aSelector: string): any;
+	readonly subtitle: string; // inherited from MGLAnnotation
 
-    performSelectorWithObject(aSelector: string, object: any): any;
+	readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
 
-    performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
+	readonly title: string; // inherited from MGLAnnotation
 
-    respondsToSelector(aSelector: string): boolean;
+	readonly  // inherited from NSObjectProtocol
 
-    retainCount(): number;
+	class(): typeof NSObject;
 
-    self(): this;
+	conformsToProtocol(aProtocol: any /* Protocol */): boolean;
+
+	getCoordinatesRange(coords: interop.Pointer | interop.Reference<CLLocationCoordinate2D>, range: NSRange): void;
+
+	intersectsOverlayBounds(overlayBounds: MGLCoordinateBounds): boolean;
+
+	isEqual(object: any): boolean;
+
+	isKindOfClass(aClass: typeof NSObject): boolean;
+
+	isMemberOfClass(aClass: typeof NSObject): boolean;
+
+	performSelector(aSelector: string): any;
+
+	performSelectorWithObject(aSelector: string, object: any): any;
+
+	performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
+
+	respondsToSelector(aSelector: string): boolean;
+
+	retainCount(): number;
+
+	self(): this;
 }
 
 declare class MGLPointCollectionFeature extends MGLPointCollection implements MGLFeature {
 
-    attributes: NSDictionary<string, any>; // inherited from MGLFeature
-    readonly coordinate: CLLocationCoordinate2D; // inherited from MGLAnnotation
-    readonly debugDescription: string; // inherited from NSObjectProtocol
-    readonly description: string; // inherited from NSObjectProtocol
-    readonly hash: number; // inherited from NSObjectProtocol
-    identifier: any; // inherited from MGLFeature
-    readonly isProxy: boolean; // inherited from NSObjectProtocol
-    readonly subtitle: string; // inherited from MGLAnnotation
-    readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
-    readonly title: string; // inherited from MGLAnnotation
-    readonly;  // inherited from NSObjectProtocol
+	static alloc(): MGLPointCollectionFeature; // inherited from NSObject
 
-    static alloc(): MGLPointCollectionFeature; // inherited from NSObject
+	static new(): MGLPointCollectionFeature; // inherited from NSObject
 
-    static new(): MGLPointCollectionFeature; // inherited from NSObject
+	static pointCollectionWithCoordinatesCount(coords: interop.Pointer | interop.Reference<CLLocationCoordinate2D>, count: number): MGLPointCollectionFeature; // inherited from MGLPointCollection
 
-    static pointCollectionWithCoordinatesCount(coords: interop.Pointer | interop.Reference<CLLocationCoordinate2D>, count: number): MGLPointCollectionFeature; // inherited from MGLPointCollection
+	attributes: NSDictionary<string, any>; // inherited from MGLFeature
 
-    attributeForKey(key: string): any;
+	readonly coordinate: CLLocationCoordinate2D; // inherited from MGLAnnotation
 
-    class(): typeof NSObject;
+	readonly debugDescription: string; // inherited from NSObjectProtocol
 
-    conformsToProtocol(aProtocol: any /* Protocol */): boolean;
+	readonly description: string; // inherited from NSObjectProtocol
 
-    geoJSONDictionary(): NSDictionary<string, any>;
+	readonly hash: number; // inherited from NSObjectProtocol
 
-    isEqual(object: any): boolean;
+	identifier: any; // inherited from MGLFeature
 
-    isKindOfClass(aClass: typeof NSObject): boolean;
+	readonly isProxy: boolean; // inherited from NSObjectProtocol
 
-    isMemberOfClass(aClass: typeof NSObject): boolean;
+	readonly subtitle: string; // inherited from MGLAnnotation
 
-    performSelector(aSelector: string): any;
+	readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
 
-    performSelectorWithObject(aSelector: string, object: any): any;
+	readonly title: string; // inherited from MGLAnnotation
 
-    performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
+	readonly  // inherited from NSObjectProtocol
 
-    respondsToSelector(aSelector: string): boolean;
+	attributeForKey(key: string): any;
 
-    retainCount(): number;
+	class(): typeof NSObject;
 
-    self(): this;
+	conformsToProtocol(aProtocol: any /* Protocol */): boolean;
+
+	geoJSONDictionary(): NSDictionary<string, any>;
+
+	isEqual(object: any): boolean;
+
+	isKindOfClass(aClass: typeof NSObject): boolean;
+
+	isMemberOfClass(aClass: typeof NSObject): boolean;
+
+	performSelector(aSelector: string): any;
+
+	performSelectorWithObject(aSelector: string, object: any): any;
+
+	performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
+
+	respondsToSelector(aSelector: string): boolean;
+
+	retainCount(): number;
+
+	self(): this;
 }
 
 declare class MGLPointFeature extends MGLPointAnnotation implements MGLFeature {
 
-    attributes: NSDictionary<string, any>; // inherited from MGLFeature
-    readonly coordinate: CLLocationCoordinate2D; // inherited from MGLAnnotation
-    readonly debugDescription: string; // inherited from NSObjectProtocol
-    readonly description: string; // inherited from NSObjectProtocol
-    readonly hash: number; // inherited from NSObjectProtocol
-    identifier: any; // inherited from MGLFeature
-    readonly isProxy: boolean; // inherited from NSObjectProtocol
-    readonly subtitle: string; // inherited from MGLAnnotation
-    readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
-    readonly title: string; // inherited from MGLAnnotation
-    readonly;  // inherited from NSObjectProtocol
+	static alloc(): MGLPointFeature; // inherited from NSObject
 
-    static alloc(): MGLPointFeature; // inherited from NSObject
+	static new(): MGLPointFeature; // inherited from NSObject
 
-    static new(): MGLPointFeature; // inherited from NSObject
+	attributes: NSDictionary<string, any>; // inherited from MGLFeature
 
-    attributeForKey(key: string): any;
+	readonly coordinate: CLLocationCoordinate2D; // inherited from MGLAnnotation
 
-    class(): typeof NSObject;
+	readonly debugDescription: string; // inherited from NSObjectProtocol
 
-    conformsToProtocol(aProtocol: any /* Protocol */): boolean;
+	readonly description: string; // inherited from NSObjectProtocol
 
-    geoJSONDictionary(): NSDictionary<string, any>;
+	readonly hash: number; // inherited from NSObjectProtocol
 
-    isEqual(object: any): boolean;
+	identifier: any; // inherited from MGLFeature
 
-    isKindOfClass(aClass: typeof NSObject): boolean;
+	readonly isProxy: boolean; // inherited from NSObjectProtocol
 
-    isMemberOfClass(aClass: typeof NSObject): boolean;
+	readonly subtitle: string; // inherited from MGLAnnotation
 
-    performSelector(aSelector: string): any;
+	readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
 
-    performSelectorWithObject(aSelector: string, object: any): any;
+	readonly title: string; // inherited from MGLAnnotation
 
-    performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
+	readonly  // inherited from NSObjectProtocol
 
-    respondsToSelector(aSelector: string): boolean;
+	attributeForKey(key: string): any;
 
-    retainCount(): number;
+	class(): typeof NSObject;
 
-    self(): this;
+	conformsToProtocol(aProtocol: any /* Protocol */): boolean;
+
+	attributeForKey(key: string): any;
+
+	geoJSONDictionary(): NSDictionary<string, any>;
+
+	isEqual(object: any): boolean;
+
+	isKindOfClass(aClass: typeof NSObject): boolean;
+
+	isMemberOfClass(aClass: typeof NSObject): boolean;
+
+	performSelector(aSelector: string): any;
+
+	performSelectorWithObject(aSelector: string, object: any): any;
+
+	performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
+
+	respondsToSelector(aSelector: string): boolean;
+
+	retainCount(): number;
+
+	self(): this;
 }
 
 declare class MGLPointFeatureCluster extends MGLPointFeature implements MGLCluster {
 
-    attributes: NSDictionary<string, any>; // inherited from MGLFeature
-    readonly clusterIdentifier: number; // inherited from MGLCluster
-    readonly clusterPointCount: number; // inherited from MGLCluster
-    readonly coordinate: CLLocationCoordinate2D; // inherited from MGLAnnotation
-    readonly debugDescription: string; // inherited from NSObjectProtocol
-    readonly description: string; // inherited from NSObjectProtocol
-    readonly hash: number; // inherited from NSObjectProtocol
-    identifier: any; // inherited from MGLFeature
-    readonly isProxy: boolean; // inherited from NSObjectProtocol
-    readonly subtitle: string; // inherited from MGLAnnotation
-    readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
-    readonly title: string; // inherited from MGLAnnotation
-    readonly;  // inherited from NSObjectProtocol
+	static alloc(): MGLPointFeatureCluster; // inherited from NSObject
 
-    static alloc(): MGLPointFeatureCluster; // inherited from NSObject
+	static new(): MGLPointFeatureCluster; // inherited from NSObject
 
-    static new(): MGLPointFeatureCluster; // inherited from NSObject
+	attributes: NSDictionary<string, any>; // inherited from MGLFeature
 
-    attributeForKey(key: string): any;
+	readonly clusterIdentifier: number; // inherited from MGLCluster
 
-    class(): typeof NSObject;
+	readonly clusterPointCount: number; // inherited from MGLCluster
 
-    conformsToProtocol(aProtocol: any /* Protocol */): boolean;
+	readonly coordinate: CLLocationCoordinate2D; // inherited from MGLAnnotation
 
-    geoJSONDictionary(): NSDictionary<string, any>;
+	readonly debugDescription: string; // inherited from NSObjectProtocol
 
-    isEqual(object: any): boolean;
+	readonly description: string; // inherited from NSObjectProtocol
 
-    isKindOfClass(aClass: typeof NSObject): boolean;
+	readonly hash: number; // inherited from NSObjectProtocol
 
-    isMemberOfClass(aClass: typeof NSObject): boolean;
+	identifier: any; // inherited from MGLFeature
 
-    performSelector(aSelector: string): any;
+	readonly isProxy: boolean; // inherited from NSObjectProtocol
 
-    performSelectorWithObject(aSelector: string, object: any): any;
+	readonly subtitle: string; // inherited from MGLAnnotation
 
-    performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
+	readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
 
-    respondsToSelector(aSelector: string): boolean;
+	readonly title: string; // inherited from MGLAnnotation
 
-    retainCount(): number;
+	readonly  // inherited from NSObjectProtocol
 
-    self(): this;
+	attributeForKey(key: string): any;
+
+	class(): typeof NSObject;
+
+	conformsToProtocol(aProtocol: any /* Protocol */): boolean;
+
+	geoJSONDictionary(): NSDictionary<string, any>;
+
+	isEqual(object: any): boolean;
+
+	isKindOfClass(aClass: typeof NSObject): boolean;
+
+	isMemberOfClass(aClass: typeof NSObject): boolean;
+
+	performSelector(aSelector: string): any;
+
+	performSelectorWithObject(aSelector: string, object: any): any;
+
+	performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
+
+	respondsToSelector(aSelector: string): boolean;
+
+	retainCount(): number;
+
+	self(): this;
 }
 
 declare class MGLPolygon extends MGLMultiPoint implements MGLOverlay {
 
-    readonly interiorPolygons: NSArray<MGLPolygon>;
-    readonly coordinate: CLLocationCoordinate2D; // inherited from MGLAnnotation
-    readonly debugDescription: string; // inherited from NSObjectProtocol
-    readonly description: string; // inherited from NSObjectProtocol
-    readonly hash: number; // inherited from NSObjectProtocol
-    readonly isProxy: boolean; // inherited from NSObjectProtocol
-    readonly overlayBounds: MGLCoordinateBounds; // inherited from MGLOverlay
-    readonly subtitle: string; // inherited from MGLAnnotation
-    readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
-    readonly title: string; // inherited from MGLAnnotation
-    readonly;  // inherited from NSObjectProtocol
+	static alloc(): MGLPolygon; // inherited from NSObject
 
-    static alloc(): MGLPolygon; // inherited from NSObject
+	static new(): MGLPolygon; // inherited from NSObject
 
-    static new(): MGLPolygon; // inherited from NSObject
+	static polygonWithCoordinatesCount(coords: interop.Pointer | interop.Reference<CLLocationCoordinate2D>, count: number): MGLPolygon;
 
-    static polygonWithCoordinatesCount(coords: interop.Pointer | interop.Reference<CLLocationCoordinate2D>, count: number): MGLPolygon;
+	static polygonWithCoordinatesCountInteriorPolygons(coords: interop.Pointer | interop.Reference<CLLocationCoordinate2D>, count: number, interiorPolygons: NSArray<MGLPolygon> | MGLPolygon[]): MGLPolygon;
 
-    static polygonWithCoordinatesCountInteriorPolygons(coords: interop.Pointer | interop.Reference<CLLocationCoordinate2D>, count: number, interiorPolygons: NSArray<MGLPolygon> | MGLPolygon[]): MGLPolygon;
+	readonly interiorPolygons: NSArray<MGLPolygon>;
 
-    class(): typeof NSObject;
+	readonly coordinate: CLLocationCoordinate2D; // inherited from MGLAnnotation
 
-    conformsToProtocol(aProtocol: any /* Protocol */): boolean;
+	readonly debugDescription: string; // inherited from NSObjectProtocol
 
-    intersectsOverlayBounds(overlayBounds: MGLCoordinateBounds): boolean;
+	readonly description: string; // inherited from NSObjectProtocol
 
-    isEqual(object: any): boolean;
+	readonly hash: number; // inherited from NSObjectProtocol
 
-    isKindOfClass(aClass: typeof NSObject): boolean;
+	readonly isProxy: boolean; // inherited from NSObjectProtocol
 
-    isMemberOfClass(aClass: typeof NSObject): boolean;
+	readonly overlayBounds: MGLCoordinateBounds; // inherited from MGLOverlay
 
-    performSelector(aSelector: string): any;
+	readonly subtitle: string; // inherited from MGLAnnotation
 
-    performSelectorWithObject(aSelector: string, object: any): any;
+	readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
 
-    performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
+	readonly title: string; // inherited from MGLAnnotation
 
-    respondsToSelector(aSelector: string): boolean;
+	readonly  // inherited from NSObjectProtocol
 
-    retainCount(): number;
+	class(): typeof NSObject;
 
-    self(): this;
+	conformsToProtocol(aProtocol: any /* Protocol */): boolean;
+
+	intersectsOverlayBounds(overlayBounds: MGLCoordinateBounds): boolean;
+
+	isEqual(object: any): boolean;
+
+	isKindOfClass(aClass: typeof NSObject): boolean;
+
+	isMemberOfClass(aClass: typeof NSObject): boolean;
+
+	performSelector(aSelector: string): any;
+
+	performSelectorWithObject(aSelector: string, object: any): any;
+
+	performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
+
+	respondsToSelector(aSelector: string): boolean;
+
+	retainCount(): number;
+
+	self(): this;
 }
 
 declare class MGLPolygonFeature extends MGLPolygon implements MGLFeature {
 
-    attributes: NSDictionary<string, any>; // inherited from MGLFeature
-    readonly coordinate: CLLocationCoordinate2D; // inherited from MGLAnnotation
-    readonly debugDescription: string; // inherited from NSObjectProtocol
-    readonly description: string; // inherited from NSObjectProtocol
-    readonly hash: number; // inherited from NSObjectProtocol
-    identifier: any; // inherited from MGLFeature
-    readonly isProxy: boolean; // inherited from NSObjectProtocol
-    readonly subtitle: string; // inherited from MGLAnnotation
-    readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
-    readonly title: string; // inherited from MGLAnnotation
-    readonly;  // inherited from NSObjectProtocol
+	static alloc(): MGLPolygonFeature; // inherited from NSObject
 
-    static alloc(): MGLPolygonFeature; // inherited from NSObject
+	static new(): MGLPolygonFeature; // inherited from NSObject
 
-    static new(): MGLPolygonFeature; // inherited from NSObject
+	static polygonWithCoordinatesCount(coords: interop.Pointer | interop.Reference<CLLocationCoordinate2D>, count: number): MGLPolygonFeature; // inherited from MGLPolygon
 
-    static polygonWithCoordinatesCount(coords: interop.Pointer | interop.Reference<CLLocationCoordinate2D>, count: number): MGLPolygonFeature; // inherited from MGLPolygon
+	static polygonWithCoordinatesCountInteriorPolygons(coords: interop.Pointer | interop.Reference<CLLocationCoordinate2D>, count: number, interiorPolygons: NSArray<MGLPolygon> | MGLPolygon[]): MGLPolygonFeature; // inherited from MGLPolygon
 
-    static polygonWithCoordinatesCountInteriorPolygons(coords: interop.Pointer | interop.Reference<CLLocationCoordinate2D>, count: number, interiorPolygons: NSArray<MGLPolygon> | MGLPolygon[]): MGLPolygonFeature; // inherited from MGLPolygon
+	attributes: NSDictionary<string, any>; // inherited from MGLFeature
 
-    attributeForKey(key: string): any;
+	readonly coordinate: CLLocationCoordinate2D; // inherited from MGLAnnotation
 
-    class(): typeof NSObject;
+	readonly debugDescription: string; // inherited from NSObjectProtocol
 
-    conformsToProtocol(aProtocol: any /* Protocol */): boolean;
+	readonly description: string; // inherited from NSObjectProtocol
 
-    geoJSONDictionary(): NSDictionary<string, any>;
+	readonly hash: number; // inherited from NSObjectProtocol
 
-    isEqual(object: any): boolean;
+	identifier: any; // inherited from MGLFeature
 
-    isKindOfClass(aClass: typeof NSObject): boolean;
+	readonly isProxy: boolean; // inherited from NSObjectProtocol
 
-    isMemberOfClass(aClass: typeof NSObject): boolean;
+	readonly subtitle: string; // inherited from MGLAnnotation
 
-    performSelector(aSelector: string): any;
+	readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
 
-    performSelectorWithObject(aSelector: string, object: any): any;
+	readonly title: string; // inherited from MGLAnnotation
 
-    performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
+	readonly  // inherited from NSObjectProtocol
 
-    respondsToSelector(aSelector: string): boolean;
+	attributeForKey(key: string): any;
 
-    retainCount(): number;
+	class(): typeof NSObject;
 
-    self(): this;
+	conformsToProtocol(aProtocol: any /* Protocol */): boolean;
+
+	geoJSONDictionary(): NSDictionary<string, any>;
+
+	isEqual(object: any): boolean;
+
+	isKindOfClass(aClass: typeof NSObject): boolean;
+
+	isMemberOfClass(aClass: typeof NSObject): boolean;
+
+	performSelector(aSelector: string): any;
+
+	performSelectorWithObject(aSelector: string, object: any): any;
+
+	performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
+
+	respondsToSelector(aSelector: string): boolean;
+
+	retainCount(): number;
+
+	self(): this;
 }
 
 declare class MGLPolyline extends MGLMultiPoint implements MGLOverlay {
 
-    readonly coordinate: CLLocationCoordinate2D; // inherited from MGLAnnotation
-    readonly debugDescription: string; // inherited from NSObjectProtocol
-    readonly description: string; // inherited from NSObjectProtocol
-    readonly hash: number; // inherited from NSObjectProtocol
-    readonly isProxy: boolean; // inherited from NSObjectProtocol
-    readonly overlayBounds: MGLCoordinateBounds; // inherited from MGLOverlay
-    readonly subtitle: string; // inherited from MGLAnnotation
-    readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
-    readonly title: string; // inherited from MGLAnnotation
-    readonly;  // inherited from NSObjectProtocol
+	static alloc(): MGLPolyline; // inherited from NSObject
 
-    static alloc(): MGLPolyline; // inherited from NSObject
+	static new(): MGLPolyline; // inherited from NSObject
 
-    static new(): MGLPolyline; // inherited from NSObject
+	static polylineWithCoordinatesCount(coords: interop.Pointer | interop.Reference<CLLocationCoordinate2D>, count: number): MGLPolyline;
 
-    static polylineWithCoordinatesCount(coords: interop.Pointer | interop.Reference<CLLocationCoordinate2D>, count: number): MGLPolyline;
+	readonly coordinate: CLLocationCoordinate2D; // inherited from MGLAnnotation
 
-    class(): typeof NSObject;
+	readonly debugDescription: string; // inherited from NSObjectProtocol
 
-    conformsToProtocol(aProtocol: any /* Protocol */): boolean;
+	readonly description: string; // inherited from NSObjectProtocol
 
-    intersectsOverlayBounds(overlayBounds: MGLCoordinateBounds): boolean;
+	readonly hash: number; // inherited from NSObjectProtocol
 
-    isEqual(object: any): boolean;
+	readonly isProxy: boolean; // inherited from NSObjectProtocol
 
-    isKindOfClass(aClass: typeof NSObject): boolean;
+	readonly overlayBounds: MGLCoordinateBounds; // inherited from MGLOverlay
 
-    isMemberOfClass(aClass: typeof NSObject): boolean;
+	readonly subtitle: string; // inherited from MGLAnnotation
 
-    performSelector(aSelector: string): any;
+	readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
 
-    performSelectorWithObject(aSelector: string, object: any): any;
+	readonly title: string; // inherited from MGLAnnotation
 
-    performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
+	readonly  // inherited from NSObjectProtocol
 
-    respondsToSelector(aSelector: string): boolean;
+	class(): typeof NSObject;
 
-    retainCount(): number;
+	conformsToProtocol(aProtocol: any /* Protocol */): boolean;
 
-    self(): this;
+	intersectsOverlayBounds(overlayBounds: MGLCoordinateBounds): boolean;
+
+	isEqual(object: any): boolean;
+
+	isKindOfClass(aClass: typeof NSObject): boolean;
+
+	isMemberOfClass(aClass: typeof NSObject): boolean;
+
+	performSelector(aSelector: string): any;
+
+	performSelectorWithObject(aSelector: string, object: any): any;
+
+	performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
+
+	respondsToSelector(aSelector: string): boolean;
+
+	retainCount(): number;
+
+	self(): this;
 }
 
 declare class MGLPolylineFeature extends MGLPolyline implements MGLFeature {
 
-    attributes: NSDictionary<string, any>; // inherited from MGLFeature
-    readonly coordinate: CLLocationCoordinate2D; // inherited from MGLAnnotation
-    readonly debugDescription: string; // inherited from NSObjectProtocol
-    readonly description: string; // inherited from NSObjectProtocol
-    readonly hash: number; // inherited from NSObjectProtocol
-    identifier: any; // inherited from MGLFeature
-    readonly isProxy: boolean; // inherited from NSObjectProtocol
-    readonly subtitle: string; // inherited from MGLAnnotation
-    readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
-    readonly title: string; // inherited from MGLAnnotation
-    readonly;  // inherited from NSObjectProtocol
+	static alloc(): MGLPolylineFeature; // inherited from NSObject
 
-    static alloc(): MGLPolylineFeature; // inherited from NSObject
+	static new(): MGLPolylineFeature; // inherited from NSObject
 
-    static new(): MGLPolylineFeature; // inherited from NSObject
+	static polylineWithCoordinatesCount(coords: interop.Pointer | interop.Reference<CLLocationCoordinate2D>, count: number): MGLPolylineFeature; // inherited from MGLPolyline
 
-    static polylineWithCoordinatesCount(coords: interop.Pointer | interop.Reference<CLLocationCoordinate2D>, count: number): MGLPolylineFeature; // inherited from MGLPolyline
+	attributes: NSDictionary<string, any>; // inherited from MGLFeature
 
-    attributeForKey(key: string): any;
+	readonly coordinate: CLLocationCoordinate2D; // inherited from MGLAnnotation
 
-    class(): typeof NSObject;
+	readonly debugDescription: string; // inherited from NSObjectProtocol
 
-    conformsToProtocol(aProtocol: any /* Protocol */): boolean;
+	readonly description: string; // inherited from NSObjectProtocol
 
-    geoJSONDictionary(): NSDictionary<string, any>;
+	readonly hash: number; // inherited from NSObjectProtocol
 
-    isEqual(object: any): boolean;
+	identifier: any; // inherited from MGLFeature
 
-    isKindOfClass(aClass: typeof NSObject): boolean;
+	readonly isProxy: boolean; // inherited from NSObjectProtocol
 
-    isMemberOfClass(aClass: typeof NSObject): boolean;
+	readonly subtitle: string; // inherited from MGLAnnotation
 
-    performSelector(aSelector: string): any;
+	readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
 
-    performSelectorWithObject(aSelector: string, object: any): any;
+	readonly title: string; // inherited from MGLAnnotation
 
-    performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
+	readonly  // inherited from NSObjectProtocol
 
-    respondsToSelector(aSelector: string): boolean;
+	attributeForKey(key: string): any;
 
-    retainCount(): number;
+	class(): typeof NSObject;
 
-    self(): this;
+	conformsToProtocol(aProtocol: any /* Protocol */): boolean;
+
+	geoJSONDictionary(): NSDictionary<string, any>;
+
+	isEqual(object: any): boolean;
+
+	isKindOfClass(aClass: typeof NSObject): boolean;
+
+	isMemberOfClass(aClass: typeof NSObject): boolean;
+
+	performSelector(aSelector: string): any;
+
+	performSelectorWithObject(aSelector: string, object: any): any;
+
+	performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
+
+	respondsToSelector(aSelector: string): boolean;
+
+	retainCount(): number;
+
+	self(): this;
 }
 
 declare class MGLRasterDEMSource extends MGLRasterTileSource {
 
-    static alloc(): MGLRasterDEMSource; // inherited from NSObject
+	static alloc(): MGLRasterDEMSource; // inherited from NSObject
 
-    static new(): MGLRasterDEMSource; // inherited from NSObject
+	static new(): MGLRasterDEMSource; // inherited from NSObject
 }
 
 declare const enum MGLRasterResamplingMode {
 
-    Linear = 0,
+	Linear = 0,
 
-    Nearest = 1
+	Nearest = 1
 }
 
 declare class MGLRasterStyleLayer extends MGLForegroundStyleLayer {
 
-    maximumRasterBrightness: NSExpression;
-    maximumRasterBrightnessTransition: MGLTransition;
-    minimumRasterBrightness: NSExpression;
-    minimumRasterBrightnessTransition: MGLTransition;
-    rasterContrast: NSExpression;
-    rasterContrastTransition: MGLTransition;
-    rasterFadeDuration: NSExpression;
-    rasterHueRotation: NSExpression;
-    rasterHueRotationTransition: MGLTransition;
-    rasterOpacity: NSExpression;
-    rasterOpacityTransition: MGLTransition;
-    rasterResamplingMode: NSExpression;
-    rasterSaturation: NSExpression;
-    rasterSaturationTransition: MGLTransition;
+	static alloc(): MGLRasterStyleLayer; // inherited from NSObject
 
-    constructor(o: { identifier: string; source: MGLSource; });
+	static new(): MGLRasterStyleLayer; // inherited from NSObject
 
-    static alloc(): MGLRasterStyleLayer; // inherited from NSObject
+	maximumRasterBrightness: NSExpression;
 
-    static new(): MGLRasterStyleLayer; // inherited from NSObject
+	maximumRasterBrightnessTransition: MGLTransition;
 
-    initWithIdentifierSource(identifier: string, source: MGLSource): this;
+	minimumRasterBrightness: NSExpression;
+
+	minimumRasterBrightnessTransition: MGLTransition;
+
+	rasterContrast: NSExpression;
+
+	rasterContrastTransition: MGLTransition;
+
+	rasterFadeDuration: NSExpression;
+
+	rasterHueRotation: NSExpression;
+
+	rasterHueRotationTransition: MGLTransition;
+
+	rasterOpacity: NSExpression;
+
+	rasterOpacityTransition: MGLTransition;
+
+	rasterResamplingMode: NSExpression;
+
+	rasterSaturation: NSExpression;
+
+	rasterSaturationTransition: MGLTransition;
+
+	constructor(o: { identifier: string; source: MGLSource; });
+
+	initWithIdentifierSource(identifier: string, source: MGLSource): this;
 }
 
 declare class MGLRasterTileSource extends MGLTileSource {
 
-    constructor(o: { identifier: string; configurationURL: NSURL; });
+	static alloc(): MGLRasterTileSource; // inherited from NSObject
 
-    constructor(o: { identifier: string; configurationURL: NSURL; tileSize: number; });
+	static new(): MGLRasterTileSource; // inherited from NSObject
 
-    constructor(o: { identifier: string; tileURLTemplates: NSArray<string> | string[]; options: NSDictionary<string, any>; });
+	constructor(o: { identifier: string; configurationURL: NSURL; });
 
-    static alloc(): MGLRasterTileSource; // inherited from NSObject
+	constructor(o: { identifier: string; configurationURL: NSURL; tileSize: number; });
 
-    static new(): MGLRasterTileSource; // inherited from NSObject
+	constructor(o: { identifier: string; tileURLTemplates: NSArray<string> | string[]; options: NSDictionary<string, any>; });
 
-    initWithIdentifierConfigurationURL(identifier: string, configurationURL: NSURL): this;
+	initWithIdentifierConfigurationURL(identifier: string, configurationURL: NSURL): this;
 
-    initWithIdentifierConfigurationURLTileSize(identifier: string, configurationURL: NSURL, tileSize: number): this;
+	initWithIdentifierConfigurationURLTileSize(identifier: string, configurationURL: NSURL, tileSize: number): this;
 
-    initWithIdentifierTileURLTemplatesOptions(identifier: string, tileURLTemplates: NSArray<string> | string[], options: NSDictionary<string, any>): this;
+	initWithIdentifierTileURLTemplatesOptions(identifier: string, tileURLTemplates: NSArray<string> | string[], options: NSDictionary<string, any>): this;
 }
 
 declare var MGLRedundantLayerException: string;
@@ -2178,219 +2493,250 @@ declare var MGLRedundantSourceIdentifierException: string;
 
 declare const enum MGLResourceKind {
 
-    Unknown = 0,
+	Unknown = 0,
 
-    Style = 1,
+	Style = 1,
 
-    Source = 2,
+	Source = 2,
 
-    Tile = 3,
+	Tile = 3,
 
-    Glyphs = 4,
+	Glyphs = 4,
 
-    SpriteImage = 5,
+	SpriteImage = 5,
 
-    SpriteJSON = 6,
+	SpriteJSON = 6,
 
-    Image = 7
+	Image = 7
 }
 
 declare var MGLResourceNotFoundException: string;
 
 declare class MGLShape extends NSObject implements MGLAnnotation, NSSecureCoding {
 
-    static readonly supportsSecureCoding: boolean; // inherited from NSSecureCoding
-    subtitle: string;
-    title: string;
-    readonly coordinate: CLLocationCoordinate2D; // inherited from MGLAnnotation
-    readonly debugDescription: string; // inherited from NSObjectProtocol
-    readonly description: string; // inherited from NSObjectProtocol
-    readonly hash: number; // inherited from NSObjectProtocol
-    readonly isProxy: boolean; // inherited from NSObjectProtocol
-    readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
-    readonly;  // inherited from NSObjectProtocol
+	static alloc(): MGLShape; // inherited from NSObject
 
-    constructor(o: { coder: NSCoder; }); // inherited from NSCoding
+	static new(): MGLShape; // inherited from NSObject
 
-    static alloc(): MGLShape; // inherited from NSObject
+	static shapeWithDataEncodingError(data: NSData, encoding: number): MGLShape;
 
-    static new(): MGLShape; // inherited from NSObject
+	subtitle: string;
 
-    static shapeWithDataEncodingError(data: NSData, encoding: number): MGLShape;
+	title: string;
 
-    class(): typeof NSObject;
+	readonly coordinate: CLLocationCoordinate2D; // inherited from MGLAnnotation
 
-    conformsToProtocol(aProtocol: any /* Protocol */): boolean;
+	readonly debugDescription: string; // inherited from NSObjectProtocol
 
-    encodeWithCoder(aCoder: NSCoder): void;
+	readonly description: string; // inherited from NSObjectProtocol
 
-    geoJSONDataUsingEncoding(encoding: number): NSData;
+	readonly hash: number; // inherited from NSObjectProtocol
 
-    initWithCoder(aDecoder: NSCoder): this;
+	readonly isProxy: boolean; // inherited from NSObjectProtocol
 
-    isEqual(object: any): boolean;
+	readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
 
-    isKindOfClass(aClass: typeof NSObject): boolean;
+	readonly  // inherited from NSObjectProtocol
 
-    isMemberOfClass(aClass: typeof NSObject): boolean;
+	static readonly supportsSecureCoding: boolean; // inherited from NSSecureCoding
 
-    performSelector(aSelector: string): any;
+	constructor(o: { coder: NSCoder; }); // inherited from NSCoding
 
-    performSelectorWithObject(aSelector: string, object: any): any;
+	class(): typeof NSObject;
 
-    performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
+	conformsToProtocol(aProtocol: any /* Protocol */): boolean;
 
-    respondsToSelector(aSelector: string): boolean;
+	encodeWithCoder(aCoder: NSCoder): void;
 
-    retainCount(): number;
+	geoJSONDataUsingEncoding(encoding: number): NSData;
 
-    self(): this;
+	initWithCoder(aDecoder: NSCoder): this;
+
+	isEqual(object: any): boolean;
+
+	isKindOfClass(aClass: typeof NSObject): boolean;
+
+	isMemberOfClass(aClass: typeof NSObject): boolean;
+
+	performSelector(aSelector: string): any;
+
+	performSelectorWithObject(aSelector: string, object: any): any;
+
+	performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
+
+	respondsToSelector(aSelector: string): boolean;
+
+	retainCount(): number;
+
+	self(): this;
 }
 
 declare class MGLShapeCollection extends MGLShape {
 
-    readonly shapes: NSArray<MGLShape>;
+	static alloc(): MGLShapeCollection; // inherited from NSObject
 
-    static alloc(): MGLShapeCollection; // inherited from NSObject
+	static new(): MGLShapeCollection; // inherited from NSObject
 
-    static new(): MGLShapeCollection; // inherited from NSObject
+	static shapeCollectionWithShapes(shapes: NSArray<MGLShape> | MGLShape[]): MGLShapeCollection;
 
-    static shapeCollectionWithShapes(shapes: NSArray<MGLShape> | MGLShape[]): MGLShapeCollection;
+	readonly shapes: NSArray<MGLShape>;
 }
 
 declare class MGLShapeCollectionFeature extends MGLShapeCollection implements MGLFeature {
 
-    attributes: NSDictionary<string, any>; // inherited from MGLFeature
-    readonly coordinate: CLLocationCoordinate2D; // inherited from MGLAnnotation
-    readonly debugDescription: string; // inherited from NSObjectProtocol
-    readonly description: string; // inherited from NSObjectProtocol
-    readonly hash: number; // inherited from NSObjectProtocol
-    identifier: any; // inherited from MGLFeature
-    readonly isProxy: boolean; // inherited from NSObjectProtocol
-    readonly subtitle: string; // inherited from MGLAnnotation
-    readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
-    readonly title: string; // inherited from MGLAnnotation
-    readonly;  // inherited from NSObjectProtocol
+	static alloc(): MGLShapeCollectionFeature; // inherited from NSObject
 
-    static alloc(): MGLShapeCollectionFeature; // inherited from NSObject
+	static new(): MGLShapeCollectionFeature; // inherited from NSObject
 
-    static new(): MGLShapeCollectionFeature; // inherited from NSObject
+	static shapeCollectionWithShapes(shapes: NSArray<MGLShape> | MGLShape[]): MGLShapeCollectionFeature; // inherited from MGLShapeCollection
 
-    static shapeCollectionWithShapes(shapes: NSArray<MGLShape> | MGLShape[]): MGLShapeCollectionFeature; // inherited from MGLShapeCollection
+	attributes: NSDictionary<string, any>; // inherited from MGLFeature
 
-    attributeForKey(key: string): any;
+	readonly coordinate: CLLocationCoordinate2D; // inherited from MGLAnnotation
 
-    class(): typeof NSObject;
+	readonly debugDescription: string; // inherited from NSObjectProtocol
 
-    conformsToProtocol(aProtocol: any /* Protocol */): boolean;
+	readonly description: string; // inherited from NSObjectProtocol
 
-    geoJSONDictionary(): NSDictionary<string, any>;
+	readonly hash: number; // inherited from NSObjectProtocol
 
-    isEqual(object: any): boolean;
+	identifier: any; // inherited from MGLFeature
 
-    isKindOfClass(aClass: typeof NSObject): boolean;
+	readonly isProxy: boolean; // inherited from NSObjectProtocol
 
-    isMemberOfClass(aClass: typeof NSObject): boolean;
+	readonly subtitle: string; // inherited from MGLAnnotation
 
-    performSelector(aSelector: string): any;
+	readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
 
-    performSelectorWithObject(aSelector: string, object: any): any;
+	readonly title: string; // inherited from MGLAnnotation
 
-    performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
+	readonly  // inherited from NSObjectProtocol
 
-    respondsToSelector(aSelector: string): boolean;
+	attributeForKey(key: string): any;
 
-    retainCount(): number;
+	class(): typeof NSObject;
 
-    self(): this;
+	conformsToProtocol(aProtocol: any /* Protocol */): boolean;
+
+	geoJSONDictionary(): NSDictionary<string, any>;
+
+	isEqual(object: any): boolean;
+
+	isKindOfClass(aClass: typeof NSObject): boolean;
+
+	isMemberOfClass(aClass: typeof NSObject): boolean;
+
+	performSelector(aSelector: string): any;
+
+	performSelectorWithObject(aSelector: string, object: any): any;
+
+	performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
+
+	respondsToSelector(aSelector: string): boolean;
+
+	retainCount(): number;
+
+	self(): this;
 }
 
 declare class MGLShapeOfflineRegion extends NSObject implements MGLOfflineRegion, NSCopying, NSSecureCoding {
 
-    static readonly supportsSecureCoding: boolean; // inherited from NSSecureCoding
-    readonly maximumZoomLevel: number;
-    readonly minimumZoomLevel: number;
-    readonly shape: MGLShape;
-    readonly debugDescription: string; // inherited from NSObjectProtocol
-    readonly description: string; // inherited from NSObjectProtocol
-    readonly hash: number; // inherited from NSObjectProtocol
-    includesIdeographicGlyphs: boolean; // inherited from MGLOfflineRegion
-    readonly isProxy: boolean; // inherited from NSObjectProtocol
-    readonly styleURL: NSURL; // inherited from MGLOfflineRegion
-    readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
-    readonly;  // inherited from NSObjectProtocol
+	static alloc(): MGLShapeOfflineRegion; // inherited from NSObject
 
-    constructor(o: { coder: NSCoder; }); // inherited from NSCoding
+	static new(): MGLShapeOfflineRegion; // inherited from NSObject
 
-    constructor(o: { styleURL: NSURL; shape: MGLShape; fromZoomLevel: number; toZoomLevel: number; });
+	readonly maximumZoomLevel: number;
 
-    static alloc(): MGLShapeOfflineRegion; // inherited from NSObject
+	readonly minimumZoomLevel: number;
 
-    static new(): MGLShapeOfflineRegion; // inherited from NSObject
+	readonly shape: MGLShape;
 
-    class(): typeof NSObject;
+	readonly debugDescription: string; // inherited from NSObjectProtocol
 
-    conformsToProtocol(aProtocol: any /* Protocol */): boolean;
+	readonly description: string; // inherited from NSObjectProtocol
 
-    copyWithZone(zone: interop.Pointer | interop.Reference<any>): any;
+	readonly hash: number; // inherited from NSObjectProtocol
 
-    encodeWithCoder(aCoder: NSCoder): void;
+	includesIdeographicGlyphs: boolean; // inherited from MGLOfflineRegion
 
-    initWithCoder(aDecoder: NSCoder): this;
+	readonly isProxy: boolean; // inherited from NSObjectProtocol
 
-    initWithStyleURLShapeFromZoomLevelToZoomLevel(styleURL: NSURL, shape: MGLShape, minimumZoomLevel: number, maximumZoomLevel: number): this;
+	readonly styleURL: NSURL; // inherited from MGLOfflineRegion
 
-    isEqual(object: any): boolean;
+	readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
 
-    isKindOfClass(aClass: typeof NSObject): boolean;
+	readonly  // inherited from NSObjectProtocol
 
-    isMemberOfClass(aClass: typeof NSObject): boolean;
+	static readonly supportsSecureCoding: boolean; // inherited from NSSecureCoding
 
-    performSelector(aSelector: string): any;
+	constructor(o: { coder: NSCoder; }); // inherited from NSCoding
 
-    performSelectorWithObject(aSelector: string, object: any): any;
+	constructor(o: { styleURL: NSURL; shape: MGLShape; fromZoomLevel: number; toZoomLevel: number; });
 
-    performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
+	class(): typeof NSObject;
 
-    respondsToSelector(aSelector: string): boolean;
+	conformsToProtocol(aProtocol: any /* Protocol */): boolean;
 
-    retainCount(): number;
+	copyWithZone(zone: interop.Pointer | interop.Reference<any>): any;
 
-    self(): this;
+	encodeWithCoder(aCoder: NSCoder): void;
+
+	initWithCoder(aDecoder: NSCoder): this;
+
+	initWithStyleURLShapeFromZoomLevelToZoomLevel(styleURL: NSURL, shape: MGLShape, minimumZoomLevel: number, maximumZoomLevel: number): this;
+
+	isEqual(object: any): boolean;
+
+	isKindOfClass(aClass: typeof NSObject): boolean;
+
+	isMemberOfClass(aClass: typeof NSObject): boolean;
+
+	performSelector(aSelector: string): any;
+
+	performSelectorWithObject(aSelector: string, object: any): any;
+
+	performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
+
+	respondsToSelector(aSelector: string): boolean;
+
+	retainCount(): number;
+
+	self(): this;
 }
 
 declare class MGLShapeSource extends MGLSource {
 
-    URL: NSURL;
-    shape: MGLShape;
+	static alloc(): MGLShapeSource; // inherited from NSObject
 
-    constructor(o: { identifier: string; features: NSArray<MGLShape> | MGLShape[]; options: NSDictionary<string, any>; });
+	static new(): MGLShapeSource; // inherited from NSObject
 
-    constructor(o: { identifier: string; shape: MGLShape; options: NSDictionary<string, any>; });
+	URL: NSURL;
 
-    constructor(o: { identifier: string; shapes: NSArray<MGLShape> | MGLShape[]; options: NSDictionary<string, any>; });
+	shape: MGLShape;
 
-    constructor(o: { identifier: string; URL: NSURL; options: NSDictionary<string, any>; });
+	constructor(o: { identifier: string; features: NSArray<MGLShape> | MGLShape[]; options: NSDictionary<string, any>; });
 
-    static alloc(): MGLShapeSource; // inherited from NSObject
+	constructor(o: { identifier: string; shape: MGLShape; options: NSDictionary<string, any>; });
 
-    static new(): MGLShapeSource; // inherited from NSObject
+	constructor(o: { identifier: string; shapes: NSArray<MGLShape> | MGLShape[]; options: NSDictionary<string, any>; });
 
-    childrenOfCluster(cluster: MGLPointFeatureCluster): NSArray<MGLFeature>;
+	constructor(o: { identifier: string; URL: NSURL; options: NSDictionary<string, any>; });
 
-    featuresMatchingPredicate(predicate: NSPredicate): NSArray<MGLFeature>;
+	childrenOfCluster(cluster: MGLPointFeatureCluster): NSArray<MGLFeature>;
 
-    initWithIdentifierFeaturesOptions(identifier: string, features: NSArray<MGLShape> | MGLShape[], options: NSDictionary<string, any>): this;
+	featuresMatchingPredicate(predicate: NSPredicate): NSArray<MGLFeature>;
 
-    initWithIdentifierShapeOptions(identifier: string, shape: MGLShape, options: NSDictionary<string, any>): this;
+	initWithIdentifierFeaturesOptions(identifier: string, features: NSArray<MGLShape> | MGLShape[], options: NSDictionary<string, any>): this;
 
-    initWithIdentifierShapesOptions(identifier: string, shapes: NSArray<MGLShape> | MGLShape[], options: NSDictionary<string, any>): this;
+	initWithIdentifierShapeOptions(identifier: string, shape: MGLShape, options: NSDictionary<string, any>): this;
 
-    initWithIdentifierURLOptions(identifier: string, url: NSURL, options: NSDictionary<string, any>): this;
+	initWithIdentifierShapesOptions(identifier: string, shapes: NSArray<MGLShape> | MGLShape[], options: NSDictionary<string, any>): this;
 
-    leavesOfClusterOffsetLimit(cluster: MGLPointFeatureCluster, offset: number, limit: number): NSArray<MGLFeature>;
+	initWithIdentifierURLOptions(identifier: string, url: NSURL, options: NSDictionary<string, any>): this;
 
-    zoomLevelForExpandingCluster(cluster: MGLPointFeatureCluster): number;
+	leavesOfClusterOffsetLimit(cluster: MGLPointFeatureCluster, offset: number, limit: number): NSArray<MGLFeature>;
+
+	zoomLevelForExpandingCluster(cluster: MGLPointFeatureCluster): number;
 }
 
 declare var MGLShapeSourceOptionBuffer: string;
@@ -2415,344 +2761,433 @@ declare var MGLShapeSourceOptionWrapsCoordinates: string;
 
 declare class MGLSource extends NSObject {
 
-    identifier: string;
+	static alloc(): MGLSource; // inherited from NSObject
 
-    constructor(o: { identifier: string; });
+	static new(): MGLSource; // inherited from NSObject
 
-    static alloc(): MGLSource; // inherited from NSObject
+	identifier: string;
 
-    static new(): MGLSource; // inherited from NSObject
+	constructor(o: { identifier: string; });
 
-    initWithIdentifier(identifier: string): this;
+	initWithIdentifier(identifier: string): this;
 }
 
 interface MGLSphericalPosition {
-    radial: number;
-    azimuthal: number;
-    polar: number;
+	radial: number;
+	azimuthal: number;
+	polar: number;
 }
-
 declare var MGLSphericalPosition: interop.StructType<MGLSphericalPosition>;
 
 declare function MGLStringFromMetricType(metricType: MGLMetricType): string;
 
 declare class MGLStyle extends NSObject {
 
-    static readonly darkStyleURL: NSURL;
-    static readonly lightStyleURL: NSURL;
-    static readonly outdoorsStyleURL: NSURL;
-    static readonly satelliteStreetsStyleURL: NSURL;
-    static readonly satelliteStyleURL: NSURL;
-    static readonly streetsStyleURL: NSURL;
-    layers: NSArray<MGLStyleLayer>;
-    light: MGLLight;
-    readonly name: string;
-    performsPlacementTransitions: boolean;
-    sources: NSSet<MGLSource>;
-    transition: MGLTransition;
+	static alloc(): MGLStyle; // inherited from NSObject
 
-    static alloc(): MGLStyle; // inherited from NSObject
+	static darkStyleURLWithVersion(version: number): NSURL;
 
-    static darkStyleURLWithVersion(version: number): NSURL;
+	static lightStyleURLWithVersion(version: number): NSURL;
 
-    static lightStyleURLWithVersion(version: number): NSURL;
+	static new(): MGLStyle; // inherited from NSObject
 
-    static new(): MGLStyle; // inherited from NSObject
+	static outdoorsStyleURLWithVersion(version: number): NSURL;
 
-    static outdoorsStyleURLWithVersion(version: number): NSURL;
+	static satelliteStreetsStyleURLWithVersion(version: number): NSURL;
 
-    static satelliteStreetsStyleURLWithVersion(version: number): NSURL;
+	static satelliteStyleURLWithVersion(version: number): NSURL;
 
-    static satelliteStyleURLWithVersion(version: number): NSURL;
+	static streetsStyleURLWithVersion(version: number): NSURL;
 
-    static streetsStyleURLWithVersion(version: number): NSURL;
+	layers: NSArray<MGLStyleLayer>;
 
-    addLayer(layer: MGLStyleLayer): void;
+	light: MGLLight;
 
-    addSource(source: MGLSource): void;
+	readonly name: string;
 
-    imageForName(name: string): UIImage;
+	performsPlacementTransitions: boolean;
 
-    insertLayerAboveLayer(layer: MGLStyleLayer, sibling: MGLStyleLayer): void;
+	sources: NSSet<MGLSource>;
 
-    insertLayerAtIndex(layer: MGLStyleLayer, index: number): void;
+	transition: MGLTransition;
 
-    insertLayerBelowLayer(layer: MGLStyleLayer, sibling: MGLStyleLayer): void;
+	static readonly darkStyleURL: NSURL;
 
-    layerWithIdentifier(identifier: string): MGLStyleLayer;
+	static readonly lightStyleURL: NSURL;
 
-    localizeLabelsIntoLocale(locale: NSLocale): void;
+	static readonly outdoorsStyleURL: NSURL;
 
-    removeImageForName(name: string): void;
+	static readonly satelliteStreetsStyleURL: NSURL;
 
-    removeLayer(layer: MGLStyleLayer): void;
+	static readonly satelliteStyleURL: NSURL;
 
-    removeSource(source: MGLSource): void;
+	static readonly streetsStyleURL: NSURL;
 
-    removeSourceError(source: MGLSource): boolean;
+	addLayer(layer: MGLStyleLayer): void;
 
-    setImageForName(image: UIImage, name: string): void;
+	addSource(source: MGLSource): void;
 
-    sourceWithIdentifier(identifier: string): MGLSource;
+	imageForName(name: string): UIImage;
+
+	insertLayerAboveLayer(layer: MGLStyleLayer, sibling: MGLStyleLayer): void;
+
+	insertLayerAtIndex(layer: MGLStyleLayer, index: number): void;
+
+	insertLayerBelowLayer(layer: MGLStyleLayer, sibling: MGLStyleLayer): void;
+
+	layerWithIdentifier(identifier: string): MGLStyleLayer;
+
+	localizeLabelsIntoLocale(locale: NSLocale): void;
+
+	removeImageForName(name: string): void;
+
+	removeLayer(layer: MGLStyleLayer): void;
+
+	removeSource(source: MGLSource): void;
+
+	removeSourceError(source: MGLSource): boolean;
+
+	setImageForName(image: UIImage, name: string): void;
+
+	sourceWithIdentifier(identifier: string): MGLSource;
 }
 
 declare var MGLStyleDefaultVersion: number;
 
 declare class MGLStyleLayer extends NSObject {
 
-    readonly identifier: string;
-    maximumZoomLevel: number;
-    minimumZoomLevel: number;
-    visible: boolean;
+	static alloc(): MGLStyleLayer; // inherited from NSObject
 
-    static alloc(): MGLStyleLayer; // inherited from NSObject
+	static new(): MGLStyleLayer; // inherited from NSObject
 
-    static new(): MGLStyleLayer; // inherited from NSObject
+	readonly identifier: string;
+
+	maximumZoomLevel: number;
+
+	minimumZoomLevel: number;
+
+	visible: boolean;
 }
 
 interface MGLStyleLayerDrawingContext {
-    size: CGSize;
-    centerCoordinate: CLLocationCoordinate2D;
-    zoomLevel: number;
-    direction: number;
-    pitch: number;
-    fieldOfView: number;
-    projectionMatrix: MGLMatrix4;
+	size: CGSize;
+	centerCoordinate: CLLocationCoordinate2D;
+	zoomLevel: number;
+	direction: number;
+	pitch: number;
+	fieldOfView: number;
+	projectionMatrix: MGLMatrix4;
 }
-
 declare var MGLStyleLayerDrawingContext: interop.StructType<MGLStyleLayerDrawingContext>;
 
 declare const enum MGLSymbolPlacement {
 
-    Point = 0,
+	Point = 0,
 
-    Line = 1,
+	Line = 1,
 
-    LineCenter = 2
+	LineCenter = 2
 }
 
 declare class MGLSymbolStyleLayer extends MGLVectorStyleLayer {
 
-    iconAllowsOverlap: NSExpression;
-    iconAnchor: NSExpression;
-    iconColor: NSExpression;
-    iconColorTransition: MGLTransition;
-    iconHaloBlur: NSExpression;
-    iconHaloBlurTransition: MGLTransition;
-    iconHaloColor: NSExpression;
-    iconHaloColorTransition: MGLTransition;
-    iconHaloWidth: NSExpression;
-    iconHaloWidthTransition: MGLTransition;
-    iconIgnoresPlacement: NSExpression;
-    iconImageName: NSExpression;
-    iconOffset: NSExpression;
-    iconOpacity: NSExpression;
-    iconOpacityTransition: MGLTransition;
-    iconOptional: NSExpression;
-    iconPadding: NSExpression;
-    iconPitchAlignment: NSExpression;
-    iconRotation: NSExpression;
-    iconRotationAlignment: NSExpression;
-    iconScale: NSExpression;
-    iconTextFit: NSExpression;
-    iconTextFitPadding: NSExpression;
-    iconTranslation: NSExpression;
-    iconTranslationAnchor: NSExpression;
-    iconTranslationTransition: MGLTransition;
-    keepsIconUpright: NSExpression;
-    keepsTextUpright: NSExpression;
-    maximumTextAngle: NSExpression;
-    maximumTextWidth: NSExpression;
-    symbolAvoidsEdges: NSExpression;
-    symbolPlacement: NSExpression;
-    symbolSortKey: NSExpression;
-    symbolSpacing: NSExpression;
-    symbolZOrder: NSExpression;
-    text: NSExpression;
-    textAllowsOverlap: NSExpression;
-    textAnchor: NSExpression;
-    textColor: NSExpression;
-    textColorTransition: MGLTransition;
-    textFontNames: NSExpression;
-    textFontSize: NSExpression;
-    textHaloBlur: NSExpression;
-    textHaloBlurTransition: MGLTransition;
-    textHaloColor: NSExpression;
-    textHaloColorTransition: MGLTransition;
-    textHaloWidth: NSExpression;
-    textHaloWidthTransition: MGLTransition;
-    textIgnoresPlacement: NSExpression;
-    textJustification: NSExpression;
-    textLetterSpacing: NSExpression;
-    textLineHeight: NSExpression;
-    textOffset: NSExpression;
-    textOpacity: NSExpression;
-    textOpacityTransition: MGLTransition;
-    textOptional: NSExpression;
-    textPadding: NSExpression;
-    textPitchAlignment: NSExpression;
-    textRadialOffset: NSExpression;
-    textRotation: NSExpression;
-    textRotationAlignment: NSExpression;
-    textTransform: NSExpression;
-    textTranslation: NSExpression;
-    textTranslationAnchor: NSExpression;
-    textTranslationTransition: MGLTransition;
-    textVariableAnchor: NSExpression;
+	static alloc(): MGLSymbolStyleLayer; // inherited from NSObject
 
-    constructor(o: { identifier: string; source: MGLSource; });
+	static new(): MGLSymbolStyleLayer; // inherited from NSObject
 
-    static alloc(): MGLSymbolStyleLayer; // inherited from NSObject
+	iconAllowsOverlap: NSExpression;
 
-    static new(): MGLSymbolStyleLayer; // inherited from NSObject
+	iconAnchor: NSExpression;
 
-    initWithIdentifierSource(identifier: string, source: MGLSource): this;
+	iconColor: NSExpression;
+
+	iconColorTransition: MGLTransition;
+
+	iconHaloBlur: NSExpression;
+
+	iconHaloBlurTransition: MGLTransition;
+
+	iconHaloColor: NSExpression;
+
+	iconHaloColorTransition: MGLTransition;
+
+	iconHaloWidth: NSExpression;
+
+	iconHaloWidthTransition: MGLTransition;
+
+	iconIgnoresPlacement: NSExpression;
+
+	iconImageName: NSExpression;
+
+	iconOffset: NSExpression;
+
+	iconOpacity: NSExpression;
+
+	iconOpacityTransition: MGLTransition;
+
+	iconOptional: NSExpression;
+
+	iconPadding: NSExpression;
+
+	iconPitchAlignment: NSExpression;
+
+	iconRotation: NSExpression;
+
+	iconRotationAlignment: NSExpression;
+
+	iconScale: NSExpression;
+
+	iconTextFit: NSExpression;
+
+	iconTextFitPadding: NSExpression;
+
+	iconTranslation: NSExpression;
+
+	iconTranslationAnchor: NSExpression;
+
+	iconTranslationTransition: MGLTransition;
+
+	keepsIconUpright: NSExpression;
+
+	keepsTextUpright: NSExpression;
+
+	maximumTextAngle: NSExpression;
+
+	maximumTextWidth: NSExpression;
+
+	symbolAvoidsEdges: NSExpression;
+
+	symbolPlacement: NSExpression;
+
+	symbolSortKey: NSExpression;
+
+	symbolSpacing: NSExpression;
+
+	symbolZOrder: NSExpression;
+
+	text: NSExpression;
+
+	textAllowsOverlap: NSExpression;
+
+	textAnchor: NSExpression;
+
+	textColor: NSExpression;
+
+	textColorTransition: MGLTransition;
+
+	textFontNames: NSExpression;
+
+	textFontSize: NSExpression;
+
+	textHaloBlur: NSExpression;
+
+	textHaloBlurTransition: MGLTransition;
+
+	textHaloColor: NSExpression;
+
+	textHaloColorTransition: MGLTransition;
+
+	textHaloWidth: NSExpression;
+
+	textHaloWidthTransition: MGLTransition;
+
+	textIgnoresPlacement: NSExpression;
+
+	textJustification: NSExpression;
+
+	textLetterSpacing: NSExpression;
+
+	textLineHeight: NSExpression;
+
+	textOffset: NSExpression;
+
+	textOpacity: NSExpression;
+
+	textOpacityTransition: MGLTransition;
+
+	textOptional: NSExpression;
+
+	textPadding: NSExpression;
+
+	textPitchAlignment: NSExpression;
+
+	textRadialOffset: NSExpression;
+
+	textRotation: NSExpression;
+
+	textRotationAlignment: NSExpression;
+
+	textTransform: NSExpression;
+
+	textTranslation: NSExpression;
+
+	textTranslationAnchor: NSExpression;
+
+	textTranslationTransition: MGLTransition;
+
+	textVariableAnchor: NSExpression;
+
+	constructor(o: { identifier: string; source: MGLSource; });
+
+	initWithIdentifierSource(identifier: string, source: MGLSource): this;
 }
 
 declare const enum MGLSymbolZOrder {
 
-    Auto = 0,
+	Auto = 0,
 
-    ViewportY = 1,
+	ViewportY = 1,
 
-    Source = 2
+	Source = 2
 }
 
 declare const enum MGLTextAnchor {
 
-    Center = 0,
+	Center = 0,
 
-    Left = 1,
+	Left = 1,
 
-    Right = 2,
+	Right = 2,
 
-    Top = 3,
+	Top = 3,
 
-    Bottom = 4,
+	Bottom = 4,
 
-    TopLeft = 5,
+	TopLeft = 5,
 
-    TopRight = 6,
+	TopRight = 6,
 
-    BottomLeft = 7,
+	BottomLeft = 7,
 
-    BottomRight = 8
+	BottomRight = 8
 }
 
 declare const enum MGLTextJustification {
 
-    Auto = 0,
+	Auto = 0,
 
-    Left = 1,
+	Left = 1,
 
-    Center = 2,
+	Center = 2,
 
-    Right = 3
+	Right = 3
 }
 
 declare const enum MGLTextPitchAlignment {
 
-    Map = 0,
+	Map = 0,
 
-    Viewport = 1,
+	Viewport = 1,
 
-    Auto = 2
+	Auto = 2
 }
 
 declare const enum MGLTextRotationAlignment {
 
-    Map = 0,
+	Map = 0,
 
-    Viewport = 1,
+	Viewport = 1,
 
-    Auto = 2
+	Auto = 2
 }
 
 declare const enum MGLTextTransform {
 
-    None = 0,
+	None = 0,
 
-    Uppercase = 1,
+	Uppercase = 1,
 
-    Lowercase = 2
+	Lowercase = 2
 }
 
 declare const enum MGLTextTranslationAnchor {
 
-    Map = 0,
+	Map = 0,
 
-    Viewport = 1
+	Viewport = 1
 }
 
 declare const enum MGLTileCoordinateSystem {
 
-    XYZ = 0,
+	XYZ = 0,
 
-    TMS = 1
+	TMS = 1
 }
 
 declare class MGLTilePyramidOfflineRegion extends NSObject implements MGLOfflineRegion, NSCopying, NSSecureCoding {
 
-    static readonly supportsSecureCoding: boolean; // inherited from NSSecureCoding
-    readonly bounds: MGLCoordinateBounds;
-    readonly maximumZoomLevel: number;
-    readonly minimumZoomLevel: number;
-    readonly debugDescription: string; // inherited from NSObjectProtocol
-    readonly description: string; // inherited from NSObjectProtocol
-    readonly hash: number; // inherited from NSObjectProtocol
-    includesIdeographicGlyphs: boolean; // inherited from MGLOfflineRegion
-    readonly isProxy: boolean; // inherited from NSObjectProtocol
-    readonly styleURL: NSURL; // inherited from MGLOfflineRegion
-    readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
-    readonly;  // inherited from NSObjectProtocol
+	static alloc(): MGLTilePyramidOfflineRegion; // inherited from NSObject
 
-    constructor(o: { coder: NSCoder; }); // inherited from NSCoding
+	static new(): MGLTilePyramidOfflineRegion; // inherited from NSObject
 
-    constructor(o: { styleURL: NSURL; bounds: MGLCoordinateBounds; fromZoomLevel: number; toZoomLevel: number; });
+	readonly bounds: MGLCoordinateBounds;
 
-    static alloc(): MGLTilePyramidOfflineRegion; // inherited from NSObject
+	readonly maximumZoomLevel: number;
 
-    static new(): MGLTilePyramidOfflineRegion; // inherited from NSObject
+	readonly minimumZoomLevel: number;
 
-    class(): typeof NSObject;
+	readonly debugDescription: string; // inherited from NSObjectProtocol
 
-    conformsToProtocol(aProtocol: any /* Protocol */): boolean;
+	readonly description: string; // inherited from NSObjectProtocol
 
-    copyWithZone(zone: interop.Pointer | interop.Reference<any>): any;
+	readonly hash: number; // inherited from NSObjectProtocol
 
-    encodeWithCoder(aCoder: NSCoder): void;
+	includesIdeographicGlyphs: boolean; // inherited from MGLOfflineRegion
 
-    initWithCoder(aDecoder: NSCoder): this;
+	readonly isProxy: boolean; // inherited from NSObjectProtocol
 
-    initWithStyleURLBoundsFromZoomLevelToZoomLevel(styleURL: NSURL, bounds: MGLCoordinateBounds, minimumZoomLevel: number, maximumZoomLevel: number): this;
+	readonly styleURL: NSURL; // inherited from MGLOfflineRegion
 
-    isEqual(object: any): boolean;
+	readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
 
-    isKindOfClass(aClass: typeof NSObject): boolean;
+	readonly  // inherited from NSObjectProtocol
 
-    isMemberOfClass(aClass: typeof NSObject): boolean;
+	static readonly supportsSecureCoding: boolean; // inherited from NSSecureCoding
 
-    performSelector(aSelector: string): any;
+	constructor(o: { coder: NSCoder; }); // inherited from NSCoding
 
-    performSelectorWithObject(aSelector: string, object: any): any;
+	constructor(o: { styleURL: NSURL; bounds: MGLCoordinateBounds; fromZoomLevel: number; toZoomLevel: number; });
 
-    performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
+	class(): typeof NSObject;
 
-    respondsToSelector(aSelector: string): boolean;
+	conformsToProtocol(aProtocol: any /* Protocol */): boolean;
 
-    retainCount(): number;
+	copyWithZone(zone: interop.Pointer | interop.Reference<any>): any;
 
-    self(): this;
+	encodeWithCoder(aCoder: NSCoder): void;
+
+	initWithCoder(aDecoder: NSCoder): this;
+
+	initWithStyleURLBoundsFromZoomLevelToZoomLevel(styleURL: NSURL, bounds: MGLCoordinateBounds, minimumZoomLevel: number, maximumZoomLevel: number): this;
+
+	isEqual(object: any): boolean;
+
+	isKindOfClass(aClass: typeof NSObject): boolean;
+
+	isMemberOfClass(aClass: typeof NSObject): boolean;
+
+	performSelector(aSelector: string): any;
+
+	performSelectorWithObject(aSelector: string, object: any): any;
+
+	performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
+
+	respondsToSelector(aSelector: string): boolean;
+
+	retainCount(): number;
+
+	self(): this;
 }
 
 declare class MGLTileSource extends MGLSource {
 
-    readonly attributionInfos: NSArray<MGLAttributionInfo>;
-    readonly configurationURL: NSURL;
+	static alloc(): MGLTileSource; // inherited from NSObject
 
-    static alloc(): MGLTileSource; // inherited from NSObject
+	static new(): MGLTileSource; // inherited from NSObject
 
-    static new(): MGLTileSource; // inherited from NSObject
+	readonly attributionInfos: NSArray<MGLAttributionInfo>;
+
+	readonly configurationURL: NSURL;
 }
 
 declare var MGLTileSourceOptionAttributionHTMLString: string;
@@ -2772,126 +3207,140 @@ declare var MGLTileSourceOptionTileCoordinateSystem: string;
 declare var MGLTileSourceOptionTileSize: string;
 
 interface MGLTransition {
-    duration: number;
-    delay: number;
+	duration: number;
+	delay: number;
 }
-
 declare var MGLTransition: interop.StructType<MGLTransition>;
 
 declare var MGLUnsupportedRegionTypeException: string;
 
 declare class MGLUserLocation extends NSObject implements MGLAnnotation, NSSecureCoding {
 
-    static readonly supportsSecureCoding: boolean; // inherited from NSSecureCoding
-    readonly heading: CLHeading;
-    readonly location: CLLocation;
-    subtitle: string;
-    title: string;
-    readonly updating: boolean;
-    readonly coordinate: CLLocationCoordinate2D; // inherited from MGLAnnotation
-    readonly debugDescription: string; // inherited from NSObjectProtocol
-    readonly description: string; // inherited from NSObjectProtocol
-    readonly hash: number; // inherited from NSObjectProtocol
-    readonly isProxy: boolean; // inherited from NSObjectProtocol
-    readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
-    readonly;  // inherited from NSObjectProtocol
+	static alloc(): MGLUserLocation; // inherited from NSObject
 
-    constructor(o: { coder: NSCoder; }); // inherited from NSCoding
+	static new(): MGLUserLocation; // inherited from NSObject
 
-    static alloc(): MGLUserLocation; // inherited from NSObject
+	readonly heading: CLHeading;
 
-    static new(): MGLUserLocation; // inherited from NSObject
+	readonly location: CLLocation;
 
-    class(): typeof NSObject;
+	subtitle: string;
 
-    conformsToProtocol(aProtocol: any /* Protocol */): boolean;
+	title: string;
 
-    encodeWithCoder(aCoder: NSCoder): void;
+	readonly updating: boolean;
 
-    initWithCoder(aDecoder: NSCoder): this;
+	readonly coordinate: CLLocationCoordinate2D; // inherited from MGLAnnotation
 
-    isEqual(object: any): boolean;
+	readonly debugDescription: string; // inherited from NSObjectProtocol
 
-    isKindOfClass(aClass: typeof NSObject): boolean;
+	readonly description: string; // inherited from NSObjectProtocol
 
-    isMemberOfClass(aClass: typeof NSObject): boolean;
+	readonly hash: number; // inherited from NSObjectProtocol
 
-    performSelector(aSelector: string): any;
+	readonly isProxy: boolean; // inherited from NSObjectProtocol
 
-    performSelectorWithObject(aSelector: string, object: any): any;
+	readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
 
-    performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
+	readonly  // inherited from NSObjectProtocol
 
-    respondsToSelector(aSelector: string): boolean;
+	static readonly supportsSecureCoding: boolean; // inherited from NSSecureCoding
 
-    retainCount(): number;
+	constructor(o: { coder: NSCoder; }); // inherited from NSCoding
 
-    self(): this;
+	class(): typeof NSObject;
+
+	conformsToProtocol(aProtocol: any /* Protocol */): boolean;
+
+	encodeWithCoder(aCoder: NSCoder): void;
+
+	initWithCoder(aDecoder: NSCoder): this;
+
+	isEqual(object: any): boolean;
+
+	isKindOfClass(aClass: typeof NSObject): boolean;
+
+	isMemberOfClass(aClass: typeof NSObject): boolean;
+
+	performSelector(aSelector: string): any;
+
+	performSelectorWithObject(aSelector: string, object: any): any;
+
+	performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
+
+	respondsToSelector(aSelector: string): boolean;
+
+	retainCount(): number;
+
+	self(): this;
 }
 
 declare var MGLUserLocationAnnotationTypeException: string;
 
 declare class MGLUserLocationAnnotationView extends MGLAnnotationView {
 
-    readonly hitTestLayer: CALayer;
-    readonly mapView: MGLMapView;
-    readonly userLocation: MGLUserLocation;
+	static alloc(): MGLUserLocationAnnotationView; // inherited from NSObject
 
-    static alloc(): MGLUserLocationAnnotationView; // inherited from NSObject
+	static appearance(): MGLUserLocationAnnotationView; // inherited from UIAppearance
 
-    static appearance(): MGLUserLocationAnnotationView; // inherited from UIAppearance
+	static appearanceForTraitCollection(trait: UITraitCollection): MGLUserLocationAnnotationView; // inherited from UIAppearance
 
-    static appearanceForTraitCollection(trait: UITraitCollection): MGLUserLocationAnnotationView; // inherited from UIAppearance
+	static appearanceForTraitCollectionWhenContainedIn(trait: UITraitCollection, ContainerClass: typeof NSObject): MGLUserLocationAnnotationView; // inherited from UIAppearance
 
-    static appearanceForTraitCollectionWhenContainedIn(trait: UITraitCollection, ContainerClass: typeof NSObject): MGLUserLocationAnnotationView; // inherited from UIAppearance
+	static appearanceForTraitCollectionWhenContainedInInstancesOfClasses(trait: UITraitCollection, containerTypes: NSArray<typeof NSObject> | typeof NSObject[]): MGLUserLocationAnnotationView; // inherited from UIAppearance
 
-    static appearanceForTraitCollectionWhenContainedInInstancesOfClasses(trait: UITraitCollection, containerTypes: NSArray<typeof NSObject> | typeof NSObject[]): MGLUserLocationAnnotationView; // inherited from UIAppearance
+	static appearanceWhenContainedIn(ContainerClass: typeof NSObject): MGLUserLocationAnnotationView; // inherited from UIAppearance
 
-    static appearanceWhenContainedIn(ContainerClass: typeof NSObject): MGLUserLocationAnnotationView; // inherited from UIAppearance
+	static appearanceWhenContainedInInstancesOfClasses(containerTypes: NSArray<typeof NSObject> | typeof NSObject[]): MGLUserLocationAnnotationView; // inherited from UIAppearance
 
-    static appearanceWhenContainedInInstancesOfClasses(containerTypes: NSArray<typeof NSObject> | typeof NSObject[]): MGLUserLocationAnnotationView; // inherited from UIAppearance
+	static new(): MGLUserLocationAnnotationView; // inherited from NSObject
 
-    static new(): MGLUserLocationAnnotationView; // inherited from NSObject
+	readonly hitTestLayer: CALayer;
 
-    update(): void;
+	readonly mapView: MGLMapView;
+
+	readonly userLocation: MGLUserLocation;
+
+	update(): void;
 }
 
 declare const enum MGLUserTrackingMode {
 
-    None = 0,
+	None = 0,
 
-    Follow = 1,
+	Follow = 1,
 
-    FollowWithHeading = 2,
+	FollowWithHeading = 2,
 
-    FollowWithCourse = 3
+	FollowWithCourse = 3
 }
 
 declare class MGLVectorStyleLayer extends MGLForegroundStyleLayer {
 
-    predicate: NSPredicate;
-    sourceLayerIdentifier: string;
+	static alloc(): MGLVectorStyleLayer; // inherited from NSObject
 
-    static alloc(): MGLVectorStyleLayer; // inherited from NSObject
+	static new(): MGLVectorStyleLayer; // inherited from NSObject
 
-    static new(): MGLVectorStyleLayer; // inherited from NSObject
+	predicate: NSPredicate;
+
+	sourceLayerIdentifier: string;
 }
 
 declare class MGLVectorTileSource extends MGLTileSource {
 
-    constructor(o: { identifier: string; configurationURL: NSURL; });
+	static alloc(): MGLVectorTileSource; // inherited from NSObject
 
-    constructor(o: { identifier: string; tileURLTemplates: NSArray<string> | string[]; options: NSDictionary<string, any>; });
+	static new(): MGLVectorTileSource; // inherited from NSObject
 
-    static alloc(): MGLVectorTileSource; // inherited from NSObject
+	constructor(o: { identifier: string; configurationURL: NSURL; });
 
-    static new(): MGLVectorTileSource; // inherited from NSObject
+	constructor(o: { identifier: string; tileURLTemplates: NSArray<string> | string[]; options: NSDictionary<string, any>; });
 
-    featuresInSourceLayersWithIdentifiersPredicate(sourceLayerIdentifiers: NSSet<string>, predicate: NSPredicate): NSArray<MGLFeature>;
+	featuresInSourceLayersWithIdentifiersPredicate(sourceLayerIdentifiers: NSSet<string>, predicate: NSPredicate): NSArray<MGLFeature>;
 
-    initWithIdentifierConfigurationURL(identifier: string, configurationURL: NSURL): this;
+	initWithIdentifierConfigurationURL(identifier: string, configurationURL: NSURL): this;
 
-    initWithIdentifierTileURLTemplatesOptions(identifier: string, tileURLTemplates: NSArray<string> | string[], options: NSDictionary<string, any>): this;
+	initWithIdentifierTileURLTemplatesOptions(identifier: string, tileURLTemplates: NSArray<string> | string[], options: NSDictionary<string, any>): this;
 }
 
 declare function MGLZoomLevelForAltitude(altitude: number, pitch: number, latitude: number, size: CGSize): number;
