@@ -2982,12 +2982,12 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
                 const theMap = nativeMap;
                 let source;
 
-                if (!theMap) {
+                if (!this._mapboxMapInstance.getStyle()) {
                     reject("No map has been loaded");
                     return;
                 }
 
-                if (theMap.mapboxMap.getSource(id)) {
+                if (this._mapboxMapInstance.getStyle().getSource(id)) {
                     reject("Source exists: " + id);
                     return;
                 }
