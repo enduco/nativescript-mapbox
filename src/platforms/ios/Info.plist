@@ -4,7 +4,11 @@
   <dict>
     <key>MGLMapboxMetricsEnabledSettingShownInApp</key>
     <true/>
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>We use your location to navigate you along your routes, record the route of your workouts and store them alongside with your workout, set start or end location for generating routes, calculate location dependant weather information or - if wished - set your home point in profile.</string>
     <key>NSLocationWhenInUseUsageDescription</key>
-    <string>We use your location to show where you are on the map in our app.</string>
+    <string>We use your location to navigate you along your routes, record the route of your workouts and store them alongside with your workout, set start or end location for generating routes, calculate location dependant weather information or - if wished - set your home point in profile.</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>We use your location to navigate you along your routes, record the route of your workouts and store them alongside with your workout, set start or end location for generating routes, calculate location dependant weather information or - if wished - set your home point in profile.</string>
   </dict>
 </plist>

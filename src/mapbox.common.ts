@@ -655,6 +655,8 @@ export interface MapboxApi {
 
     isScrollingEnabled(nativeMap?: any): Promise<boolean>;
 
+    setScrollingEnabled(enabled: boolean, nativeMap?): Promise<any>;
+
     convertToMapCoordinate(point: Point, nativeMap?: any): Promise<LatLng>;
 
     convertToOnScreenCoordinate(coordinate: LatLng, nativeMap?: any): Promise<Point>;
@@ -829,6 +831,8 @@ export interface MapboxViewApi {
     // new methods
 
     isScrollingEnabled(): Promise<boolean>;
+
+    setScrollingEnabled(enabled: boolean): Promise<any>;
 
     convertToMapCoordinate(point: Point): Promise<LatLng>;
 
@@ -1170,6 +1174,10 @@ export abstract class MapboxViewCommonBase extends ContentView implements Mapbox
 
     // -----------------------------------------------------------------
 
+    setScrollingEnabled(enabled: boolean): Promise<any> {
+        return this.mapbox.setScrollingEnabled(enabled, this.getNativeMapView());
+    }
+
     convertToOnScreenCoordinate(coordinate: LatLng): Promise<Point> {
         return this.mapbox.convertToOnScreenCoordinate(coordinate, this.getNativeMapView());
     }
@@ -1402,6 +1410,8 @@ export abstract class MapboxViewBase extends MapboxViewCommonBase {
 
     [disableScrollProperty.setNative](value: boolean) {
         this.config.disableScroll = value;
+
+        this.setScrollingEnabled(value);
     }
 
     [disableTiltProperty.setNative](value: boolean) {
