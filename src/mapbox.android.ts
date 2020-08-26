@@ -4589,35 +4589,34 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
             if (!this._mapboxViewInstance || !this._mapboxMapInstance) {
                 return reject();
             }
-
             this._mapboxViewInstance.setDrawingCacheEnabled(true);
             const drawingCache: android.graphics.Bitmap = this._mapboxViewInstance.getDrawingCache();
-            const cb = new SnapShotReadyCallback((snapshot) => {
-                const bmOverlay: android.graphics.Bitmap =
-                    android.grapgics.Bitmap.createBitmap(snapshot.getWidth(), snapshot.getHeight(), snapshot.getConfig());
-                const canvas = new android.graphics.Canvas(bmOverlay);
-                canvas.drawBitmap(snapshot, new android.graphics.Matrix(), null);
-                canvas.drawBitmap(drawingCache, new android.graphics.Matrix(), null);
-                this._mapboxViewInstance.setDrawingCacheEnabled(false);
-
-                const byteArrayStream: java.io.ByteArrayOutputStream =
-                    new java.io.ByteArrayOutputStream();
-                bmOverlay.compress(android.graphic.Bitmap.CompressFormat.PNG, 100, byteArrayStream);
-                const byteArray = byteArrayStream.toByteArray();
-                const base64String: string =
-                    android.util.Base64.encodeToString(byteArray, android.util.Base64.DEFAULT);
-                const imgSource = new ImageSource();
-
-                return imgSource
-                    .fromBase64(base64String)
-                    .then((success) => {
-                        if (success) {
-                            return imgSource;
-                        } else {
-                            return reject();
-                        }
-                    });
-            });
+            const cb = new com.mapbox.mapboxsdk.maps.SnapshotReadyCallback({
+                onSnapshotReady: snapshot => {
+                    const bmOverlay: android.graphics.Bitmap =
+                        android.grapgics.Bitmap.createBitmap(snapshot.getWidth(), snapshot.getHeight(), snapshot.getConfig());
+                    const canvas = new android.graphics.Canvas(bmOverlay);
+                    canvas.drawBitmap(snapshot, new android.graphics.Matrix(), null);
+                    canvas.drawBitmap(drawingCache, new android.graphics.Matrix(), null);
+                    this._mapboxViewInstance.setDrawingCacheEnabled(false);
+                    const byteArrayStream: java.io.ByteArrayOutputStream =
+                        new java.io.ByteArrayOutputStream();
+                    bmOverlay.compress(android.graphic.Bitmap.CompressFormat.PNG, 100, byteArrayStream);
+                    const byteArray = byteArrayStream.toByteArray();
+                    const base64String: string =
+                        android.util.Base64.encodeToString(byteArray, android.util.Base64.DEFAULT);
+                    const imgSource = new ImageSource();
+                    return imgSource
+                        .fromBase64(base64String)
+                        .then((success) => {
+                            if (success) {
+                                return imgSource;
+                            } else {
+                                return reject();
+                            }
+                        });
+                }
+            }); // end of SnapshotReadyCallback.
             this._mapboxMapInstance.snapshot(cb);
         });
     }
@@ -4972,18 +4971,5 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
     }
 
 } // end of class Mapbox
-
-class SnapShotReadyCallback {
-
-    callback: (snapshot: android.graphics.Bitmap) => void;
-
-    constructor(callback: (snapshot: android.graphics.Bitmap) => void) {
-        this.callback = callback;
-    }
-
-    onSnapshotReady(snapshot: android.graphics.Bitmap) {
-        this.callback(snapshot);
-    }
-}
 
 // END
