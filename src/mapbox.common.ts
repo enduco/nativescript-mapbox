@@ -847,6 +847,8 @@ export interface MapboxViewApi {
 
     getCoordinateRegionAroundPoint(around: Point, pixelDistance: number): Promise<CoordinateRegion>;
 
+    takeSnapshot(): Promise<ImageSource>;
+
 }
 
 // ----------------------------------------------------------------------------------------
