@@ -3,6 +3,7 @@
 
 import * as fs from "tns-core-modules/file-system";
 import * as imgSrc from "tns-core-modules/image-source";
+import {ImageSource} from "tns-core-modules/image-source";
 import * as utils from "tns-core-modules/utils/utils";
 import * as http from "tns-core-modules/http";
 import {Color} from "tns-core-modules/color";
@@ -2830,6 +2831,13 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
                 reject(ex);
             }
         });
+    }
+
+
+    // -----------------------------------------------------------------------------------
+
+    takeSnapshot(mapView: MGLMapView): Promise<ImageSource> {
+        return Promise.reject();
     }
 }
 

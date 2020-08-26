@@ -1,6 +1,7 @@
 import {Color} from "tns-core-modules/color/color";
 import {ContentView} from "tns-core-modules/ui/content-view";
 import {booleanConverter, Property} from "tns-core-modules/ui/core/view";
+import {ImageSource} from "tns-core-modules/image-source";
 
 // ------------------------------------------------------------
 
@@ -663,6 +664,8 @@ export interface MapboxApi {
 
     getDistanceBetween(from: LatLng, to: LatLng, nativeMap?: any): Promise<number>;
 
+    takeSnapshot(nativeMap?: any): Promise<ImageSource>;
+
 }
 
 // ------------------------------------------------------------
@@ -1186,6 +1189,12 @@ export abstract class MapboxViewCommonBase extends ContentView implements Mapbox
 
     getDistanceBetween(from: LatLng, to: LatLng): Promise<number> {
         return this.mapbox.getDistanceBetween(from, to, this.getNativeMapView());
+    }
+
+    // -----------------------------------------------------------------
+
+    takeSnapshot(): Promise<ImageSource> {
+        return this.mapbox.takeSnapshot(this.getNativeMapView());
     }
 
     // -----------------------------------------------------------------
