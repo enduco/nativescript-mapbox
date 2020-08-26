@@ -4589,26 +4589,33 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
             if (!this._mapboxViewInstance || !this._mapboxMapInstance) {
                 return reject();
             }
+            console.log("SNAP", "starting snapshot...");
             this._mapboxViewInstance.setDrawingCacheEnabled(true);
+            console.log("SNAP", "disabled drawing cache");
             const drawingCache: android.graphics.Bitmap = this._mapboxViewInstance.getDrawingCache();
-            const cb = new com.mapbox.mapboxsdk.maps.SnapshotReadyCallback({
+            const cb = new com.mapbox.mapboxsdk.maps.MapboxMap.SnapshotReadyCallback({
                 onSnapshotReady: snapshot => {
+                    console.log("SNAP", "snapshot ready");
                     const bmOverlay: android.graphics.Bitmap =
                         android.grapgics.Bitmap.createBitmap(snapshot.getWidth(), snapshot.getHeight(), snapshot.getConfig());
                     const canvas = new android.graphics.Canvas(bmOverlay);
                     canvas.drawBitmap(snapshot, new android.graphics.Matrix(), null);
                     canvas.drawBitmap(drawingCache, new android.graphics.Matrix(), null);
+                    console.log("SNAP", "cache drawn");
                     this._mapboxViewInstance.setDrawingCacheEnabled(false);
+                    console.log("SNAP", "enabled drawing cache");
                     const byteArrayStream: java.io.ByteArrayOutputStream =
                         new java.io.ByteArrayOutputStream();
                     bmOverlay.compress(android.graphic.Bitmap.CompressFormat.PNG, 100, byteArrayStream);
                     const byteArray = byteArrayStream.toByteArray();
                     const base64String: string =
                         android.util.Base64.encodeToString(byteArray, android.util.Base64.DEFAULT);
+                    console.log("SNAP", "created base64 string");
                     const imgSource = new ImageSource();
                     return imgSource
                         .fromBase64(base64String)
                         .then((success) => {
+                            console.log("SNAP", "created image source", success);
                             if (success) {
                                 return imgSource;
                             } else {
