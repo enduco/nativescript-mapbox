@@ -3270,46 +3270,37 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
 
         console.log( "Mapbox:addLineLayer(): after LineLayer" );
 
-        let lineProperties = [];
+        const lineProperties = [];
 
         // some defaults if there's no paint property to the style
         //
         // NOTE polyline styles have separate paint and layout sections.
-
-        if ( typeof style.paint == 'undefined' ) {
-
+        if (!style.paint) {
           console.log( "Mapbox:addLineLayer(): paint is undefined" );
 
-          lineProperties = [
+          lineProperties.push(
             com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineColor( 'red' ),
             com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineWidth( new java.lang.Float( 7 ) ),
             com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineOpacity( new java.lang.Float( 1 ) )
-          ];
+          );
 
         } else {
-
           // color
-
           if ( style.paint[ 'line-color' ] ) {
-            lineProperties.push( com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineColor( style.paint[ 'line-color' ] ) );
+            lineProperties.push( com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineColor( style.paint[ 'line-color' ]) );
           }
 
           // opacity
-
           if ( style.paint[ 'line-opacity' ] ) {
             lineProperties.push( com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineOpacity( new java.lang.Float( style.paint[ 'line-opacity' ] ) ) );
           }
 
-          console.log( "Mapbox:addLineLayer(): after opacity" );
-
           // line width
-
           if ( style.paint[ 'line-width' ] ) {
             lineProperties.push( com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineWidth( new java.lang.Float( style.paint[ 'line-width' ] ) ) );
           }
 
           // line dash array
-
           if ( style.paint[ 'line-dash-array' ] ) {
 
             // the line-dash-array requires some handstands to marhall it into a java Float[] type.
@@ -3326,13 +3317,11 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
         } // end of paint section.
 
         // now the layout section
-
-        if ( typeof style.layout == 'undefined' ) {
-
-          lineProperties = [
+        if (!style.layout) {
+          lineProperties.push(
             com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineCap( com.mapbox.mapboxsdk.style.layers.PropertyFactory.LINE_CAP_ROUND ),
             com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineJoin( com.mapbox.mapboxsdk.style.layers.PropertyFactory.LINE_JOIN_ROUND )
-          ];
+          );
 
         } else {
 
@@ -3340,28 +3329,17 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
           //
           // FIXME: Add other styles.
 
-          if ( style.layout[ 'line-cap' ] ) {
-
+          if (style.layout[ 'line-cap' ]) {
             let property: any;
-
             switch ( style.layout[ 'line-cap' ] ) {
-
               case 'round':
-
                 property = com.mapbox.mapboxsdk.style.layers.PropertyFactory.LINE_CAP_ROUND;
-
-              break;
-
+                break;
               case 'square':
-
                 property = com.mapbox.mapboxsdk.style.layers.PropertyFactory.LINE_CAP_SQUARE;
-
-              break;
-
+                break;
             }
-
             lineProperties.push( com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineCap( property ));
-
           }
 
           // line join.
@@ -3394,10 +3372,10 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
 
         line.setProperties( lineProperties );
 
-        if (style.afterId) {
-          this._mapboxMapInstance.getStyle().addLayerAbove(line, style.afterId);
-        } else if (style.beforeId) {
-          this._mapboxMapInstance.getStyle().addLayerBelow(line, style.beforeId);
+        if (style.above) {
+          this._mapboxMapInstance.getStyle().addLayerAbove(line, style.above);
+        } else if (style.below) {
+          this._mapboxMapInstance.getStyle().addLayerBelow(line, style.below);
         } else {
           this._mapboxMapInstance.getStyle().addLayer(line);
         }
@@ -3614,7 +3592,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
         //
         // https://docs.mapbox.com/mapbox-gl-js/style-spec/#expressions-interpolate
 
-        let circleProperties = [];
+        const circleProperties = [];
 
         // some defaults if there's no paint property to the style
 
@@ -3622,7 +3600,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
 
           console.log( "Mapbox:addCircle(): paint is undefined" );
 
-          circleProperties = [
+          circleProperties.push(
             com.mapbox.mapboxsdk.style.layers.PropertyFactory.circleColor( 'red' ),
             com.mapbox.mapboxsdk.style.layers.PropertyFactory.circleRadius(
               com.mapbox.mapboxsdk.style.expressions.Expression.interpolate(
@@ -3636,7 +3614,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
               )
             ),
             com.mapbox.mapboxsdk.style.layers.PropertyFactory.circleBlur(new java.lang.Float( 0.2 ))
-          ];
+          );
 
 
         } else {
