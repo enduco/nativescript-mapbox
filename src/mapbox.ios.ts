@@ -1,6 +1,3 @@
-/// <reference path="./node_modules/tns-platform-declarations/ios.d.ts" />
-/// <reference path="./platforms/ios/Mapbox.d.ts" />
-
 import * as fs from "@nativescript/core/file-system";
 import * as imgSrc from "@nativescript/core/image-source";
 import * as utils from "@nativescript/core/utils/utils";

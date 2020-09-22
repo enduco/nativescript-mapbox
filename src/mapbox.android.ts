@@ -1,6 +1,3 @@
-/// <reference path="./node_modules/tns-platform-declarations/android.d.ts" />
-/// <reference path="./platforms/ios/Mapbox.d.ts" />
-
 /**
 * Android Implementation
 *
@@ -2958,7 +2955,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
     return new Promise((resolve, reject) => {
       try {
         const { url, type } = options;
-        const theMap = nativeMap;
+        const theMap = this._mapboxMapInstance.getStyle();
         let source;
 
         if (!theMap) {
@@ -2966,7 +2963,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
           return;
         }
 
-        if ( theMap.mapboxMap.getSource(id) ) {
+        if (theMap.getSource(id)) {
           reject("Source exists: " + id);
           return;
         }
@@ -2994,7 +2991,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
               feature
             );
 
-            this._mapboxMapInstance.getStyle().addSource( geoJsonSource );
+            theMap.addSource( geoJsonSource );
 
             this.gcFix( 'com.mapbox.mapboxsdk.style.sources.GeoJsonSource', geoJsonSource );
 
@@ -3038,7 +3035,6 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
           return;
         }
 
-        theMap.mapboxMap.addSource(source);
         resolve();
       } catch (ex) {
         console.log("Error in mapbox.addSource: " + ex);
@@ -3056,14 +3052,14 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
   removeSource( id: string, nativeMap? ): Promise<any> {
     return new Promise((resolve, reject) => {
       try {
-        const theMap = nativeMap;
+        const theMap = this._mapboxMapInstance.getStyle();
 
         if (!theMap) {
           reject("No map has been loaded");
           return;
         }
 
-        theMap.mapboxMap.removeSource(id);
+        theMap.removeSource(id);
 
         // if we've cached the underlying feature, remove it.
         //
@@ -3267,6 +3263,9 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
         }
 
         const line = new com.mapbox.mapboxsdk.style.layers.LineLayer( style.id, sourceId );
+        if (style['source-layer']) {
+          line.setSourceLayer(style['source-layer']);
+        }
 
         console.log( "Mapbox:addLineLayer(): after LineLayer" );
 
@@ -3393,8 +3392,6 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
         } // end of else there was a layout section.
 
         line.setProperties( lineProperties );
-
-        this._mapboxMapInstance.getStyle().addLayer( line );
 
         // In support for clickable GeoJSON features.
         //
@@ -3584,6 +3581,9 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
         }
 
         const circle = new com.mapbox.mapboxsdk.style.layers.CircleLayer( style.id, sourceId );
+        if (style['source-layer']) {
+          circle.setSourceLayer(style['source-layer']);
+        }
 
         console.log( "Mapbox:addCircleLayer(): after CircleLayer" );
 
@@ -3667,7 +3667,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
             // we have two options for a radius. We might have a fixed float or an expression
 
             if ( typeof style.paint[ 'circle-radius' ] == 'number' ) {
-              circleProperties.push( com.mapbox.mapboxsdk.style.layers.PropertyFactory.circleRadius( new java.lang.Float( style.paint.radius ) ));
+              circleProperties.push( com.mapbox.mapboxsdk.style.layers.PropertyFactory.circleRadius( new java.lang.Float( style.paint[ 'circle-radius' ] ) ));
             } else {
 
               if ( ! style.paint[ 'circle-radius' ].stops ) {
