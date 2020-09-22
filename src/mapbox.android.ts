@@ -2971,7 +2971,10 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
         switch (type) {
 
           case "vector":
+            console.log( "Mapbox:addSource(): before addSource with vector" );
             source = new com.mapbox.mapboxsdk.style.sources.VectorSource(id, url);
+
+            this.gcFix( 'com.mapbox.mapboxsdk.style.sources.VectorSource', source );
           break;
 
           case 'geojson':
@@ -2984,16 +2987,12 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
 
             console.log( "Mapbox:addSource(): adding feature" );
 
-            // com.mapbox.mapboxsdk.maps.Style
-
-            let geoJsonSource = new com.mapbox.mapboxsdk.style.sources.GeoJsonSource(
+            source = new com.mapbox.mapboxsdk.style.sources.GeoJsonSource(
               id,
               feature
             );
 
-            theMap.addSource( geoJsonSource );
-
-            this.gcFix( 'com.mapbox.mapboxsdk.style.sources.GeoJsonSource', geoJsonSource );
+            this.gcFix( 'com.mapbox.mapboxsdk.style.sources.GeoJsonSource', source );
 
             // To support handling click events on lines and circles, we keep the underlying
             // feature.
@@ -3034,6 +3033,8 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
           reject(ex);
           return;
         }
+
+        theMap.addSource( source );
 
         resolve();
       } catch (ex) {
@@ -3392,6 +3393,9 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
         } // end of else there was a layout section.
 
         line.setProperties( lineProperties );
+        this._mapboxMapInstance.getStyle().addLayer(line);
+
+        console.log( "Mapbox:addLineLayer(): added line layer" );
 
         // In support for clickable GeoJSON features.
         //
