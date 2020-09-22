@@ -3393,7 +3393,14 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
         } // end of else there was a layout section.
 
         line.setProperties( lineProperties );
-        this._mapboxMapInstance.getStyle().addLayer(line);
+
+        if (style.afterId) {
+          this._mapboxMapInstance.getStyle().addLayerAbove(line, style.afterId);
+        } else if (style.beforeId) {
+          this._mapboxMapInstance.getStyle().addLayerBelow(line, style.beforeId);
+        } else {
+          this._mapboxMapInstance.getStyle().addLayer(line);
+        }
 
         console.log( "Mapbox:addLineLayer(): added line layer" );
 
@@ -3714,7 +3721,13 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
 
         circle.setProperties( circleProperties );
 
-        this._mapboxMapInstance.getStyle().addLayer( circle );
+        if (style.afterId) {
+          this._mapboxMapInstance.getStyle().addLayerAbove(circle, style.afterId);
+        } else if (style.beforeId) {
+          this._mapboxMapInstance.getStyle().addLayerBelow(circle, style.beforeId);
+        } else {
+          this._mapboxMapInstance.getStyle().addLayer(circle);
+        }
 
         console.log( "Mapbox:addCircleLayer(): added circle layer" );
 

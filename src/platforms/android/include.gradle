@@ -1,31 +1,50 @@
 repositories {
     mavenCentral()
+
+    maven {
+      url 'https://api.mapbox.com/downloads/v2/releases/maven'
+      authentication {
+          basic(BasicAuthentication)
+      }
+      credentials {
+        // Do not change the username below.
+        // This should always be `mapbox` (not your username).
+        username = 'mapbox'
+        // Use the secret token you stored in gradle.properties as the password
+        password = project.properties['MAPBOX_DOWNLOADS_TOKEN'] ?: ""
+      }
+    }
 }
 
-// see https://www.mapbox.com/android-sdk/
 dependencies {
 
-    compile "com.mapbox.mapboxsdk:mapbox-android-telemetry:4.5.1"
+    // compile "com.mapbox.mapboxsdk:mapbox-android-telemetry:4.5.1"
 
-    implementation "com.android.support:appcompat-v7:28.0.0"
-    implementation 'com.android.support:design:27.1.0'
+    implementation "androidx.appcompat:appcompat:1.1.0"
+    implementation "com.google.android.material:material:1.0.0-rc01"
 
-    implementation "com.mapbox.mapboxsdk:mapbox-sdk-geojson:4.8.0"
-
-    implementation ('com.mapbox.mapboxsdk:mapbox-android-sdk:8.4.0'){
-        transitive=false
+    // Mapbox SDK
+    // https://docs.mapbox.com/android/maps/overview/
+    implementation ("com.mapbox.mapboxsdk:mapbox-android-sdk:9.4.0") {
+        transitive = false
     }
 
-    implementation "com.mapbox.mapboxsdk:mapbox-android-gestures:0.5.0"
+    // Java SDK
+    // https://docs.mapbox.com/android/java/overview/
+    implementation "com.mapbox.mapboxsdk:mapbox-sdk-geojson:5.5.0"
+    implementation "com.mapbox.mapboxsdk:mapbox-sdk-services:5.5.0"
 
-    // service library
+    // Gestures
+    // https://docs.mapbox.com/android/maps/overview/gestures/
+    implementation "com.mapbox.mapboxsdk:mapbox-android-gestures:0.5.1"
 
-    implementation "com.mapbox.mapboxsdk:mapbox-sdk-services:4.8.0"
+    // Annotations
+    // https://docs.mapbox.com/android/plugins/overview/annotation/
+    implementation 'com.mapbox.mapboxsdk:mapbox-android-plugin-annotation-v9:0.9.0'
 
-    // Annotation Plugin
-
-    implementation 'com.mapbox.mapboxsdk:mapbox-android-plugin-annotation-v8:0.7.0'
-
+    // Offline
+    // https://docs.mapbox.com/android/plugins/overview/offline/
+    implementation 'com.mapbox.mapboxsdk:mapbox-android-plugin-offline-v9:0.7.0'
 }
 
 android {
