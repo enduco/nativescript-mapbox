@@ -77,6 +77,11 @@ export interface UserLocation {
 
 export interface SetCenterOptions extends LatLng {
   animated?: boolean;
+  duration?: number;
+
+  bearing?: number;
+  tilt?: number;
+  zoom?: number;
 }
 
 // ------------------------------------------------------------
@@ -146,6 +151,7 @@ export interface MapboxMarker extends LatLng {
 export interface SetZoomLevelOptions {
   level: number;
   animated: boolean;
+  duration: number;
 }
 
 // ------------------------------------------------------------

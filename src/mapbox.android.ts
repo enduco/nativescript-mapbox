@@ -1988,32 +1988,41 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
   setCenter(options: SetCenterOptions, nativeMap?): Promise<any> {
     return new Promise((resolve, reject) => {
       try {
+        const cameraPositionBuilder = new com.mapbox.mapboxsdk.camera.CameraPosition.Builder()
+          .target(new com.mapbox.mapboxsdk.geometry.LatLng(options.lat, options.lng));
 
-        const cameraPosition = new com.mapbox.mapboxsdk.camera.CameraPosition.Builder()
-            .target(new com.mapbox.mapboxsdk.geometry.LatLng(options.lat, options.lng))
-            .build();
+        if (options.bearing) {
+          cameraPositionBuilder.bearing(options.bearing);
+        }
+        if (options.tilt) {
+          cameraPositionBuilder.tilt(options.tilt);
+        }
+        if (options.zoom) {
+          cameraPositionBuilder.zoom(options.zoom);
+        }
+        const cameraPosition = cameraPositionBuilder.build();
 
         // FIXME: Probably not necessary.
 
-        this.gcFix( 'com.mapbox.mapboxsdk.camera.CameraPosition.Builder', cameraPosition );
+        this.gcFix('com.mapbox.mapboxsdk.camera.CameraPosition.Builder', cameraPosition);
 
-        if (options.animated === true) {
+        const newCameraPosition = com.mapbox.mapboxsdk.camera.CameraUpdateFactory.newCameraPosition(cameraPosition);
 
-          let newCameraPosition = com.mapbox.mapboxsdk.camera.CameraUpdateFactory.newCameraPosition( cameraPosition );
+        this.gcFix('com.mapbox.mapboxsdk.camera.CameraUpdateFactory.newCameraPosition', newCameraPosition);
 
-          this._mapboxMapInstance.animateCamera(
-            newCameraPosition,
-            1000,
-            null
-          );
-
-          this.gcFix( 'com.mapbox.mapboxsdk.camera.CameraUpdateFactory.newCameraPosition', newCameraPosition );
-
+        if (options.animated) {
+          this._mapboxMapInstance.animateCamera(newCameraPosition, options.duration || 1000, new com.mapbox.mapboxsdk.maps.MapboxMap.CancelableCallback({
+            onFinish: (): void => {
+              resolve();
+            }
+          }));
         } else {
-          this._mapboxMapInstance.setCameraPosition(cameraPosition);
+          this._mapboxMapInstance.moveCamera(newCameraPosition, new com.mapbox.mapboxsdk.maps.MapboxMap.CancelableCallback({
+            onFinish: (): void => {
+              resolve();
+            }
+          }));
         }
-
-        resolve();
       } catch (ex) {
         console.log("Error in mapbox.setCenter: " + ex);
         reject(ex);
@@ -2026,9 +2035,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
   getCenter(nativeMap?): Promise<LatLng> {
     return new Promise((resolve, reject) => {
       try {
-
         const coordinate = this._mapboxMapInstance.getCameraPosition().target;
-
         resolve({
           lat: coordinate.getLatitude(),
           lng: coordinate.getLongitude()
@@ -2045,23 +2052,28 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
   setZoomLevel(options: SetZoomLevelOptions, nativeMap?): Promise<any> {
     return new Promise((resolve, reject) => {
       try {
-
-        const animated = options.animated === undefined || options.animated;
-        const level = options.level;
+        const { duration, level } = options;
 
         if (level >= 0 && level <= 20) {
           const cameraUpdate = com.mapbox.mapboxsdk.camera.CameraUpdateFactory.zoomTo(level);
 
           // FIXME: probably not necessary
 
-          this.gcFix( 'com.mapbox.mapboxsdk.camera.CameraUpdateFactory.zoomTo', cameraUpdate );
+          this.gcFix('com.mapbox.mapboxsdk.camera.CameraUpdateFactory.zoomTo', cameraUpdate);
 
-          if (animated) {
-            this._mapboxMapInstance.easeCamera( cameraUpdate );
+          if (options.animated) {
+            this._mapboxMapInstance.easeCamera(cameraUpdate, duration || 1000, new com.mapbox.mapboxsdk.maps.MapboxMap.CancelableCallback({
+              onFinish: (): void => {
+                resolve();
+              }
+            }));
           } else {
-            this._mapboxMapInstance.moveCamera( cameraUpdate );
+            this._mapboxMapInstance.moveCamera(cameraUpdate, new com.mapbox.mapboxsdk.maps.MapboxMap.CancelableCallback({
+              onFinish: (): void => {
+                resolve();
+              }
+            }));
           }
-          resolve();
         } else {
           reject("invalid zoomlevel, use any double value from 0 to 20 (like 8.3)");
         }
