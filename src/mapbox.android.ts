@@ -930,7 +930,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
 
                 if (settings.showUserLocation) {
                   this.requestFineLocationPermission().then( () => {
-                    this.showUserLocationMarker( {} );
+                    this.showUserLocationMarker(settings.locationComponentOptions);
 
                     // if we have a callback defined, call it.
 
@@ -2152,7 +2152,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
   /**
   * get users current location
   *
-  * @link https://docs.mapbox.com/android/api/map-sdk/9.0.0/com/mapbox/mapboxsdk/location/LocationComponent.html#getLastKnownLocation--
+  * @link https://docs.mapbox.com/android/api/map-sdk/9.4.0/com/mapbox/mapboxsdk/location/LocationComponent.html#getLastKnownLocation--
   */
 
   getUserLocation(): Promise<UserLocation> {
@@ -4069,107 +4069,92 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
   * @todo at least with simulated data, the location is only updated once hence adding support for forceLocation method.
   */
 
-  showUserLocationMarker( options: any, nativeMap? ): Promise<void> {
-
+  showUserLocationMarker(options: any, nativeMap?): Promise<void> {
     return new Promise((resolve, reject) => {
       try {
+        console.log("Mapbox::showUserLocationMarker(): top");
 
-        console.log( "Mapbox::showUserLocationMarker(): top" );
-
-        if (! this._mapboxMapInstance ) {
+        if (!this._mapboxMapInstance) {
           reject("No map has been loaded");
           return;
         }
 
-        if ( ! com.mapbox.android.core.permissions.PermissionsManager.areLocationPermissionsGranted( application.android.context ) ) {
-
-          console.log( "Mapbox::showUserLocationMarker(): location permissions are not granted." );
-
-          reject( "Location permissions not granted." );
+        if (!com.mapbox.android.core.permissions.PermissionsManager.areLocationPermissionsGranted(application.android.context)) {
+          console.log("Mapbox::showUserLocationMarker(): location permissions are not granted.");
+          reject("Location permissions not granted.");
           return;
         }
 
-        let componentOptionsBuilder = com.mapbox.mapboxsdk.location.LocationComponentOptions.builder( application.android.context );
+        const componentOptionsBuilder = com.mapbox.mapboxsdk.location.LocationComponentOptions.builder(application.android.context);
 
-        if ( typeof options.elevation != 'undefined' ) {
-          componentOptionsBuilder.elevation( new java.lang.Float( options.elevation ));
+        if (options.accuracyAlpha >= 0 && options.accuracyAlpha <= 1) {
+          componentOptionsBuilder.accuracyAlpha(new java.lang.Float(options.accuracyAlpha));
         }
 
-        if ( typeof options.accuracyColor != 'undefined' ) {
-          componentOptionsBuilder.accuracyColor( android.graphics.Color.parseColor( options.accuracyColor ));
+        if (options.accuracyColor) {
+          componentOptionsBuilder.accuracyColor(android.graphics.Color.parseColor(options.accuracyColor));
         }
 
-        if ( typeof options.accuracyAlpha != 'undefined' ) {
-          componentOptionsBuilder.accuracyAlpha( new java.lang.Float( options.accuracyAlpha ));
+        if (options.bearingTintColor) {
+          componentOptionsBuilder.bearingTintColor(new java.lang.Integer(android.graphics.Color.parseColor(options.bearingTintColor)));
         }
 
-        let componentOptions = componentOptionsBuilder.build();
+        if (options.elevation) {
+          componentOptionsBuilder.elevation(new java.lang.Float(options.elevation));
+        }
 
-        console.log( "Mapbox::showUserLocationMarker(): after componentOptions.build()" );
+        if (options.foregroundTintColor) {
+          componentOptionsBuilder.foregroundTintColor(new java.lang.Integer(android.graphics.Color.parseColor(options.foregroundTintColor)));
+        }
 
+        if (options.foregroundStaleTintColor) {
+          componentOptionsBuilder.foregroundStaleTintColor(new java.lang.Integer(android.graphics.Color.parseColor(options.foregroundStaleTintColor)));
+        }
+
+        const componentOptions = componentOptionsBuilder.build();
+        console.log("Mapbox::showUserLocationMarker(): after componentOptions.build()");
         this._locationComponent = this._mapboxMapInstance.getLocationComponent();
+        console.log("Mapbox::showUserLocationMarker(): after getLocationComponent");
 
-        console.log( "Mapbox::showUserLocationMarker(): after getLocationComponent" );
+        const activationOptionsBuilder = com.mapbox.mapboxsdk.location.LocationComponentActivationOptions.builder(application.android.context, this._mapboxMapInstance.getStyle());
+        console.log("Mapbox::showUserLocationMarker(): after activationOptionsBuilder");
+        activationOptionsBuilder.locationComponentOptions(componentOptions);
 
-        let activationOptionsBuilder = com.mapbox.mapboxsdk.location.LocationComponentActivationOptions.builder( application.android.context, this._mapboxMapInstance.getStyle() );
+        const useDefaultEngine = options.useDefaultLocationEngine || true;
+        console.log("Mapbox::showUserLocationMarker(): before useDefaultEngine");
+        activationOptionsBuilder.useDefaultLocationEngine(useDefaultEngine);
+        console.log("Mapbox::showUserLocationMarker(): after useDefaultEngine");
 
-        console.log( "Mapbox::showUserLocationMarker(): after activationOptionsBuilder" );
+        const locationComponentActivationOptions = activationOptionsBuilder.build();
+        console.log("Mapbox::showUserLocationMarker(): after ActivationOptions");
+        this._locationComponent.activateLocationComponent(locationComponentActivationOptions);
+        this._locationComponent.setLocationComponentEnabled(true);
 
-        activationOptionsBuilder.locationComponentOptions( componentOptions );
-
-        let useDefaultEngine = true;
-
-        if ( typeof options.useDefaultLocationEngine != 'undefined' ) {
-          useDefaultEngine = options.useDefaultLocationEngine;
+        let cameraMode = this._stringToCameraMode('TRACKING');
+        if (options.cameraMode) {
+          cameraMode = this._stringToCameraMode(options.cameraMode);
         }
-
-        console.log( "Mapbox::showUserLocationMarker(): before useDefaultEngine" );
-
-        activationOptionsBuilder.useDefaultLocationEngine( useDefaultEngine );
-
-        console.log( "Mapbox::showUserLocationMarker(): after useDefaultEngine" );
-
-        let locationComponentActivationOptions = activationOptionsBuilder.build();
-
-        console.log( "Mapbox::showUserLocationMarker(): after ActivationOptions" );
-
-        this._locationComponent.activateLocationComponent( locationComponentActivationOptions );
-        this._locationComponent.setLocationComponentEnabled( true );
-
-        let cameraMode = this._stringToCameraMode( 'TRACKING' );
-
-        if ( typeof options.cameraMode != 'undefined' ) {
-          cameraMode = this._stringToCameraMode( options.cameraMode );
-        }
-
-        this._locationComponent.setCameraMode( cameraMode );
+        this._locationComponent.setCameraMode(cameraMode);
 
         let renderMode = com.mapbox.mapboxsdk.location.modes.RenderMode.COMPASS;
-
-        if ( typeof options.renderMode != 'undefined' ) {
-          renderMode = this._stringToRenderMode( options.renderMode );
+        if (options.renderMode) {
+          renderMode = this._stringToRenderMode(options.renderMode);
         }
+        this._locationComponent.setRenderMode(renderMode);
+        console.log("Mapbox::showUserLocationMarker(): after renderMode");
 
-        this._locationComponent.setRenderMode( renderMode );
-
-        console.log( "Mapbox::showUserLocationMarker(): after renderMode" );
-
-        if ( typeof options.clickListener != 'undefined' ) {
-
+        if (options.clickListener) {
           this.onLocationClickListener = new com.mapbox.mapboxsdk.location.OnLocationClickListener({
-            onLocationComponentClick: ( component ) => {
-              options.clickListener( component );
+            onLocationComponentClick: (component) => {
+              options.clickListener(component);
             }
           });
-
-          this._locationComponent.addOnLocationClickListener( this.onLocationClickListener );
-
-          this.gcFix( 'com.mapbox.mapboxsdk.location.OnLocationClickListener', this.onLocationClickListener );
-
+          this._locationComponent.addOnLocationClickListener(this.onLocationClickListener);
+          this.gcFix('com.mapbox.mapboxsdk.location.OnLocationClickListener', this.onLocationClickListener);
         }
 
-        if ( typeof options.cameraTrackingChangedListener != 'undefined' ) {
-          this._locationComponent.addOnCameraTrackingChangedListener( options.cameraTrackingChangedListener );
+        if (options.cameraTrackingChangedListener) {
+          this._locationComponent.addOnCameraTrackingChangedListener(options.cameraTrackingChangedListener);
         }
 
         resolve();
