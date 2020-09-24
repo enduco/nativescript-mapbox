@@ -292,14 +292,16 @@ export type UserLocationCameraMode =
   "NONE_COMPASS" |
   "NONE_GPS" |
   "TRACKING" |
-  "TRACK_COMPASS" |
+  "TRACKING_COMPASS" |
   "TRACKING_GPS" |
-  "TRACK_GPS_NORTH";
+  "TRACKING_GPS_NORTH";
 
 // ------------------------------------------------------------
 
 export interface TrackUserOptions {
-  mode: UserLocationCameraMode;
+  cameraMode: UserLocationCameraMode;
+  renderMode: string;
+
   /**
    * iOS only, as Android is always animated. Default true (because of Android).
    */

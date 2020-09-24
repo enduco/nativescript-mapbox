@@ -3828,25 +3828,29 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
   * constantly center the map on the users location.
   */
 
-  trackUser( options: TrackUserOptions, nativeMap? ): Promise<void> {
-
-    console.log( "Mapbox::trackUser(): top" );
+  trackUser(options: TrackUserOptions, nativeMap?): Promise<void> {
+    console.log("Mapbox::trackUser(): top");
 
     return new Promise((resolve, reject) => {
       try {
-
-        if (! this._mapboxMapInstance ) {
+        if (!this._mapboxMapInstance) {
           reject("No map has been loaded");
           return;
         }
 
-        this.requestFineLocationPermission().then( () => {
-          this.showUserLocationMarker({
-            useDefaultLocationEngine: true
-          });
-
+        this.requestFineLocationPermission().then(() => {
+          if (this._locationComponent) {
+            this.changeUserLocationMarkerMode(
+              options.renderMode || 'COMPASS',
+              options.cameraMode || 'TRACKING',
+            );
+          } else {
+            this.showUserLocationMarker({
+              useDefaultLocationEngine: true
+            });
+          }
         }).catch(err => {
-          console.error( "Location permission denied. error:", err );
+          console.error("Location permission denied. error:", err);
         });
 
         resolve();
@@ -3980,15 +3984,14 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
       case "TRACKING":
         return modeRef.TRACKING;
 
-      case "TRACK_COMPASS":
-        return modeRef.TRACK_COMPASS;
+      case "TRACKING_COMPASS":
+        return modeRef.TRACKING_COMPASS;
 
       case "TRACKING_GPS":
         return modeRef.TRACKING_GPS;
 
-      case "TRACK_GPS_NORTH":
-        return modeRef.TRACK_GPS_NORTH;
-
+      case "TRACKING_GPS_NORTH":
+        return modeRef.TRACKING_GPS_NORTH;
     }
   }
 
@@ -4220,34 +4223,34 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
   * can called.
   */
 
-  changeUserLocationMarkerMode( renderModeString, cameraModeString: UserLocationCameraMode, nativeMap? ): Promise<any> {
-
+  changeUserLocationMarkerMode(renderModeString, cameraModeString: UserLocationCameraMode, nativeMap?): Promise<any> {
     return new Promise((resolve, reject) => {
       try {
-
-        if ( ! this._locationComponent ) {
-          reject( "No location component has been loaded");
+        if (!this._locationComponent) {
+          reject("No location component has been loaded");
           return;
         }
 
-        console.log( "Mapbox::changeUserLocationMarkerMode(): current render mode is:", this._locationComponent.getRenderMode() );
+        if (cameraModeString) {
+          const cameraMode = this._stringToCameraMode(cameraModeString);
+          console.log(`Mapbox::changeUserLocationMarkerMode(): current camera mode is: ${this._locationComponent.getCameraMode()}`);
+          console.log(`Mapbox::changeUserLocationMarkerMode(): changing camera mode to: ${cameraMode}`);
+          this._locationComponent.setCameraMode(cameraMode);
+          console.log(`Mapbox::changeUserLocationMarkerMode(): new camera mode is: ${this._locationComponent.getCameraMode()}`);
+        }
 
-        console.log( "Mapbox::changeUserLocationMarkerMode(): changing renderMode to '" + renderModeString + "' cameraMode '" + cameraModeString + "'" );
-
-        let cameraMode = this._stringToCameraMode( cameraModeString );
-        let renderMode = this._stringToRenderMode( renderModeString );
-
-        this._locationComponent.setCameraMode( cameraMode );
-        this._locationComponent.setRenderMode( renderMode );
-
-        console.log( "Mapbox::changeUserLocationMarkerMode(): new render mode is:", this._locationComponent.getRenderMode() );
-
+        if (renderModeString) {
+          const renderMode = this._stringToRenderMode(renderModeString);
+          console.log(`Mapbox::changeUserLocationMarkerMode(): current render mode is: ${this._locationComponent.getRenderMode()}`);
+          console.log(`Mapbox::changeUserLocationMarkerMode(): changing render mode to: '${renderMode}'`);
+          this._locationComponent.setRenderMode(renderMode);
+          console.log(`Mapbox::changeUserLocationMarkerMode(): new render mode is: ${this._locationComponent.getRenderMode()}`);
+        }
       } catch (ex) {
-        console.log("Error in mapbox.showUserLocationMarker: " + ex);
+        console.log(`Error in mapbox.changeUserLocationMarkerMode: ${ex}`);
         reject(ex);
       }
     });
-
   }
 
   // ---------------------------------------------------------------
