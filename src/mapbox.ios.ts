@@ -1,12 +1,9 @@
-/// <reference path="./node_modules/tns-platform-declarations/ios.d.ts" />
-/// <reference path="./platforms/ios/Mapbox.d.ts" />
-
-import * as fs from "tns-core-modules/file-system";
-import * as imgSrc from "tns-core-modules/image-source";
-import { ImageSource } from "tns-core-modules/image-source";
-import * as utils from "tns-core-modules/utils/utils";
-import * as http from "tns-core-modules/http";
-import { Color } from "tns-core-modules/color";
+import * as fs from "@nativescript/core/file-system";
+import * as imgSrc from "@nativescript/core/image-source";
+import * as utils from "@nativescript/core/utils/utils";
+import * as http from "@nativescript/core/http";
+import { Color } from "@nativescript/core/color";
+import { ImageSource } from "@nativescript/core/image-source";
 
 import {
   AddExtrusionOptions,
@@ -967,6 +964,8 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
       case "TRACK_GPS_NORTH":
         return MGLUserTrackingMode.FollowWithCourse;
 
+        default:
+          console.log(`_stringToCameraMode: invalid cameraMode: ${mode}`);
     }
   }
 
@@ -1138,7 +1137,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
           const properties = [];
 
           if (feature.attributes && feature.attributes.count > 0) {
-            const keys = utils.ios.collections.nsArrayToJSArray(
+            const keys = utils.iOSNativeHelper.collections.nsArrayToJSArray(
               feature.attributes.allKeys);
 
             for (let key of keys) {

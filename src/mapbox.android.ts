@@ -1,17 +1,14 @@
-/// <reference path="./node_modules/tns-platform-declarations/android.d.ts" />
-/// <reference path="./platforms/ios/Mapbox.d.ts" />
-
 /**
 * Android Implementation 
 *
 * @todo FIXME: The gcFix() implementation currently assumes only one map visible at a time.
 */
 
-import * as utils from "tns-core-modules/utils/utils";
-import * as application from "tns-core-modules/application";
-import * as fs from "tns-core-modules/file-system";
-import { Color } from "tns-core-modules/color";
-import * as http from "tns-core-modules/http";
+import * as utils from "@nativescript/core/utils/utils";
+import * as application from "@nativescript/core/application";
+import * as fs from "@nativescript/core/file-system";
+import { Color } from "@nativescript/core";
+import * as http from "@nativescript/core/http";
 
 import {
   hasLocationPermissions,
@@ -642,7 +639,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
 
       console.log( "Mapbox::constructor: activityStartedEvent Event: " + args.eventName + ", Activity: " + args.activity);
 
-      if ( this._mapboxViewInstance ) {
+      if ( this._mapboxViewInstance && this._activity === args.activity) {
 
         console.log( "Mapbox::constructor(): calling onStart()" );
 
@@ -672,7 +669,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
 
       console.log( "Mapbox::constructor: activityResumedEvent Event: " + args.eventName + ", Activity: " + args.activity);
 
-      if (this._mapboxViewInstance && this._activity === args.activity) {
+      if ( this._mapboxViewInstance && this._activity === args.activity) {
 
         console.log( "Mapbox::constructor(): calling onResume() - destroyed flag is:", this._mapboxViewInstance.isDestroyed() );
 
@@ -940,7 +937,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
 
                 if (settings.showUserLocation) {
                   this.requestFineLocationPermission().then( () => {
-                    this.showUserLocationMarker( {} );
+                    this.showUserLocationMarker(settings.locationComponentOptions);
 
                     // if we have a callback defined, call it.
 
@@ -1998,32 +1995,41 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
   setCenter(options: SetCenterOptions, nativeMap?): Promise<any> {
     return new Promise((resolve, reject) => {
       try {
+        const cameraPositionBuilder = new com.mapbox.mapboxsdk.camera.CameraPosition.Builder()
+          .target(new com.mapbox.mapboxsdk.geometry.LatLng(options.lat, options.lng));
 
-        const cameraPosition = new com.mapbox.mapboxsdk.camera.CameraPosition.Builder()
-            .target(new com.mapbox.mapboxsdk.geometry.LatLng(options.lat, options.lng))
-            .build();
+        if (options.bearing) {
+          cameraPositionBuilder.bearing(options.bearing);
+        }
+        if (options.tilt) {
+          cameraPositionBuilder.tilt(options.tilt);
+        }
+        if (options.zoom) {
+          cameraPositionBuilder.zoom(options.zoom);
+        }
+        const cameraPosition = cameraPositionBuilder.build();
 
         // FIXME: Probably not necessary.
 
-        this.gcFix( 'com.mapbox.mapboxsdk.camera.CameraPosition.Builder', cameraPosition );
+        this.gcFix('com.mapbox.mapboxsdk.camera.CameraPosition.Builder', cameraPosition);
 
-        if (options.animated === true) {
+        const newCameraPosition = com.mapbox.mapboxsdk.camera.CameraUpdateFactory.newCameraPosition(cameraPosition);
 
-          let newCameraPosition = com.mapbox.mapboxsdk.camera.CameraUpdateFactory.newCameraPosition( cameraPosition );
+        this.gcFix('com.mapbox.mapboxsdk.camera.CameraUpdateFactory.newCameraPosition', newCameraPosition);
 
-          this._mapboxMapInstance.animateCamera(
-            newCameraPosition,
-            1000,
-            null
-          );
-
-          this.gcFix( 'com.mapbox.mapboxsdk.camera.CameraUpdateFactory.newCameraPosition', newCameraPosition );
-              
+        if (options.animated) {
+          this._mapboxMapInstance.animateCamera(newCameraPosition, options.duration || 1000, new com.mapbox.mapboxsdk.maps.MapboxMap.CancelableCallback({
+            onFinish: (): void => {
+              resolve();
+            }
+          }));
         } else {
-          this._mapboxMapInstance.setCameraPosition(cameraPosition);
+          this._mapboxMapInstance.moveCamera(newCameraPosition, new com.mapbox.mapboxsdk.maps.MapboxMap.CancelableCallback({
+            onFinish: (): void => {
+              resolve();
+            }
+          }));
         }
-
-        resolve();
       } catch (ex) {
         console.log("Error in mapbox.setCenter: " + ex);
         reject(ex);
@@ -2055,23 +2061,28 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
   setZoomLevel(options: SetZoomLevelOptions, nativeMap?): Promise<any> {
     return new Promise((resolve, reject) => {
       try {
-
-        const animated = options.animated === undefined || options.animated;
-        const level = options.level;
+        const { duration, level } = options;
 
         if (level >= 0 && level <= 20) {
           const cameraUpdate = com.mapbox.mapboxsdk.camera.CameraUpdateFactory.zoomTo(level);
 
           // FIXME: probably not necessary
 
-          this.gcFix( 'com.mapbox.mapboxsdk.camera.CameraUpdateFactory.zoomTo', cameraUpdate );
+          this.gcFix('com.mapbox.mapboxsdk.camera.CameraUpdateFactory.zoomTo', cameraUpdate);
 
-          if (animated) {
-            this._mapboxMapInstance.easeCamera( cameraUpdate );
+          if (options.animated) {
+            this._mapboxMapInstance.easeCamera(cameraUpdate, duration || 1000, new com.mapbox.mapboxsdk.maps.MapboxMap.CancelableCallback({
+              onFinish: (): void => {
+                resolve();
+              }
+            }));
           } else {
-            this._mapboxMapInstance.moveCamera( cameraUpdate );
+            this._mapboxMapInstance.moveCamera(cameraUpdate, new com.mapbox.mapboxsdk.maps.MapboxMap.CancelableCallback({
+              onFinish: (): void => {
+                resolve();
+              }
+            }));
           }
-          resolve();
         } else {
           reject("invalid zoomlevel, use any double value from 0 to 20 (like 8.3)");
         }
@@ -2974,15 +2985,15 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
     return new Promise((resolve, reject) => {
       try {
         const { url, type } = options;
-        const theMap = nativeMap;
+        const theMap = this._mapboxMapInstance.getStyle();
         let source;
 
-        if (!this._mapboxMapInstance.getStyle()) {
+        if (!theMap) {
           reject("No map has been loaded");
           return;
         }
 
-        if (this._mapboxMapInstance.getStyle().getSource( id )) {
+        if (theMap.getSource(id)) {
           reject("Source exists: " + id);
           return;
         }
@@ -2990,7 +3001,10 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
         switch (type) {
 
           case "vector":
+            console.log( "Mapbox:addSource(): before addSource with vector" );
             source = new com.mapbox.mapboxsdk.style.sources.VectorSource(id, url);
+
+            this.gcFix( 'com.mapbox.mapboxsdk.style.sources.VectorSource', source );
           break;
 
           case 'geojson':
@@ -3003,18 +3017,14 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
 
             console.log( "Mapbox:addSource(): adding feature" );
 
-            // com.mapbox.mapboxsdk.maps.Style
-
-            let geoJsonSource = new com.mapbox.mapboxsdk.style.sources.GeoJsonSource(
+            source = new com.mapbox.mapboxsdk.style.sources.GeoJsonSource(
               id,
               feature
             );
 
-            this._mapboxMapInstance.getStyle().addSource( geoJsonSource );
+            this.gcFix( 'com.mapbox.mapboxsdk.style.sources.GeoJsonSource', source );
 
-            this.gcFix( 'com.mapbox.mapboxsdk.style.sources.GeoJsonSource', geoJsonSource );
-
-            // To support handling click events on lines and circles, we keep the underlying 
+            // To support handling click events on lines and circles, we keep the underlying
             // feature.
             //
             // FIXME: There should be a way to get the original feature back out from the source
@@ -3054,7 +3064,8 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
           return;
         }
 
-        theMap.mapboxMap.addSource(source);
+        theMap.addSource( source );
+
         resolve();
       } catch (ex) {
         console.log("Error in mapbox.addSource: " + ex);
@@ -3072,14 +3083,14 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
   removeSource( id: string, nativeMap? ): Promise<any> {
     return new Promise((resolve, reject) => {
       try {
-        const theMap = nativeMap;
+        const theMap = this._mapboxMapInstance.getStyle();
 
         if (!theMap) {
           reject("No map has been loaded");
           return;
         }
 
-        theMap.mapboxMap.removeSource(id);
+        theMap.removeSource(id);
 
         // if we've cached the underlying feature, remove it.
         //
@@ -3283,6 +3294,9 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
         }
 
         const line = new com.mapbox.mapboxsdk.style.layers.LineLayer( style.id, sourceId );
+        if (style['source-layer']) {
+          line.setSourceLayer(style['source-layer']);
+        }
 
         console.log( "Mapbox:addLineLayer(): after LineLayer" );
 
@@ -3291,16 +3305,14 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
         // some defaults if there's no paint property to the style 
         //
         // NOTE polyline styles have separate paint and layout sections.
-
-        if ( typeof style.paint == 'undefined' ) {
-
+        if (!style.paint) {
           console.log( "Mapbox:addLineLayer(): paint is undefined" );
 
-          lineProperties = [
+          lineProperties.push(
             com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineColor( 'red' ),
             com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineWidth( new java.lang.Float( 7 ) ),
             com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineOpacity( new java.lang.Float( 1 ) )
-          ];
+          );
 
         } else {
 
@@ -3342,13 +3354,11 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
         } // end of paint section.
 
         // now the layout section
-
-        if ( typeof style.layout == 'undefined' ) {
-
-          lineProperties = [
+        if (!style.layout) {
+          lineProperties.push(
             com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineCap( com.mapbox.mapboxsdk.style.layers.PropertyFactory.LINE_CAP_ROUND ),
             com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineJoin( com.mapbox.mapboxsdk.style.layers.PropertyFactory.LINE_JOIN_ROUND )
-          ];
+          );
 
         } else {
 
@@ -3410,7 +3420,15 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
 
         line.setProperties( lineProperties );
 
-        this._mapboxMapInstance.getStyle().addLayer( line );
+        if (style.above) {
+          this._mapboxMapInstance.getStyle().addLayerAbove(line, style.above);
+        } else if (style.below) {
+          this._mapboxMapInstance.getStyle().addLayerBelow(line, style.below);
+        } else {
+          this._mapboxMapInstance.getStyle().addLayer(line);
+        }
+
+        console.log( "Mapbox:addLineLayer(): added line layer" );
 
         // In support for clickable GeoJSON features.
         //
@@ -3600,6 +3618,9 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
         }
 
         const circle = new com.mapbox.mapboxsdk.style.layers.CircleLayer( style.id, sourceId );
+        if (style['source-layer']) {
+          circle.setSourceLayer(style['source-layer']);
+        }
 
         console.log( "Mapbox:addCircleLayer(): after CircleLayer" );
 
@@ -3627,11 +3648,11 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
 
           console.log( "Mapbox:addCircle(): paint is undefined" );
 
-          circleProperties = [
+          circleProperties.push(
             com.mapbox.mapboxsdk.style.layers.PropertyFactory.circleColor( 'red' ),
             com.mapbox.mapboxsdk.style.layers.PropertyFactory.circleRadius(
               com.mapbox.mapboxsdk.style.expressions.Expression.interpolate(
-                com.mapbox.mapboxsdk.style.expressions.Expression.exponential( 
+                com.mapbox.mapboxsdk.style.expressions.Expression.exponential(
                   new java.lang.Float( 2.0 ) ),
                   com.mapbox.mapboxsdk.style.expressions.Expression.zoom(),
                   [
@@ -3641,7 +3662,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
               )
             ),
             com.mapbox.mapboxsdk.style.layers.PropertyFactory.circleBlur(new java.lang.Float( 0.2 ))
-          ];
+          );
 
 
         } else {
@@ -3726,7 +3747,13 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
 
         circle.setProperties( circleProperties );
 
-        this._mapboxMapInstance.getStyle().addLayer( circle );
+        if (style.afterId) {
+          this._mapboxMapInstance.getStyle().addLayerAbove(circle, style.afterId);
+        } else if (style.beforeId) {
+          this._mapboxMapInstance.getStyle().addLayerBelow(circle, style.beforeId);
+        } else {
+          this._mapboxMapInstance.getStyle().addLayer(circle);
+        }
 
         console.log( "Mapbox:addCircleLayer(): added circle layer" );
 
@@ -3857,7 +3884,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
           this._locationComponent.setRenderMode( this._stringToRenderMode( options.mode ) );
           this._locationComponent.setCameraMode( this._stringToCameraMode( options.mode ) );
 
-        }).catch(err => {
+        }).catch(err => { 
           console.error( "Location permission denied. error:", err );
         });
 
@@ -4166,16 +4193,24 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
 
         let componentOptionsBuilder = com.mapbox.mapboxsdk.location.LocationComponentOptions.builder( application.android.context );
 
-        if ( typeof options.elevation != 'undefined' ) {
+        if (options.accuracyColor) {
+          componentOptionsBuilder.accuracyColor(android.graphics.Color.parseColor(options.accuracyColor));
+        }
+
+        if (options.bearingTintColor) {
+          componentOptionsBuilder.bearingTintColor(new java.lang.Integer(android.graphics.Color.parseColor(options.bearingTintColor)));
+        }
+
+        if (options.elevation) {
           componentOptionsBuilder.elevation( new java.lang.Float( options.elevation ));
         }
 
-        if ( typeof options.accuracyColor != 'undefined' ) {
-          componentOptionsBuilder.accuracyColor( android.graphics.Color.parseColor( options.accuracyColor ))
+        if (options.foregroundTintColor) {
+          componentOptionsBuilder.foregroundTintColor(new java.lang.Integer(android.graphics.Color.parseColor(options.foregroundTintColor)));
         }
-         
-        if ( typeof options.accuracyAlpha != 'undefined' ) {
-          componentOptionsBuilder.accuracyAlpha( new java.lang.Float( options.accuracyAlpha ));
+
+        if (options.foregroundStaleTintColor) {
+          componentOptionsBuilder.foregroundStaleTintColor(new java.lang.Integer(android.graphics.Color.parseColor(options.foregroundStaleTintColor)));
         }
 
         let componentOptions = componentOptionsBuilder.build();
@@ -4192,12 +4227,7 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
 
         activationOptionsBuilder.locationComponentOptions( componentOptions );
 
-        let useDefaultEngine = true;
-
-        if ( typeof options.useDefaultLocationEngine != 'undefined' ) {
-          useDefaultEngine = options.useDefaultLocationEngine;
-        }
-
+        const useDefaultEngine = options.useDefaultLocationEngine || true;
         console.log( "Mapbox::showUserLocationMarker(): before useDefaultEngine" );
 
         activationOptionsBuilder.useDefaultLocationEngine( useDefaultEngine );
@@ -4211,40 +4241,31 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
         this._locationComponent.activateLocationComponent( locationComponentActivationOptions );
         this._locationComponent.setLocationComponentEnabled( true );
 
-        let cameraMode = this._stringToCameraMode( 'TRACKING' );
-
-        if ( typeof options.cameraMode != 'undefined' ) {
-          cameraMode = this._stringToCameraMode( options.cameraMode );
+        let cameraMode = this._stringToCameraMode('TRACKING');
+        if (options.cameraMode) {
+          cameraMode = this._stringToCameraMode(options.cameraMode);
         }
-
-        this._locationComponent.setCameraMode( cameraMode );
+        this._locationComponent.setCameraMode(cameraMode);
 
         let renderMode = com.mapbox.mapboxsdk.location.modes.RenderMode.COMPASS;
-
-        if ( typeof options.renderMode != 'undefined' ) {
-          renderMode = this._stringToRenderMode( options.renderMode );
+        if (options.renderMode) {
+          renderMode = this._stringToRenderMode(options.renderMode);
         }
+        this._locationComponent.setRenderMode(renderMode);
+        console.log("Mapbox::showUserLocationMarker(): after renderMode");
 
-        this._locationComponent.setRenderMode( renderMode );
-
-        console.log( "Mapbox::showUserLocationMarker(): after renderMode" );
-
-        if ( typeof options.clickListener != 'undefined' ) {
- 
+        if (options.clickListener) {
           this.onLocationClickListener = new com.mapbox.mapboxsdk.location.OnLocationClickListener({
-            onLocationComponentClick: ( component ) => { 
-              options.clickListener( component );
+            onLocationComponentClick: (component) => {
+              options.clickListener(component);
             }
           });
-
-          this._locationComponent.addOnLocationClickListener( this.onLocationClickListener );
-
-          this.gcFix( 'com.mapbox.mapboxsdk.location.OnLocationClickListener', this.onLocationClickListener );
-
+          this._locationComponent.addOnLocationClickListener(this.onLocationClickListener);
+          this.gcFix('com.mapbox.mapboxsdk.location.OnLocationClickListener', this.onLocationClickListener);
         }
 
-        if ( typeof options.cameraTrackingChangedListener != 'undefined' ) {
-          this._locationComponent.addOnCameraTrackingChangedListener( options.cameraTrackingChangedListener );
+        if (options.cameraTrackingChangedListener) {
+          this._locationComponent.addOnCameraTrackingChangedListener(options.cameraTrackingChangedListener);
         }
 
         resolve();
@@ -4320,20 +4341,23 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
           return;
         }
 
-        console.log( "Mapbox::changeUserLocationMarkerMode(): current render mode is:", this._locationComponent.getRenderMode() );
+        if (cameraModeString) {
+          const cameraMode = this._stringToCameraMode(cameraModeString);
+          console.log(`Mapbox::changeUserLocationMarkerMode(): current camera mode is: ${this._locationComponent.getCameraMode()}`);
+          console.log(`Mapbox::changeUserLocationMarkerMode(): changing camera mode to: ${cameraMode}`);
+          this._locationComponent.setCameraMode(cameraMode);
+          console.log(`Mapbox::changeUserLocationMarkerMode(): new camera mode is: ${this._locationComponent.getCameraMode()}`);
+        }
 
-        console.log( "Mapbox::changeUserLocationMarkerMode(): changing renderMode to '" + renderModeString + "' cameraMode '" + cameraModeString + "'" );
-
-        let cameraMode = this._stringToCameraMode( cameraModeString );
-        let renderMode = this._stringToRenderMode( renderModeString );
-
-        this._locationComponent.setCameraMode( cameraMode );
-        this._locationComponent.setRenderMode( renderMode );
-
-        console.log( "Mapbox::changeUserLocationMarkerMode(): new render mode is:", this._locationComponent.getRenderMode() );
-
+        if (renderModeString) {
+          const renderMode = this._stringToRenderMode(renderModeString);
+          console.log(`Mapbox::changeUserLocationMarkerMode(): current render mode is: ${this._locationComponent.getRenderMode()}`);
+          console.log(`Mapbox::changeUserLocationMarkerMode(): changing render mode to: '${renderMode}'`);
+          this._locationComponent.setRenderMode(renderMode);
+          console.log(`Mapbox::changeUserLocationMarkerMode(): new render mode is: ${this._locationComponent.getRenderMode()}`);
+        }
       } catch (ex) {
-        console.log("Error in mapbox.showUserLocationMarker: " + ex);
+        console.log(`Error in mapbox.changeUserLocationMarkerMode: ${ex}`);
         reject(ex);
       }
     });
