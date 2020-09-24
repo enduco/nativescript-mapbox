@@ -1,19 +1,5 @@
 repositories {
     mavenCentral()
-
-    maven {
-      url 'https://api.mapbox.com/downloads/v2/releases/maven'
-      authentication {
-          basic(BasicAuthentication)
-      }
-      credentials {
-        // Do not change the username below.
-        // This should always be `mapbox` (not your username).
-        username = 'mapbox'
-        // Use the secret token you stored in gradle.properties as the password
-        password = project.properties['MAPBOX_DOWNLOADS_TOKEN'] ?: ""
-      }
-    }
 }
 
 dependencies {
@@ -25,18 +11,18 @@ dependencies {
 
     // Mapbox SDK
     // https://docs.mapbox.com/android/maps/overview/
-    implementation ("com.mapbox.mapboxsdk:mapbox-android-sdk:9.4.0") {
+    implementation ("com.mapbox.mapboxsdk:mapbox-android-sdk:9.2.0") {
         transitive = false
     }
 
     // Java SDK
     // https://docs.mapbox.com/android/java/overview/
-    implementation "com.mapbox.mapboxsdk:mapbox-sdk-geojson:5.5.0"
-    implementation "com.mapbox.mapboxsdk:mapbox-sdk-services:5.5.0"
+    implementation "com.mapbox.mapboxsdk:mapbox-sdk-geojson:5.6.0"
+    implementation "com.mapbox.mapboxsdk:mapbox-sdk-services:5.6.0"
 
     // Gestures
     // https://docs.mapbox.com/android/maps/overview/gestures/
-    implementation "com.mapbox.mapboxsdk:mapbox-android-gestures:0.5.1"
+    implementation "com.mapbox.mapboxsdk:mapbox-android-gestures:0.7.0"
 
     // Annotations
     // https://docs.mapbox.com/android/plugins/overview/annotation/
@@ -44,7 +30,7 @@ dependencies {
 
     // Offline
     // https://docs.mapbox.com/android/plugins/overview/offline/
-    implementation 'com.mapbox.mapboxsdk:mapbox-android-plugin-offline-v9:0.7.0'
+    implementation 'com.mapbox.mapboxsdk:mapbox-android-plugin-offline-v9:0.3.0'
 }
 
 android {
