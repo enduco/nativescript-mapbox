@@ -48,7 +48,7 @@ import {
 } from "./mapbox.common";
 
 import { GeoUtils } from './geo.utils';
-import { ImageSource } from "tns-core-modules/image-source";
+import { ImageSource } from "@nativescript/core";
 
 // Export the enums for devs not using TS
 
