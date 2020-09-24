@@ -4591,36 +4591,49 @@ export class Mapbox extends MapboxCommon implements MapboxApi {
             }
             console.log("SNAP", "starting snapshot...");
             this._mapboxViewInstance.setDrawingCacheEnabled(true);
+            this._mapboxViewInstance.setDrawingCacheQuality(android.view.View.DRAWING_CACHE_QUALITY_LOW);
+            this._mapboxMapInstance.buildDrawingCache();
             console.log("SNAP", "disabled drawing cache");
             const drawingCache: android.graphics.Bitmap = this._mapboxViewInstance.getDrawingCache();
+            const bm = android.graphics.Bitmap.createBitmap(drawingCache);
+            this._mapboxViewInstance.setDrawingCacheEnabled(false);
+            this._mapboxViewInstance.destroyDrawingCache();
             const cb = new com.mapbox.mapboxsdk.maps.MapboxMap.SnapshotReadyCallback({
-                onSnapshotReady: snapshot => {
+                onSnapshotReady: (snapshot: android.graphics.Bitmap) => {
                     console.log("SNAP", "snapshot ready");
                     const bmOverlay: android.graphics.Bitmap =
-                        android.grapgics.Bitmap.createBitmap(snapshot.getWidth(), snapshot.getHeight(), snapshot.getConfig());
-                    const canvas = new android.graphics.Canvas(bmOverlay);
+                        android.graphics.Bitmap.createBitmap(snapshot.getWidth(), snapshot.getHeight(), snapshot.getConfig());
+                    console.log("SNAP", "bmOverlay created");
+                    const canvas: android.graphics.Canvas =
+                        new android.graphics.Canvas(bmOverlay);
+                    console.log("SNAP", "canvas created");
                     canvas.drawBitmap(snapshot, new android.graphics.Matrix(), null);
+                    console.log("SNAP", "snapshot drawn on canvas");
                     canvas.drawBitmap(drawingCache, new android.graphics.Matrix(), null);
-                    console.log("SNAP", "cache drawn");
+                    console.log("SNAP", "cache drawn on canvas");
                     this._mapboxViewInstance.setDrawingCacheEnabled(false);
+                    this._mapboxViewInstance.destroyDrawingCache();
                     console.log("SNAP", "enabled drawing cache");
                     const byteArrayStream: java.io.ByteArrayOutputStream =
                         new java.io.ByteArrayOutputStream();
-                    bmOverlay.compress(android.graphic.Bitmap.CompressFormat.PNG, 100, byteArrayStream);
+                    bmOverlay.compress(android.graphics.Bitmap.CompressFormat.PNG, 100, byteArrayStream);
                     const byteArray = byteArrayStream.toByteArray();
                     const base64String: string =
                         android.util.Base64.encodeToString(byteArray, android.util.Base64.DEFAULT);
                     console.log("SNAP", "created base64 string");
                     const imgSource = new ImageSource();
-                    return imgSource
+                    imgSource
                         .fromBase64(base64String)
                         .then((success) => {
                             console.log("SNAP", "created image source", success);
                             if (success) {
-                                return imgSource;
+                                resolve(imgSource);
                             } else {
-                                return reject();
+                                reject();
                             }
+                        })
+                        .catch((error) => {
+                            reject(error);
                         });
                 }
             }); // end of SnapshotReadyCallback.
