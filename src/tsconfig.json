@@ -23,6 +23,10 @@
     "noImplicitUseStrict": false,
     "noFallthroughCasesInSwitch": true,
     "moduleResolution": "node",
+    "plugins": [{
+      "transform": "@nativescript/webpack/transformers/ns-transform-native-classes",
+      "type": "raw"
+    }],
     "removeComments": false
   },
   "exclude": [

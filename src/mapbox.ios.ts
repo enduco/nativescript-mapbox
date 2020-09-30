@@ -2,8 +2,11 @@ import * as fs from "@nativescript/core/file-system";
 import * as imgSrc from "@nativescript/core/image-source";
 import * as utils from "@nativescript/core/utils/utils";
 import * as http from "@nativescript/core/http";
-import { Color } from "@nativescript/core/color";
-import { ImageSource } from "@nativescript/core/image-source";
+
+import {
+  Color,
+  ImageSource
+} from "@nativescript/core";
 
 import {
   AddExtrusionOptions,
@@ -2936,6 +2939,7 @@ const _addMarkers = (markers: MapboxMarker[], nativeMap?) => {
 * @link https://docs.nativescript.org/core-concepts/ios-runtime/how-to/ObjC-Subclassing#typescript-delegate-example
 */
 
+@NativeClass()
 class MGLMapViewDelegateImpl extends NSObject implements MGLMapViewDelegate {
   public static ObjCProtocols = [MGLMapViewDelegate];
 
@@ -2958,7 +2962,6 @@ class MGLMapViewDelegateImpl extends NSObject implements MGLMapViewDelegate {
   */
 
   public initWithCallback( mapLoadedCallback: (mapView: MGLMapView) => void): MGLMapViewDelegateImpl {
-
     console.log( "MGLMapViewDelegateImpl::initWithCallback()" );
 
     this.mapLoadedCallback = mapLoadedCallback;
@@ -3224,6 +3227,7 @@ class MGLMapViewDelegateImpl extends NSObject implements MGLMapViewDelegate {
 
 // --------------------------------------------------------------------------------------
 
+@NativeClass()
 class MapTapHandlerImpl extends NSObject {
   private _owner: WeakRef<Mapbox>;
   private _listener: (data: LatLng) => void;
@@ -3252,6 +3256,7 @@ class MapTapHandlerImpl extends NSObject {
   };
 }
 
+@NativeClass()
 class MapLongPressHandlerImpl extends NSObject {
   private _owner: WeakRef<Mapbox>;
   private _listener: (data?: LatLng) => void;
@@ -3285,6 +3290,7 @@ class MapLongPressHandlerImpl extends NSObject {
 * This is used by the OnScrollListener
 */
 
+@NativeClass()
 class MapPanHandlerImpl extends NSObject {
   private _owner: WeakRef<Mapbox>;
   private _listener: (data?: LatLng) => void;
@@ -3350,6 +3356,7 @@ class MapPanHandlerImpl extends NSObject {
 * Current unused
 */
 
+@NativeClass()
 class MapSwipeHandlerImpl extends NSObject {
   private _owner: WeakRef<Mapbox>;
   private _listener: (data?: LatLng) => void;

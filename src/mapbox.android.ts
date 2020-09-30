@@ -7,7 +7,7 @@
 import * as utils from "@nativescript/core/utils/utils";
 import * as application from "@nativescript/core/application";
 import * as fs from "@nativescript/core/file-system";
-import { Color } from "@nativescript/core";
+import { Color, ImageSource } from "@nativescript/core";
 import * as http from "@nativescript/core/http";
 
 import {
@@ -48,7 +48,6 @@ import {
 } from "./mapbox.common";
 
 import { GeoUtils } from './geo.utils';
-import { ImageSource } from "tns-core-modules/image-source";
 
 // Export the enums for devs not using TS
 
