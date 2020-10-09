@@ -1,3 +1,3 @@
 platform :ios, '9.0'
 
-pod 'Mapbox-iOS-SDK', '~> 5.9'
+pod 'Mapbox-iOS-SDK', '~> 6.2.1'
