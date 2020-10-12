@@ -1,10 +1,13 @@
 #!/bin/bash
 
+# invoke with -d (for debug) to avoid stripping out console logs.
+
 SOURCE_DIR=../src;
 TO_SOURCE_DIR=src;
 PACK_DIR=package;
 ROOT_DIR=..;
 PUBLISH=--publish
+DEBUG=$1
 
 install(){
     npm i
@@ -28,7 +31,21 @@ pack() {
     # compile package and copy files required by npm
     echo 'Building /src...'
     cd "$TO_SOURCE_DIR"
-    node_modules/.bin/tsc
+    npm run build
+
+    if [ "$DEBUG" != "-d" ]; then
+      cd ..
+      echo 'Removing console.log() ...'
+
+      node_modules/remove-console-logs/remove-console-logs --io src/geo.utils.js  
+      node_modules/remove-console-logs/remove-console-logs --io src/mapbox.android.js  
+      node_modules/remove-console-logs/remove-console-logs --io src/mapbox.ios.js  
+      node_modules/remove-console-logs/remove-console-logs --io src/mapbox.common.js  
+
+      cd "$TO_SOURCE_DIR"
+
+    fi
+
     cd ..
 
     echo 'Creating package...'
