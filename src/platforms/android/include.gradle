@@ -30,7 +30,7 @@ dependencies {
 
     // Offline
     // https://docs.mapbox.com/android/plugins/overview/offline/
-    implementation 'com.mapbox.mapboxsdk:mapbox-android-plugin-offline-v9:0.3.0'
+    implementation 'com.mapbox.mapboxsdk:mapbox-android-plugin-offline-v9:0.7.0'
 }
 
 android {
