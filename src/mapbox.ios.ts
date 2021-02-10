@@ -3154,6 +3154,50 @@ class MGLMapViewDelegateImpl extends NSObject implements MGLMapViewDelegate {
     return null;
   }
 
+  // ----------------------------------------
+
+  /**
+   * fired when the marker view is about to be rendered - return null for the default icon
+   */
+
+  mapViewViewForAnnotation(mapView: MGLMapView, annotation: MGLAnnotation): MGLAnnotationView {
+    if (!annotation.isKindOfClass(MGLPointAnnotation.class())) {
+      return null;
+    }
+
+    let cachedMarker = this.getTappedMarkerDetails(annotation);
+
+    if (cachedMarker) {
+      if (cachedMarker.reuseIdentifier) {
+        let reusedView = mapView.dequeueReusableAnnotationViewWithIdentifier(cachedMarker.reuseIdentifier);
+        if (reusedView) {
+          return reusedView;
+        }
+      }
+
+      if (cachedMarker.icon) {
+        if (cachedMarker.icon.startsWith("res://")) {
+          let resourceName = cachedMarker.icon.substring("res://".length);
+          let imageSource = imgSrc.fromResource(resourceName);
+          if (imageSource === null) {
+            console.log(`Unable to locate ${resourceName}`);
+          } else {
+            cachedMarker.reuseIdentifier = cachedMarker.icon;
+
+            let view = MGLAnnotationView.alloc().initWithReuseIdentifier(cachedMarker.reuseIdentifier);
+            let imageView = UIImageView.alloc().initWithImage(imageSource.ios);
+            view.addSubview(imageView);
+            view.frame = imageView.frame;
+
+            return view;
+          }
+        }
+      }
+    }
+
+    return null;
+  }
+
   // ---------------------------------------------
 
   /**
